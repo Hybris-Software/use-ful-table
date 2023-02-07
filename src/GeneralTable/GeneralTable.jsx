@@ -6,6 +6,8 @@ import React, {
   useRef,
   useMemo,
 } from "react";
+import PropTypes from 'prop-types';
+
 
 //Components
 import HeaderActionList from "./HeaderActionList/HeaderActionList";
@@ -46,6 +48,8 @@ const GeneralTable = forwardRef(function GeneralTable(
     defaultSearchField = "",
     searchBarPlaceholder = "Search...",
     enableSelectableRows = true,
+    enableAllowedActions = false,
+    allowedActions,
     searchFieldSelectPlaceholder = "Select a column",
     allowedActionsSelectPlaceholder = "Select an action",
     searchBarClassName = Style.searchBarClass,
@@ -60,8 +64,6 @@ const GeneralTable = forwardRef(function GeneralTable(
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    allowedActions,
-    enableAllowedActions = false,
     onSuccess = () => {},
     onUnauthorized = () => {},
     onError = () => {},
@@ -95,13 +97,16 @@ const GeneralTable = forwardRef(function GeneralTable(
   //Refs
   const defaultRef = useRef(null);
   const tableRef = ref || defaultRef;
+  
+  //For debounce mechanisms
+  const timeoutId = useRef(null);
 
   //States
   const [url, setUrl] = useState(null);
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
-  const [selectedAction, setSelectedAction] = useState();
+  const [selectedAction, setSelectedAction] = useState("");
 
   const selectColumn = useMemo(
     () => ({
@@ -138,6 +143,7 @@ const GeneralTable = forwardRef(function GeneralTable(
     }),
     [tableSettings.selectedData]
   );
+
   const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
 
   const ComputedDownSortIcon = sortingDownIcon
@@ -248,6 +254,7 @@ const GeneralTable = forwardRef(function GeneralTable(
   }, [tableSettings, extraFilters]);
 
   useEffect(() => {
+    console.log(url)
     if (url) tableAPI.executeQuery();
   }, [url]);
 
@@ -308,12 +315,14 @@ const GeneralTable = forwardRef(function GeneralTable(
             </ConditionalComponent>
             <ConditionalComponent condition={enableSearch}>
               <InputField
-                value={tableSettings.search.value}
                 placeholder={searchBarPlaceholder}
                 className={searchBarClassName}
                 onChange={(e) => {
-                  tableRef.current.setSearchValue(e.target.value);
-                  onSearch(tableContext);
+                  clearTimeout(timeoutId.current);
+                  timeoutId.current = setTimeout(() => {
+                    tableRef.current.setSearchValue(e.target.value);
+                    onSearch(tableContext);
+                  }, 1000);
                 }}
               />
             </ConditionalComponent>
@@ -550,4 +559,31 @@ const IconDownComponent = ({
   );
 };
 
+
+GeneralTable.propTypes = {
+  pageSizes: PropTypes.arrayOf(PropTypes.number),
+  columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  height: PropTypes.string,
+  Styles: PropTypes.string,
+  endPoint: PropTypes.string.isRequired,
+  emptyDataMessage: PropTypes.string,
+  extraFilters: PropTypes.object,
+  defaultPageSize: PropTypes.number,
+  enablePageSizeSelect: PropTypes.bool,
+  enableSearch: PropTypes.bool,
+  enableSearchFieldSelect: PropTypes.bool,
+  enableAllowedActions: PropTypes.bool,
+  defaultSearchField: PropTypes.string,
+  searchBarPlaceholder: PropTypes.string,
+  // searchBarClassName ---> sortingDownIcon Styles How is the default
+  onSuccess: PropTypes.func,
+  onUnauthorized: PropTypes.func,
+  onError: PropTypes.func,
+  onSearch: PropTypes.func,
+  onSearchFieldChange: PropTypes.func,
+  onPageChange: PropTypes.func,
+  onPageSizeChange: PropTypes.func,
+  onSelectionChange: PropTypes.func,
+  onSortChange: PropTypes.func,
+}
 export default GeneralTable;

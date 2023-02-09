@@ -12,25 +12,25 @@ const TestView = () => {
       },
     },
     {
-      Header: "User",
-      field: "user",
+      Header: "toCurrency",
+      field: "toCurrency",
       accessor: (row) => {
-        return row.user;
+        return row.toCurrency;
       },
     },
     {
-      Header: "Date",
-      field: "date",
+      Header: "toAmount",
+      field: "toAmount",
+      accessor: (row) => {
+        return row.toAmount;
+      },
+    },
+    {
+      Header: "createdAt",
+      field: "createdAt",
       searchable: false,
       accessor: (row) => {
-        return row.date;
-      },
-    },
-    {
-      Header: "Description",
-      field: "description",
-      accessor: (row) => {
-        return row.description;
+        return row.createdAt;
       },
     },
   ];
@@ -57,8 +57,7 @@ const TestView = () => {
       },
     },
   ];
-  const endPoint =
-    "https://run.mocky.io/v3/425daabc-00ab-44c9-8d29-3e95b5a2238f/";
+  const endPoint = "https://api-upbyt.testing-room.com/api/v1/wallets/history/";
   const ref = useRef(null);
   const extraFilters = {
     test: "test",
@@ -76,6 +75,7 @@ const TestView = () => {
         endPoint={endPoint}
         extraFilters={extraFilters}
         onSearch={(x) => console.log(x)}
+        onSearchFieldChange={(x) => console.log(x)}
         onSelectionChange={(x) => console.log(x)}
         onPageChange={(x) => console.log(x)}
       />

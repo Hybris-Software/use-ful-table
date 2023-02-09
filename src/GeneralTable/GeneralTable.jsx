@@ -6,8 +6,7 @@ import React, {
   useRef,
   useMemo,
 } from "react";
-import PropTypes from 'prop-types';
-
+import PropTypes from "prop-types";
 
 //Components
 import HeaderActionList from "./HeaderActionList/HeaderActionList";
@@ -97,9 +96,7 @@ const GeneralTable = forwardRef(function GeneralTable(
   //Refs
   const defaultRef = useRef(null);
   const tableRef = ref || defaultRef;
-  
-  //For debounce mechanisms
-  const timeoutId = useRef(null);
+  const timeoutId = useRef(null); //For debounce mechanisms
 
   //States
   const [url, setUrl] = useState(null);
@@ -107,6 +104,9 @@ const GeneralTable = forwardRef(function GeneralTable(
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [selectedAction, setSelectedAction] = useState("");
+
+  //Test for select all
+  const [selectAllRows, setSelectAllRows] = useState(false);
 
   const selectColumn = useMemo(
     () => ({
@@ -119,9 +119,7 @@ const GeneralTable = forwardRef(function GeneralTable(
         return (
           <input
             type="checkbox"
-            defaultChecked={tableSettings.selectedData.find(
-              (item) => item.id === row.id
-            )}
+            checked={tableSettings.selectedData.find((item) => item.id === row.id) !== undefined}
             onChange={(e) => {
               let tempList = tableSettings.selectedData;
               if (e.target.checked) {
@@ -135,13 +133,13 @@ const GeneralTable = forwardRef(function GeneralTable(
                 tempList,
                 setTableSettings
               );
-              onSelectionChange(tableContext);
+              onSelectionChange(tableContext)
             }}
           />
         );
       },
     }),
-    [tableSettings.selectedData]
+    [tableSettings]
   );
 
   const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
@@ -176,6 +174,19 @@ const GeneralTable = forwardRef(function GeneralTable(
     executeImmediately: false,
     onSuccess: (response) => {
       onSuccess();
+      if (
+        response?.data.results
+          .map((value) => value.id)
+          .every((tempItem) =>
+            tableSettings.selectedData
+              .map((value) => value.id)
+              .includes(tempItem)
+          )
+      ) {
+        setSelectAllRows(true);
+      } else {
+        setSelectAllRows(false);
+      }
     },
     onUnauthorized: (response) => {
       onUnauthorized();
@@ -254,9 +265,23 @@ const GeneralTable = forwardRef(function GeneralTable(
   }, [tableSettings, extraFilters]);
 
   useEffect(() => {
-    console.log(url)
+    console.log(url);
     if (url) tableAPI.executeQuery();
   }, [url]);
+
+  useEffect(() => {
+    if (
+      tableAPI?.response?.data.results
+        .map((value) => value.id)
+        .every((item) =>
+          tableSettings.selectedData.map((value) => value.id).includes(item)
+        )
+    ) {
+      setSelectAllRows(true);
+    } else {
+      setSelectAllRows(false);
+    }    
+  }, [tableSettings.selectedData]);
 
   return (
     <ComputedStyles>
@@ -381,6 +406,48 @@ const GeneralTable = forwardRef(function GeneralTable(
                         <div className={Style.headerSection}>
                           <div className={Style.clampedText}>
                             {column.render("Header")}
+                            <ConditionalComponent
+                              condition={column.Header === "Select"}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectAllRows}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    updateObjectState(
+                                      "selectedData",
+                                      null,
+                                      [
+                                        ...tableSettings.selectedData,
+                                        ...tableAPI?.response?.data.results.filter(
+                                          (item) =>
+                                            !tableSettings.selectedData
+                                              .map((value) => value.id)
+                                              .includes(item.id)
+                                        ),
+                                      ],
+                                      setTableSettings
+                                    );
+                                    setSelectAllRows(true);
+                                  } else {
+                                    const temp = tableSettings.selectedData.filter(
+                                      (item) =>
+                                        !tableAPI?.response?.data.results.map(value => value.id).includes(
+                                          item.id
+                                        )
+                                    );
+                                    updateObjectState(
+                                      "selectedData",
+                                      null,
+                                      temp,
+                                      setTableSettings
+                                    );
+                                    setSelectAllRows(false);
+                                  }
+                                  onSelectionChange(tableContext)
+                                }}
+                              />
+                            </ConditionalComponent>
                             <ConditionalComponent
                               condition={column.sortable !== false}
                             >
@@ -559,7 +626,6 @@ const IconDownComponent = ({
   );
 };
 
-
 GeneralTable.propTypes = {
   pageSizes: PropTypes.arrayOf(PropTypes.number),
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -585,5 +651,5 @@ GeneralTable.propTypes = {
   onPageSizeChange: PropTypes.func,
   onSelectionChange: PropTypes.func,
   onSortChange: PropTypes.func,
-}
+};
 export default GeneralTable;

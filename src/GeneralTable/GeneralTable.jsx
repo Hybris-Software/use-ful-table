@@ -105,7 +105,7 @@ const GeneralTable = forwardRef(function GeneralTable(
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [selectedAction, setSelectedAction] = useState("");
 
-  //Test for select all
+  //For select all
   const [selectAllRows, setSelectAllRows] = useState(false);
 
   const selectColumn = useMemo(
@@ -119,21 +119,19 @@ const GeneralTable = forwardRef(function GeneralTable(
         return (
           <input
             type="checkbox"
-            checked={tableSettings.selectedData.find((item) => item.id === row.id) !== undefined}
+            checked={
+              tableSettings.selectedData.find((item) => item.id === row.id) !==
+              undefined
+            }
             onChange={(e) => {
-              let tempList = tableSettings.selectedData;
+              let tempList = [...tableSettings.selectedData];
               if (e.target.checked) {
-                tempList.push(row);
+                // tempList.push(row);
+                tempList = [...tempList,row]
               } else {
                 tempList = tempList.filter((item) => item.id !== row.id);
               }
-              updateObjectState(
-                "selectedData",
-                null,
-                tempList,
-                setTableSettings
-              );
-              onSelectionChange(tableContext)
+              tableRef.current.setSelectedData(tempList);
             }}
           />
         );
@@ -255,6 +253,9 @@ const GeneralTable = forwardRef(function GeneralTable(
           updateObjectState("sorting", "type", value, setTableSettings);
           onSortChange(tableContext);
         },
+        setSelectedData(value) {
+          updateObjectState("selectedData", null, value, setTableSettings);
+        },
       };
     },
     [tableSettings, tableContext, onPageChange, onPageSizeChange, onSortChange]
@@ -270,6 +271,7 @@ const GeneralTable = forwardRef(function GeneralTable(
   }, [url]);
 
   useEffect(() => {
+    onSelectionChange(tableContext);
     if (
       tableAPI?.response?.data.results
         .map((value) => value.id)
@@ -280,7 +282,7 @@ const GeneralTable = forwardRef(function GeneralTable(
       setSelectAllRows(true);
     } else {
       setSelectAllRows(false);
-    }    
+    }
   }, [tableSettings.selectedData]);
 
   return (
@@ -413,38 +415,29 @@ const GeneralTable = forwardRef(function GeneralTable(
                                 type="checkbox"
                                 checked={selectAllRows}
                                 onChange={(e) => {
-                                  if (e.target.checked) {
-                                    updateObjectState(
-                                      "selectedData",
-                                      null,
-                                      [
-                                        ...tableSettings.selectedData,
-                                        ...tableAPI?.response?.data.results.filter(
-                                          (item) =>
-                                            !tableSettings.selectedData
-                                              .map((value) => value.id)
-                                              .includes(item.id)
-                                        ),
-                                      ],
-                                      setTableSettings
-                                    );
-                                    setSelectAllRows(true);
-                                  } else {
-                                    const temp = tableSettings.selectedData.filter(
+                                  const temp = [
+                                    ...tableSettings.selectedData,
+                                    ...tableAPI?.response?.data.results.filter(
                                       (item) =>
-                                        !tableAPI?.response?.data.results.map(value => value.id).includes(
-                                          item.id
-                                        )
-                                    );
-                                    updateObjectState(
-                                      "selectedData",
-                                      null,
-                                      temp,
-                                      setTableSettings
-                                    );
+                                        !tableSettings.selectedData
+                                          .map((value) => value.id)
+                                          .includes(item.id)
+                                    ),
+                                  ];
+                                  if (e.target.checked) {
+                                    setSelectAllRows(true);
+                                    tableRef.current.setSelectedData(temp);
+                                  } else {
+                                    const temp =
+                                      tableSettings.selectedData.filter(
+                                        (item) =>
+                                          !tableAPI?.response?.data.results
+                                            .map((value) => value.id)
+                                            .includes(item.id)
+                                      );
                                     setSelectAllRows(false);
+                                    tableRef.current.setSelectedData(temp);
                                   }
-                                  onSelectionChange(tableContext)
                                 }}
                               />
                             </ConditionalComponent>

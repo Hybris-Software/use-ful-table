@@ -1,0 +1,23 @@
+/* .test {
+	border: 1px solid red;
+	background-color: orange;
+	padding: 12px 15px;
+	min-width: 150px;
+	border-radius: 3px;
+	font-size: 12px;
+}
+.testOpened {
+	border: 1px solid red;
+	background-color: orange;
+	border-top: none;
+	width: 100%;
+	left: -1px;
+	top: 40px;
+	border-radius: 0 0 5px 5px;
+}
+.testOptions {
+	padding: 12px 15px;
+}
+.testOptions:hover {
+	background-color: rgba(159, 159, 236, 0.596);
+} */

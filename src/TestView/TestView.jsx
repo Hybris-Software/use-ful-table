@@ -1,6 +1,9 @@
 import React, { useRef } from "react";
 import GeneralTable from "../GeneralTable/GeneralTable";
 
+// Styles
+import Style from "./TestView.module.css";
+
 const TestView = () => {
   const columns = [
     {
@@ -34,6 +37,7 @@ const TestView = () => {
       },
     },
   ];
+
   const allowedActions = [
     {
       label: "Edit",
@@ -57,6 +61,7 @@ const TestView = () => {
       },
     },
   ];
+
   const endPoint =
     "https://run.mocky.io/v3/425daabc-00ab-44c9-8d29-3e95b5a2238f/";
   const ref = useRef(null);
@@ -71,6 +76,9 @@ const TestView = () => {
       <GeneralTable
         allowedActions={allowedActions}
         enableAllowedActions={true}
+        searchFieldSelectClassName={Style.test}
+        searchFieldSelectClassNameOpened={Style.testOpened}
+        searchFieldSelectClassNameOptions={Style.testOptions}
         ref={ref}
         columns={columns}
         endPoint={endPoint}

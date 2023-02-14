@@ -1,0 +1,36 @@
+.select {
+	outline: none;
+	position: relative;
+}
+.selected {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+.selected > span {
+	display: flex;
+	align-items: center;
+}
+.selected .arrow svg {
+	margin-right: 0;
+	transition: all 0.3s ease;
+}
+.selected .arrowOpened svg {
+	transform: rotate(180deg);
+	margin-right: 0;
+	transition: all 0.3s ease;
+}
+
+.options > div,
+.optionsOpened > div,
+.select {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+.options > div svg,
+.optionsOpened > div svg,
+.select svg {
+	font-size: 20px;
+	color: grey;
+}

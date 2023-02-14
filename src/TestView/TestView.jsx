@@ -69,7 +69,7 @@ const TestView = () => {
       },
     },
   ];
-  const endPoint = "https://api-upbyt.testing-room.com/api/v1/wallets/history/";
+  const endPoint = "https://run.mocky.io/v3/425daabc-00ab-44c9-8d29-3e95b5a2238f/";
   const ref = useRef(null);
   const extraFilters = {
     test: "test",
@@ -78,13 +78,16 @@ const TestView = () => {
 
   return (
     <div>
-      <h2>test Table</h2>
+      {/* <h2>test Table</h2> */}
       <GeneralTable
+        height="410"
         allowedActions={allowedActions}
         enableAllowedActions={true}
         searchFieldSelectClassName={Style.test}
         searchFieldSelectClassNameOpened={Style.testOpened}
         searchFieldSelectClassNameOptions={Style.testOptions}
+        pageSizeSelectClassName={Style.testPage}
+        pageSizeSelectClassNameOpened={Style.testOpenedPage}
         ref={ref}
         columns={columns}
         endPoint={endPoint}

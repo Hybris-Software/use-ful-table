@@ -6,9 +6,10 @@ import { IoIosArrowDown } from 'react-icons/io'
 // Styles
 import Style from './SelectComponent.module.css'
 
-const SelectComponent = ({ className, classNameOpened, classNameOption, placeholder, setValue, columns, value, columnLabel, columnValue, selectedItem }) => {
+const SelectComponent = ({ className, classNameOpened, classNameOption, placeholder, setValue, columns, columnLabel, columnValue, selectedItem }) => {
 
     const [open, setOpen] = useState(false)
+    const isntNormalList = columns.some((el) => typeof el === 'object');
 
     return (
         <div
@@ -35,6 +36,7 @@ const SelectComponent = ({ className, classNameOpened, classNameOption, placehol
                         opacity: 1,
                         transition: "all 0.2s",
                         visibility: "visible",
+
                     }
                     : {
                         maxHeight: 0,
@@ -48,17 +50,31 @@ const SelectComponent = ({ className, classNameOpened, classNameOption, placehol
                     }
                 }
             >
-                {columns
-                    .filter((item) => item.searchable !== false)
-                    .map((option, index) => (
+                {isntNormalList
+                    ?
+                    columns
+                        .filter((item) => item.searchable !== false)
+                        .map((option, i) => (
+                            <div
+                                key={i}
+                                className={classNameOption}
+                                onClick={() => { setValue(columnValue ? option[columnValue] : option.value) }}
+                            >
+                                {columnLabel ? option[columnLabel] : option.label}
+                            </div>
+                        ))
+
+                    :
+                    columns.map((option, i) => (
                         <div
-                            key={index}
+                            key={i}
                             className={classNameOption}
-                            onClick={() => { setValue(columnValue ? option[columnValue] : option.value) }}
+                            onClick={() => { setValue(option); console.log(option) }}
                         >
-                            {columnLabel ? option[columnLabel] : option.label}
+                            {option}
                         </div>
-                    ))}
+                    ))
+                }
             </div>
         </div>
     )

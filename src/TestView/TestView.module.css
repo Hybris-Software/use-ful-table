@@ -1,7 +1,7 @@
 /* .test {
 	border: 1px solid red;
 	background-color: orange;
-	padding: 12px 15px;
+	padding: 11px 15px;
 	min-width: 150px;
 	border-radius: 3px;
 	font-size: 12px;
@@ -14,6 +14,7 @@
 	left: -1px;
 	top: 40px;
 	border-radius: 0 0 5px 5px;
+	overflow-y: auto;
 }
 .testOptions {
 	padding: 12px 15px;
@@ -21,3 +22,22 @@
 .testOptions:hover {
 	background-color: rgba(159, 159, 236, 0.596);
 } */
+
+.testPage {
+	border: 1px solid #e7e7e7;
+	background-color: white;
+	padding: 11px 15px;
+	min-width: 80px;
+	border-radius: 3px;
+	font-size: 12px;
+}
+.testOpenedPage {
+	border: 1px solid #e7e7e7;
+	background-color: white;
+	border-top: none;
+	width: calc(100% + 2px);
+	left: -1px;
+	top: 97%;
+	border-radius: 0 0 5px 5px;
+	overflow-y: auto;
+}

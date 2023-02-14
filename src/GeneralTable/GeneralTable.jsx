@@ -36,7 +36,7 @@ const GeneralTable = forwardRef(function GeneralTable(
 	{
 		pageSizes = [5, 10, 25, 50, 100],
 		columns,
-		height = "710px",
+		height = 750,
 		Styles,
 		endPoint,
 		emptyDataMessage = "No data available",
@@ -60,6 +60,8 @@ const GeneralTable = forwardRef(function GeneralTable(
 		allowedActionsSelectClassNameOpened = Style.allowedActionsSelectClassOpened,
 		allowedActionsSelectClassNameOptions = Style.allowedActionsSelectClassOptions,
 		pageSizeSelectClassName = Style.pageSizeSelectClass,
+		pageSizeSelectClassNameOpened = Style.pageSizeSelectClassOpened,
+		pageSizeSelectClassNameOptions = Style.pageSizeSelectClassOptions,
 		toPageInputClassName = Style.toPageInputClass,
 		paginationButtonClassName = Style.paginationButtonClass,
 		paginationClassName = Style.paginationClass,
@@ -116,7 +118,7 @@ const GeneralTable = forwardRef(function GeneralTable(
 
 	const selectColumn = useMemo(
 		() => ({
-			Header: "Select",
+			Header: " ",
 			field: "select",
 			searchable: false,
 			sortable: false,
@@ -210,11 +212,10 @@ const GeneralTable = forwardRef(function GeneralTable(
 		[tableSettings, extraFilters, tableAPI?.response]
 	);
 
-	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-		useTable({
-			columns: computedColumns,
-			data: tableAPI?.response?.data.results || [],
-		});
+	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+		columns: computedColumns,
+		data: tableAPI?.response?.data.results || [],
+	});
 
 
 	useImperativeHandle(
@@ -269,8 +270,6 @@ const GeneralTable = forwardRef(function GeneralTable(
 		[tableSettings, tableContext, onPageChange, onPageSizeChange, onSortChange]
 	);
 
-
-
 	useEffect(() => {
 		setUrl(createUrl(tableSettings, extraFilters));
 	}, [tableSettings, extraFilters]);
@@ -298,90 +297,90 @@ const GeneralTable = forwardRef(function GeneralTable(
 	return (
 		<ComputedStyles>
 			<div className={Style.tableContainer}>
-				<div>
-					<div style={{ position: "relative" }}>
-						<div className={Style.filterRow}>
-							<div className={Style.leftSideFilter}>
-								<ConditionalComponent condition={enableAllowedActions}>
-									<div className={Style.actions}>
-										<SelectComponent
-											className={allowedActionsSelectClassName}
-											classNameOpened={allowedActionsSelectClassNameOpened}
-											classNameOption={allowedActionsSelectClassNameOptions}
-											placeholder={allowedActionsSelectPlaceholder}
-											columns={allowedActions}
-											selectedItem={allowedActions.filter((item) => item.value === selectedAction)[0]?.label}
-											setValue={(value) => {
-												setSelectedAction(value)
-											}}
-										/>
-										<Button
-											disabled={
-												tableSettings.selectedData.length <= 0 || !selectedAction
-											}
-											onClick={() =>
-												allowedActions
-													.find((item) => item.value === selectedAction)
-													?.action()
-											}
-										>
-											Apply
-										</Button>
-									</div>
-								</ConditionalComponent>
-							</div>
-							<div className={Style.rightSideFilter}>
-								<ConditionalComponent condition={enableSearchFieldSelect}>
-									<SelectComponent
-										className={searchFieldSelectClassName}
-										classNameOpened={searchFieldSelectClassNameOpened}
-										classNameOption={searchFieldSelectClassNameOptions}
-										columnLabel="Header"
-										columnValue="field"
-										placeholder={searchFieldSelectPlaceholder}
-										columns={columns}
-										selectedItem={columns.filter((item) => item.field === tableSettings.search.field)[0]?.Header}
-										setValue={(value) => {
-											tableRef.current.setSearchField(value);
-											onSearchFieldChange(tableContext);
-										}}
-									/>
-								</ConditionalComponent>
-								<ConditionalComponent condition={enableSearch}>
-									<InputField
-										showError={false}
-										placeholder={searchBarPlaceholder}
-										className={searchBarClassName}
-										onChange={(e) => {
-											clearTimeout(timeoutId.current);
-											timeoutId.current = setTimeout(() => {
-												tableRef.current.setSearchValue(e.target.value);
-												onSearch(tableContext);
-											}, 1000);
-										}}
-									/>
-								</ConditionalComponent>
-							</div>
-						</div>
 
-						<div className={Style.selectContainer}>
-							<div
-								className={Style.select}
-								onMouseLeave={() => setShowDropdown(false)}
+				<div style={{ position: "relative" }}>
+					<div className={Style.filterRow}>
+						<div className={Style.leftSideFilter}>
+							<ConditionalComponent condition={enableAllowedActions}>
+								<div className={Style.actions}>
+									<SelectComponent
+										className={allowedActionsSelectClassName}
+										classNameOpened={allowedActionsSelectClassNameOpened}
+										classNameOption={allowedActionsSelectClassNameOptions}
+										placeholder={allowedActionsSelectPlaceholder}
+										columns={allowedActions}
+										selectedItem={allowedActions.filter((item) => item.value === selectedAction)[0]?.label}
+										setValue={(value) => {
+											setSelectedAction(value)
+										}}
+									/>
+									<Button
+										disabled={
+											tableSettings.selectedData.length <= 0 || !selectedAction
+										}
+										onClick={() =>
+											allowedActions
+												.find((item) => item.value === selectedAction)
+												?.action()
+										}
+									>
+										Apply
+									</Button>
+								</div>
+							</ConditionalComponent>
+						</div>
+						<div className={Style.rightSideFilter}>
+							<ConditionalComponent condition={enableSearchFieldSelect}>
+								<SelectComponent
+									className={searchFieldSelectClassName}
+									classNameOpened={searchFieldSelectClassNameOpened}
+									classNameOption={searchFieldSelectClassNameOptions}
+									columnLabel="Header"
+									columnValue="field"
+									placeholder={searchFieldSelectPlaceholder}
+									columns={columns}
+									selectedItem={columns.filter((item) => item.field === tableSettings.search.field)[0]?.Header}
+									setValue={(value) => {
+										tableRef.current.setSearchField(value);
+										onSearchFieldChange(tableContext);
+									}}
+								/>
+							</ConditionalComponent>
+							<ConditionalComponent condition={enableSearch}>
+								<InputField
+									showError={false}
+									placeholder={searchBarPlaceholder}
+									className={searchBarClassName}
+									onChange={(e) => {
+										clearTimeout(timeoutId.current);
+										timeoutId.current = setTimeout(() => {
+											tableRef.current.setSearchValue(e.target.value);
+											onSearch(tableContext);
+										}, 1000);
+									}}
+								/>
+							</ConditionalComponent>
+						</div>
+					</div>
+
+					<div className={Style.selectContainer}>
+						<div
+							className={Style.select}
+							onMouseLeave={() => setShowDropdown(false)}
+						>
+							<span
+								className={Style.iconContainer}
+								onClick={() => setShowDropdown(!showDropdown)}
 							>
-								<span
-									className={Style.iconContainer}
-									onClick={() => setShowDropdown(!showDropdown)}
-								>
-									<ImWrench className={showDropdown ? Style.arrowOpened : Style.arrow} />
-								</span>
-								<ConditionalComponent condition={showDropdown}>
+								<ImWrench className={showDropdown ? Style.arrowOpened : Style.arrow} />
+							</span>
+							<ConditionalComponent condition={showDropdown}>
+								<div className={Style.tooltopOptions}>
 									<div className={Style.options}>
-										<h4>Hide columns</h4>
+										<h4 className={Style.heading}>Hide columns</h4>
 										{columns.map((item, index) => (
-											<div key={index} className={Style.checkbox}>
-												<label className={Style.checkboxForm}>
-													<span>{item.Header} </span>
+											<div key={index} >
+												<label className={Style.checkboxInput}>
 													<input
 														type="checkbox"
 														checked={hiddenColumns.includes(item.field)}
@@ -399,183 +398,183 @@ const GeneralTable = forwardRef(function GeneralTable(
 														}}
 													/>
 													<i></i>
+													<span>{item.Header} </span>
 												</label>
 											</div>
 										))}
 									</div>
-								</ConditionalComponent>
-							</div>
+								</div>
+							</ConditionalComponent>
 						</div>
+					</div>
 
-						<div style={{ minHeight: height }} className={Style.tableContent}>
-							{tableAPI?.response?.data.results ? (
-								<table {...getTableProps()}>
-									<thead>
-										{headerGroups.map((headerGroup) => (
-											<tr {...headerGroup.getHeaderGroupProps()}>
-												{headerGroup.headers.map((column) => (
-													<th {...column.getHeaderProps()}>
-														<div className={Style.headerSection}>
-															<div className={Style.clampedText}>
-																{column.render("Header")}
-																<ConditionalComponent
-																	condition={column.Header === "Select"}
-																>
-																	<input
-																		type="checkbox"
-																		checked={selectAllRows}
-																		onChange={(e) => {
-																			const temp = [
-																				...tableSettings.selectedData,
-																				...tableAPI?.response?.data.results.filter(
+					<div style={{ minHeight: `${height}px` }} className={Style.tableContent}>
+						{tableAPI?.response?.data.results ? (
+							<table {...getTableProps()}>
+								<thead>
+									{headerGroups.map((headerGroup) => (
+										<tr {...headerGroup.getHeaderGroupProps()}>
+											{headerGroup.headers.map((column) => (
+												<th {...column.getHeaderProps()}>
+													<div className={Style.headerSection}>
+														<div className={Style.clampedText}>
+															{column.render("Header")}
+															<ConditionalComponent
+																condition={column.field === "select"}
+															>
+																<input
+																	type="checkbox"
+																	checked={selectAllRows}
+																	onChange={(e) => {
+																		const temp = [
+																			...tableSettings.selectedData,
+																			...tableAPI?.response?.data.results.filter(
+																				(item) =>
+																					!tableSettings.selectedData
+																						.map((value) => value.id)
+																						.includes(item.id)
+																			),
+																		];
+																		if (e.target.checked) {
+																			setSelectAllRows(true);
+																			tableRef.current.setSelectedData(temp);
+																		} else {
+																			const temp =
+																				tableSettings.selectedData.filter(
 																					(item) =>
-																						!tableSettings.selectedData
+																						!tableAPI?.response?.data.results
 																							.map((value) => value.id)
 																							.includes(item.id)
-																				),
-																			];
-																			if (e.target.checked) {
-																				setSelectAllRows(true);
-																				tableRef.current.setSelectedData(temp);
-																			} else {
-																				const temp =
-																					tableSettings.selectedData.filter(
-																						(item) =>
-																							!tableAPI?.response?.data.results
-																								.map((value) => value.id)
-																								.includes(item.id)
-																					);
-																				setSelectAllRows(false);
-																				tableRef.current.setSelectedData(temp);
-																			}
-																		}}
-																	/>
-																</ConditionalComponent>
-																<ConditionalComponent
-																	condition={column.sortable !== false}
-																>
-																	<div
-																		className={computedSortingClassName}
-																		onClick={() => {
-																			tableRef.current.setSortField(column.field);
-																			tableRef.current.setSortType(
-																				tableSettings.sorting.type === sortType.UP
-																					? sortType.DOWN
-																					: sortType.UP
-																			);
-																		}}
-																	>
-																		<ComputedUpSortIcon
-																			condition={
-																				tableSettings.sorting.type ===
-																				sortType.UP &&
-																				tableSettings.sorting.field === column.field
-																			}
-																			activeClassName={
-																				computedActiveSortIconClassName
-																			}
-																			disabledClassName={
-																				computedDisableSortIconClassName
-																			}
-																		></ComputedUpSortIcon>
-																		<ComputedDownSortIcon
-																			condition={
-																				tableSettings.sorting.type ===
-																				sortType.DOWN &&
-																				tableSettings.sorting.field === column.field
-																			}
-																			activeClassName={
-																				computedActiveSortIconClassName
-																			}
-																			disabledClassName={
-																				computedDisableSortIconClassName
-																			}
-																		></ComputedDownSortIcon>
-																	</div>
-																</ConditionalComponent>
-															</div>
-															{!column?.noAction && (
-																<HeaderActionList
-																	column={column}
-																	tableRef={tableRef}
-																	setHiddenColumns={setHiddenColumns}
+																				);
+																			setSelectAllRows(false);
+																			tableRef.current.setSelectedData(temp);
+																		}
+																	}}
 																/>
-															)}
-														</div>
-													</th>
-												))}
-											</tr>
-										))}
-									</thead>
-									<tbody {...getTableBodyProps()}>
-										{rows.map((row, i) => {
-											prepareRow(row);
-											return (
-												<tr {...row.getRowProps()}>
-													{row.cells.map((cell) => {
-														return (
-															<td {...cell.getCellProps()}>
-																<div className={Style.clampedText}>
-																	{cell.render("Cell")}
+															</ConditionalComponent>
+															<ConditionalComponent
+																condition={column.sortable !== false}
+															>
+																<div
+																	className={computedSortingClassName}
+																	onClick={() => {
+																		tableRef.current.setSortField(column.field);
+																		tableRef.current.setSortType(
+																			tableSettings.sorting.type === sortType.UP
+																				? sortType.DOWN
+																				: sortType.UP
+																		);
+																	}}
+																>
+																	<ComputedUpSortIcon
+																		condition={
+																			tableSettings.sorting.type ===
+																			sortType.UP &&
+																			tableSettings.sorting.field === column.field
+																		}
+																		activeClassName={
+																			computedActiveSortIconClassName
+																		}
+																		disabledClassName={
+																			computedDisableSortIconClassName
+																		}
+																	></ComputedUpSortIcon>
+																	<ComputedDownSortIcon
+																		condition={
+																			tableSettings.sorting.type ===
+																			sortType.DOWN &&
+																			tableSettings.sorting.field === column.field
+																		}
+																		activeClassName={
+																			computedActiveSortIconClassName
+																		}
+																		disabledClassName={
+																			computedDisableSortIconClassName
+																		}
+																	></ComputedDownSortIcon>
 																</div>
-															</td>
-														);
-													})}
-												</tr>
-											);
-										})}
-									</tbody>
-								</table>
-							) : tableAPI.isLoading ? (
-								<div className={Style.noResults}>Loading...</div>
-							) : (
-								<div className={Style.noResults}>{emptyDataMessage}</div>
-							)}
-						</div>
+															</ConditionalComponent>
+														</div>
+														{!column?.noAction && (
+															<HeaderActionList
+																column={column}
+																tableRef={tableRef}
+																setHiddenColumns={setHiddenColumns}
+															/>
+														)}
+													</div>
+												</th>
+											))}
+										</tr>
+									))}
+								</thead>
+								<tbody {...getTableBodyProps()}>
+									{rows.map((row, i) => {
+										prepareRow(row);
+										return (
+											<tr {...row.getRowProps()}>
+												{row.cells.map((cell) => {
+													return (
+														<td {...cell.getCellProps()}>
+															<div className={Style.clampedText}>
+																{cell.render("Cell")}
+															</div>
+														</td>
+													);
+												})}
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						) : tableAPI.isLoading ? (
+							<div className={Style.noResults}>Loading...</div>
+						) : (
+							<div className={Style.noResults}>{emptyDataMessage}</div>
+						)}
+					</div>
 
-						<div className={paginationClassName}>
-							<div className={Style.leftPagination}>
-								<ConditionalComponent condition={enablePageSizeSelect}>
-									<select
-										className={pageSizeSelectClassName}
-										defaultValue={tableSettings.pagination.pageSize}
-										onChange={(e) => tableRef.current.setPageSize(e.target.value)}
-									>
-										{pageSizes.map((option, index) => (
-											<option key={index} value={option}>
-												{option}
-											</option>
-										))}
-									</select>
-								</ConditionalComponent>
-								<div className={Style.recordPaginationInfo}>
-									<span>Page</span>
-									<InputField
-										showError={false}
-										className={toPageInputClassName}
-										value={tableSettings.pagination.page}
-										onChange={(e) => tableRef.current.toPage(e.target.value)}
-									/>
-									<span>of {"100"}</span>
-								</div>
+					<div className={paginationClassName}>
+						<div className={Style.leftPagination}>
+							<ConditionalComponent condition={enablePageSizeSelect}>
+								<SelectComponent
+									className={pageSizeSelectClassName}
+									classNameOpened={pageSizeSelectClassNameOpened}
+									classNameOption={pageSizeSelectClassNameOptions}
+									columns={pageSizes}
+									selectedItem={tableSettings.pagination.pageSize}
+									setValue={(value) => tableRef.current.setPageSize(value)}
+
+								/>
+							</ConditionalComponent>
+							<div className={Style.recordPaginationInfo}>
+								<span>Page</span>
+								<InputField
+									showError={false}
+									className={toPageInputClassName}
+									value={tableSettings.pagination.page}
+									onChange={(e) => tableRef.current.toPage(e.target.value)}
+								/>
+								<span>of {"100"}</span>
 							</div>
-							<div className={Style.inputChangePage}>
-								<div
-									className={paginationButtonClassName}
-									onClick={() => tableRef.current.previousPage()}
-								>
-									Previous
-								</div>
-								<div
-									className={paginationButtonClassName}
-									onClick={() => tableRef.current.nextPage()}
-								>
-									Next
-								</div>
+						</div>
+						<div className={Style.inputChangePage}>
+							<div
+								className={paginationButtonClassName}
+								onClick={() => tableRef.current.previousPage()}
+							>
+								Previous
+							</div>
+							<div
+								className={paginationButtonClassName}
+								onClick={() => tableRef.current.nextPage()}
+							>
+								Next
 							</div>
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</ComputedStyles>
 	);

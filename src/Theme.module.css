@@ -1,41 +1,40 @@
 /* + Buttons */
-
 .buttonClass {
-  background-color: white;
-  color: lightskyblue;
-  border-radius: 8px;
-  padding: 12px 25px;
-  font-size: 14px;
-  border: 1px solid lightskyblue;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	background-color: white;
+	color: lightskyblue;
+	border-radius: 8px;
+	padding: 12px 25px;
+	font-size: 14px;
+	border: 1px solid lightskyblue;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .buttonClass:hover {
-  background-color: lightskyblue;
-  color: var(--light);
-  border: 1px solid var(--light);
+	background-color: lightskyblue;
+	color: var(--light);
+	border: 1px solid var(--light);
 }
 
 .buttonDisabledClass {
-  background-color: lightgray;
-  color: lightskyblue;
-  border-radius: 8px;
-  padding: 12px 25px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid lightskyblue;
+	background-color: lightgray;
+	color: lightskyblue;
+	border-radius: 8px;
+	padding: 12px 25px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	border: 1px solid lightskyblue;
 }
 
 .buttonDisabledClass:hover {
-  background-color: lightgray;
-  color: var(--light);
-  border: 1px solid lightgray;
+	background-color: lightgray;
+	color: var(--light);
+	border: 1px solid lightgray;
 }

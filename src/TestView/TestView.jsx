@@ -36,6 +36,14 @@ const TestView = () => {
         return row.description;
       },
     },
+    {
+      Header: "createdAt",
+      field: "createdAt",
+      searchable: false,
+      accessor: (row) => {
+        return row.createdAt;
+      },
+    },
   ];
 
   const allowedActions = [
@@ -61,9 +69,7 @@ const TestView = () => {
       },
     },
   ];
-
-  const endPoint =
-    "https://run.mocky.io/v3/425daabc-00ab-44c9-8d29-3e95b5a2238f/";
+  const endPoint = "https://api-upbyt.testing-room.com/api/v1/wallets/history/";
   const ref = useRef(null);
   const extraFilters = {
     test: "test",
@@ -84,6 +90,7 @@ const TestView = () => {
         endPoint={endPoint}
         extraFilters={extraFilters}
         onSearch={(x) => console.log(x)}
+        onSearchFieldChange={(x) => console.log(x)}
         onSelectionChange={(x) => console.log(x)}
         onPageChange={(x) => console.log(x)}
       />

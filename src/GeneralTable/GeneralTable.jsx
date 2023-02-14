@@ -6,8 +6,7 @@ import React, {
 	useRef,
 	useMemo,
 } from "react";
-import PropTypes from 'prop-types';
-
+import PropTypes from "prop-types";
 
 //Components
 import HeaderActionList from "./HeaderActionList/HeaderActionList";
@@ -112,6 +111,8 @@ const GeneralTable = forwardRef(function GeneralTable(
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [hiddenColumns, setHiddenColumns] = useState([]);
 	const [selectedAction, setSelectedAction] = useState("");
+	//For select all
+	const [selectAllRows, setSelectAllRows] = useState(false);
 
 	const selectColumn = useMemo(
 		() => ({
@@ -124,29 +125,25 @@ const GeneralTable = forwardRef(function GeneralTable(
 				return (
 					<input
 						type="checkbox"
-						defaultChecked={tableSettings.selectedData.find(
-							(item) => item.id === row.id
-						)}
+						checked={
+							tableSettings.selectedData.find((item) => item.id === row.id) !==
+							undefined
+						}
 						onChange={(e) => {
-							let tempList = tableSettings.selectedData;
+							let tempList = [...tableSettings.selectedData];
 							if (e.target.checked) {
-								tempList.push(row);
+								// tempList.push(row);
+								tempList = [...tempList, row]
 							} else {
 								tempList = tempList.filter((item) => item.id !== row.id);
 							}
-							updateObjectState(
-								"selectedData",
-								null,
-								tempList,
-								setTableSettings
-							);
-							onSelectionChange(tableContext);
+							tableRef.current.setSelectedData(tempList);
 						}}
 					/>
 				);
 			},
 		}),
-		[tableSettings.selectedData]
+		[tableSettings]
 	);
 
 	const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
@@ -181,6 +178,19 @@ const GeneralTable = forwardRef(function GeneralTable(
 		executeImmediately: false,
 		onSuccess: (response) => {
 			onSuccess();
+			if (
+				response?.data.results
+					.map((value) => value.id)
+					.every((tempItem) =>
+						tableSettings.selectedData
+							.map((value) => value.id)
+							.includes(tempItem)
+					)
+			) {
+				setSelectAllRows(true);
+			} else {
+				setSelectAllRows(false);
+			}
 		},
 		onUnauthorized: (response) => {
 			onUnauthorized();
@@ -189,6 +199,7 @@ const GeneralTable = forwardRef(function GeneralTable(
 			onError();
 		},
 	});
+
 
 	const tableContext = useMemo(
 		() => ({
@@ -204,6 +215,7 @@ const GeneralTable = forwardRef(function GeneralTable(
 			columns: computedColumns,
 			data: tableAPI?.response?.data.results || [],
 		});
+
 
 	useImperativeHandle(
 		tableRef,
@@ -249,10 +261,15 @@ const GeneralTable = forwardRef(function GeneralTable(
 					updateObjectState("sorting", "type", value, setTableSettings);
 					onSortChange(tableContext);
 				},
+				setSelectedData(value) {
+					updateObjectState("selectedData", null, value, setTableSettings);
+				},
 			};
 		},
 		[tableSettings, tableContext, onPageChange, onPageSizeChange, onSortChange]
 	);
+
+
 
 	useEffect(() => {
 		setUrl(createUrl(tableSettings, extraFilters));
@@ -262,6 +279,21 @@ const GeneralTable = forwardRef(function GeneralTable(
 		console.log(url)
 		if (url) tableAPI.executeQuery();
 	}, [url]);
+
+	useEffect(() => {
+		onSelectionChange(tableContext);
+		if (
+			tableAPI?.response?.data.results
+				.map((value) => value.id)
+				.every((item) =>
+					tableSettings.selectedData.map((value) => value.id).includes(item)
+				)
+		) {
+			setSelectAllRows(true);
+		} else {
+			setSelectAllRows(false);
+		}
+	}, [tableSettings.selectedData]);
 
 	return (
 		<ComputedStyles>
@@ -314,22 +346,6 @@ const GeneralTable = forwardRef(function GeneralTable(
 											onSearchFieldChange(tableContext);
 										}}
 									/>
-									{/* <select
-										className={searchFieldSelectClassName}
-										onChange={(e) => {
-											tableRef.current.setSearchField(e.target.value);
-											onSearchFieldChange(tableContext);
-										}}
-									>
-										<option value="">{searchFieldSelectPlaceholder}</option>
-										{columns
-											.filter((item) => item.searchable !== false)
-											.map((option, index) => (
-												<option key={index} value={option.field}>
-													{option.Header}
-												</option>
-											))}
-									</select> */}
 								</ConditionalComponent>
 								<ConditionalComponent condition={enableSearch}>
 									<InputField
@@ -402,6 +418,39 @@ const GeneralTable = forwardRef(function GeneralTable(
 														<div className={Style.headerSection}>
 															<div className={Style.clampedText}>
 																{column.render("Header")}
+																<ConditionalComponent
+																	condition={column.Header === "Select"}
+																>
+																	<input
+																		type="checkbox"
+																		checked={selectAllRows}
+																		onChange={(e) => {
+																			const temp = [
+																				...tableSettings.selectedData,
+																				...tableAPI?.response?.data.results.filter(
+																					(item) =>
+																						!tableSettings.selectedData
+																							.map((value) => value.id)
+																							.includes(item.id)
+																				),
+																			];
+																			if (e.target.checked) {
+																				setSelectAllRows(true);
+																				tableRef.current.setSelectedData(temp);
+																			} else {
+																				const temp =
+																					tableSettings.selectedData.filter(
+																						(item) =>
+																							!tableAPI?.response?.data.results
+																								.map((value) => value.id)
+																								.includes(item.id)
+																					);
+																				setSelectAllRows(false);
+																				tableRef.current.setSelectedData(temp);
+																			}
+																		}}
+																	/>
+																</ConditionalComponent>
 																<ConditionalComponent
 																	condition={column.sortable !== false}
 																>
@@ -589,7 +638,6 @@ const IconDownComponent = ({
 		</span>
 	);
 };
-
 
 GeneralTable.propTypes = {
 	pageSizes: PropTypes.arrayOf(PropTypes.number),

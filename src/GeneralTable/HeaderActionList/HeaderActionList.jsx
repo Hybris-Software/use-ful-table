@@ -5,7 +5,6 @@ import ConditionalComponent from "../ConditionalComponent/ConditionalComponent";
 
 //Icon
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import { sortType } from "../tableAddons";
 
 // Styles
 import Style from "./HeaderActionList.module.css";
@@ -25,8 +24,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
           <ConditionalComponent condition={column.sortable !== false}>
             <div
               onClick={() => {
-                tableRef.current.setSortField(column.field);
-                tableRef.current.setSortType(sortType.UP);
+                tableRef.current.setSortingSettings(column.field)
               }}
             >
               Sort by ASC
@@ -35,8 +33,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
           <ConditionalComponent condition={column.sortable !== false}>
             <div
               onClick={() => {
-                tableRef.current.setSortField(column.field);
-                tableRef.current.setSortType(sortType.DOWN);
+                tableRef.current.setSortingSettings("-"+column.field)
               }}
             >
               Sort by DESC

@@ -77,7 +77,7 @@ const TestView = () => {
   };
 
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       {/* <h2>test Table</h2> */}
       <GeneralTable
         height="410"

@@ -31,40 +31,53 @@ function updateObjectState(key, nestedKey, value, setObjectState) {
 
 const CommonStyles = styled.div`
   padding: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  border-radius: 5px;
+
   table {
     width: 100%;
     border-spacing: 0;
-    border: 1px solid #f0f0f0;
-    border-radius: 10px;
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
+    padding-top: 1rem;
+
+    thead {
+      tr {
+        height: 50px;
+        color: #757575;
+        font-weight: 600;
+        font-size: 14px;
+        th{
+          min-width: 200px;
+          max-width: 500px;
+          text-align: center;
+          padding: 0 5px;
+          :first-child{
+            min-width: 60px;
+          }
         }
       }
     }
-    tbody tr {
-      height: 50px;
-      font-size: 13px;
-      color: #595959;
-      font-weight: 500;
-      font-size: 16px;
-    }
-    th,
-    td {
-      padding: 20px 0 22px;
-      position: relative;
-      margin: 0;
-      font-weight: 500;
-      min-width: 200px;
-      max-width: 500px;
-      border-bottom: 1px solid #f0f0f0;
-      text-align: left;
-      :last-child {
-        border-right: 0;
+
+    tbody{
+      tr{
+        height: 65px;
+        font-weight: 500;
+        font-size: 14px;
+        color: #757575;
+        td{
+          min-width: 200px;
+          max-width: 500px;
+          text-align: center;
+          border-top: 1px solid #F3F3F3;
+          padding: 0 5px;
+          :first-child{
+            min-width: 60px;
+          }
+        }
       }
     }
   }
+
+  
 `;
 const sortType = {
   UP: "asc",

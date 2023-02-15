@@ -1,19 +1,19 @@
-.headerActions{
-  position: absolute;
-  right: 0;
-  top: 8%;
-  cursor: pointer;
+.headerActions {
+	position: absolute;
+	right: 0;
+	top: 8%;
+	cursor: pointer;
 }
 .columnActions {
-  position: absolute;
-  padding: 20px;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  z-index: 10;
-  border-radius: 10px;
-  box-shadow: -1px 0px 12px -1px rgba(0, 0, 0, 0.75);
-  -webkit-box-shadow: -1px 0px 12px -1px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: -1px 0px 12px -1px rgba(0, 0, 0, 0.75);
-  color: black;
+	position: absolute;
+	padding: 20px;
+	top: 100%;
+	right: 0;
+	background-color: white;
+	z-index: 10;
+	border-radius: 10px;
+	box-shadow: -1px 0px 12px -1px rgba(0, 0, 0, 0.75);
+	-webkit-box-shadow: -1px 0px 12px -1px rgba(0, 0, 0, 0.75);
+	-moz-box-shadow: -1px 0px 12px -1px rgba(0, 0, 0, 0.75);
+	color: black;
 }

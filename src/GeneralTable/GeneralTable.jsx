@@ -43,6 +43,7 @@ const GeneralTable = forwardRef(function GeneralTable(
 		extraFilters = {},
 		defaultPageSize = 10,
 		enablePageSizeSelect = true,
+		mouseDraggable = true,
 		enableSearch = true,
 		enableSearchFieldSelect = true,
 		defaultSearchField = "",
@@ -113,6 +114,10 @@ const GeneralTable = forwardRef(function GeneralTable(
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [hiddenColumns, setHiddenColumns] = useState([]);
 	const [selectedAction, setSelectedAction] = useState("");
+	// Draggable
+	const [isDown, setIsDown] = useState(false);
+	const [startX, setStartX] = useState(0);
+	const [scrollLeft, setScrollLeft] = useState(0);
 	//For select all
 	const [selectAllRows, setSelectAllRows] = useState(false);
 
@@ -408,7 +413,26 @@ const GeneralTable = forwardRef(function GeneralTable(
 						</div>
 					</div>
 
-					<div style={{ minHeight: `${height}px` }} className={Style.tableContent}>
+					<div style={{ minHeight: `${height}px` }} className={Style.tableContent}
+						onMouseDown={e => {
+							if (mouseDraggable) {
+								setIsDown(true)
+								e.currentTarget.classList.add(Style.active)
+								setStartX(e.pageX - e.currentTarget.offsetLeft)
+								setScrollLeft(e.currentTarget.scrollLeft)
+							}
+						}}
+						onMouseLeave={(e) => { if (mouseDraggable) { setIsDown(false); e.currentTarget.classList.remove(Style.active) } }}
+						onMouseUp={(e) => { if (mouseDraggable) { setIsDown(false); e.currentTarget.classList.remove(Style.active) } }}
+						onMouseMove={e => {
+							if (mouseDraggable) {
+								if (!isDown) return
+								const x = e.pageX - e.currentTarget.offsetLeft
+								const walk = (x - startX) * 1
+								e.currentTarget.scrollLeft = scrollLeft - walk
+							}
+						}}
+					>
 						{tableAPI?.response?.data.results ? (
 							<table {...getTableProps()}>
 								<thead>
@@ -516,7 +540,7 @@ const GeneralTable = forwardRef(function GeneralTable(
 												{row.cells.map((cell) => {
 													return (
 														<td {...cell.getCellProps()}>
-															<div className={Style.clampedText}>
+															<div className={Style.clampedCell}>
 																{cell.render("Cell")}
 															</div>
 														</td>
@@ -559,18 +583,19 @@ const GeneralTable = forwardRef(function GeneralTable(
 							</div>
 						</div>
 						<div className={Style.inputChangePage}>
-							<div
+							<Button
+								disabled={tableSettings.pagination.page === 1}
 								className={paginationButtonClassName}
 								onClick={() => tableRef.current.previousPage()}
 							>
 								Previous
-							</div>
-							<div
+							</Button>
+							<Button
 								className={paginationButtonClassName}
 								onClick={() => tableRef.current.nextPage()}
 							>
 								Next
-							</div>
+							</Button>
 						</div>
 					</div>
 				</div>

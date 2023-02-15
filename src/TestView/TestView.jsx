@@ -96,6 +96,7 @@ const TestView = () => {
         onSearchFieldChange={(x) => console.log(x)}
         onSelectionChange={(x) => console.log(x)}
         onPageChange={(x) => console.log(x)}
+        onSortChange={(x) => console.log(x)}
       />
     </div>
   );

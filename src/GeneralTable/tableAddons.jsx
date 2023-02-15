@@ -5,10 +5,9 @@ function createUrl(tableSettings, extraFilters) {
     ...{
       page: tableSettings.pagination.page,
       limit: tableSettings.pagination.pageSize,
-      sortorder: tableSettings.sorting.type,
-      sortfield: tableSettings.sorting.field,
       searchvalue: tableSettings.search.value,
       searchfield: tableSettings.search.field,
+      ordering: tableSettings.sortingSettings,
     },
     ...extraFilters,
   };

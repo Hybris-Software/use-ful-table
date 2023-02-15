@@ -32,12 +32,18 @@
 	font-size: 12px;
 }
 .testOpenedPage {
-	border: 1px solid #e7e7e7;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #e7e7e7;
 	background-color: white;
-	border-top: none;
+	background-color: white;
+	border-top-color: transparent;
 	width: calc(100% + 2px);
 	left: -1px;
-	top: 97%;
-	border-radius: 0 0 5px 5px;
+	/* top: 97%; */
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	border-bottom-left-radius: 5;
+	border-bottom-right-radius: 5;
 	overflow-y: auto;
 }

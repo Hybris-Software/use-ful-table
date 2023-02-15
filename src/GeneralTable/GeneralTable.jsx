@@ -553,7 +553,7 @@ const GeneralTable = forwardRef(function GeneralTable(
 							</table>
 						) : tableAPI.isLoading ? (
 							<div className={Style.noResults}>
-								<div class={Style.ldsRing}><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+								<div className={Style.ldsRing}><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 							</div>
 						) : (
 							<div className={Style.noResults}>{emptyDataMessage}</div>

@@ -22,7 +22,6 @@ import {
   createUrl,
   updateObjectState,
   CommonStyles,
-  sortType,
 } from "./tableAddons";
 
 //Icon
@@ -80,6 +79,8 @@ const GeneralTable = forwardRef(function GeneralTable(
     onPageSizeChange = () => {},
     onSelectionChange = () => {},
     onSortChange = () => {},
+
+    searchFields = [],
   },
   ref
 ) {
@@ -330,7 +331,7 @@ const GeneralTable = forwardRef(function GeneralTable(
               </ConditionalComponent>
             </div>
             <div className={Style.rightSideFilter}>
-              <ConditionalComponent condition={enableSearchFieldSelect}>
+              <ConditionalComponent condition={enableSearchFieldSelect && searchFields.length > 0 }>
                 <SelectComponent
                   className={searchFieldSelectClassName}
                   classNameOpened={searchFieldSelectClassNameOpened}
@@ -338,9 +339,9 @@ const GeneralTable = forwardRef(function GeneralTable(
                   columnLabel="Header"
                   columnValue="field"
                   placeholder={searchFieldSelectPlaceholder}
-                  columns={columns}
+                  columns={searchFields}
                   selectedItem={
-                    columns.filter(
+                    searchFields.filter(
                       (item) => item.field === tableSettings.search.field
                     )[0]?.Header
                   }
@@ -350,7 +351,7 @@ const GeneralTable = forwardRef(function GeneralTable(
                   }}
                 />
               </ConditionalComponent>
-              <ConditionalComponent condition={enableSearch}>
+              <ConditionalComponent condition={enableSearch && searchFields.length > 0 }>
                 <InputField
                   showError={false}
                   placeholder={searchBarPlaceholder}

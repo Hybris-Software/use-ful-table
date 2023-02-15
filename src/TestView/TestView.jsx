@@ -69,7 +69,26 @@ const TestView = () => {
       },
     },
   ];
-  const endPoint = "https://run.mocky.io/v3/425daabc-00ab-44c9-8d29-3e95b5a2238f/";
+
+
+  // From the API we should create this array
+  const searchFields = [
+    { 
+      Header: "Subject",
+      field: "subject"
+    },
+    { 
+      Header: "Username",
+      field: "user_Username"
+    },
+    { 
+      Header: "Category Title",
+      field: "category_Title"
+    }
+  ];
+
+  const endPoint =
+    "https://run.mocky.io/v3/425daabc-00ab-44c9-8d29-3e95b5a2238f/";
   const ref = useRef(null);
   const extraFilters = {
     test: "test",
@@ -97,6 +116,8 @@ const TestView = () => {
         onSelectionChange={(x) => console.log(x)}
         onPageChange={(x) => console.log(x)}
         onSortChange={(x) => console.log(x)}
+
+        searchFields={searchFields}
       />
     </div>
   );

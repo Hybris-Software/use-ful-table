@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import GeneralTable from "../GeneralTable/GeneralTable";
+import Table from "../Table/Table";
 
 // Styles
 import Style from "./TestView.module.css";
@@ -51,21 +51,18 @@ const TestView = () => {
       label: "Edit",
       value: "edit",
       action: () => {
-        console.log("Edit");
       },
     },
     {
       label: "Add",
       value: "add",
       action: () => {
-        console.log("Add");
       },
     },
     {
       label: "Delete",
       value: "delete",
       action: () => {
-        console.log("Delete");
       },
     },
   ];
@@ -79,7 +76,7 @@ const TestView = () => {
   return (
     <div style={{ padding: 20 }}>
       {/* <h2>test Table</h2> */}
-      <GeneralTable
+      <Table
         height="410"
         allowedActions={allowedActions}
         enableAllowedActions={true}
@@ -92,10 +89,6 @@ const TestView = () => {
         columns={columns}
         endPoint={endPoint}
         extraFilters={extraFilters}
-        onSearch={(x) => console.log(x)}
-        onSearchFieldChange={(x) => console.log(x)}
-        onSelectionChange={(x) => console.log(x)}
-        onPageChange={(x) => console.log(x)}
       />
     </div>
   );

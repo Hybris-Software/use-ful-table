@@ -43,7 +43,7 @@ const GeneralTable = forwardRef(function GeneralTable(
 		extraFilters = {},
 		defaultPageSize = 10,
 		enablePageSizeSelect = true,
-		mouseDraggable = true,
+		dragWithMouse = true,
 		enableSearch = true,
 		enableSearchFieldSelect = true,
 		defaultSearchField = "",
@@ -415,17 +415,17 @@ const GeneralTable = forwardRef(function GeneralTable(
 
 					<div style={{ minHeight: `${height}px` }} className={Style.tableContent}
 						onMouseDown={e => {
-							if (mouseDraggable) {
+							if (dragWithMouse) {
 								setIsDown(true)
 								e.currentTarget.classList.add(Style.active)
 								setStartX(e.pageX - e.currentTarget.offsetLeft)
 								setScrollLeft(e.currentTarget.scrollLeft)
 							}
 						}}
-						onMouseLeave={(e) => { if (mouseDraggable) { setIsDown(false); e.currentTarget.classList.remove(Style.active) } }}
-						onMouseUp={(e) => { if (mouseDraggable) { setIsDown(false); e.currentTarget.classList.remove(Style.active) } }}
+						onMouseLeave={(e) => { if (dragWithMouse) { setIsDown(false); e.currentTarget.classList.remove(Style.active) } }}
+						onMouseUp={(e) => { if (dragWithMouse) { setIsDown(false); e.currentTarget.classList.remove(Style.active) } }}
 						onMouseMove={e => {
-							if (mouseDraggable) {
+							if (dragWithMouse) {
 								if (!isDown) return
 								const x = e.pageX - e.currentTarget.offsetLeft
 								const walk = (x - startX) * 1
@@ -552,7 +552,9 @@ const GeneralTable = forwardRef(function GeneralTable(
 								</tbody>
 							</table>
 						) : tableAPI.isLoading ? (
-							<div className={Style.noResults}>Loading...</div>
+							<div className={Style.noResults}>
+								<div class={Style.ldsRing}><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+							</div>
 						) : (
 							<div className={Style.noResults}>{emptyDataMessage}</div>
 						)}

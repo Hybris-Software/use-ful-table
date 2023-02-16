@@ -155,7 +155,7 @@ const TestView = () => {
     },
   ];
 
-  // From the API we should create this array
+  // From the API we should create the search array
   const ticketsFiltersAPI = useQuery({
     url: "administration/tickets-filters/",
     method: "GET",
@@ -176,7 +176,7 @@ const TestView = () => {
     onError: () => {},
   });
 
-  // From the API we should create this array
+  // From the API we should create the search array
   const depositsFiltersAPI = useQuery({
     url: "administration/deposits-filters/",
     method: "GET",
@@ -196,6 +196,7 @@ const TestView = () => {
     onUnauthorized: (response) => {},
     onError: () => {},
   });
+
   const endPoint = "administration/tickets/";
   const endPointDeposit = "administration/deposits/";
   const ref = useRef(null);
@@ -206,7 +207,7 @@ const TestView = () => {
 
   return (
     <div style={{ padding: 20 }}>
-      {/* <h2>test Table</h2> */}
+      <h2>Ticket Table</h2>
       {ticketsFiltersAPI.isSuccess && searchFields.length > 0 && (
         <GeneralTable
           height="410"
@@ -229,7 +230,7 @@ const TestView = () => {
           searchFields={searchFields}
         />
       )}
-
+      <h2>Deposit Table</h2>
       {depositsFiltersAPI.isSuccess && searchFieldsDeposit.length > 0 && (
         <GeneralTable
           height="410"

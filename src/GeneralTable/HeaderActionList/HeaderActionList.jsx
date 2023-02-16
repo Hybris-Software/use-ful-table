@@ -24,7 +24,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
           <ConditionalComponent condition={column.sortable !== false}>
             <div
               onClick={() => {
-                tableRef.current.setSortingSettings(column.field)
+                tableRef.current.setSortingSettings(column.orderField)
               }}
             >
               Sort by ASC
@@ -33,7 +33,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
           <ConditionalComponent condition={column.sortable !== false}>
             <div
               onClick={() => {
-                tableRef.current.setSortingSettings("-"+column.field)
+                tableRef.current.setSortingSettings("-"+column.orderField)
               }}
             >
               Sort by DESC
@@ -42,7 +42,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
 
           <div
             onClick={() => {
-              setHiddenColumns((oldState) => [...oldState, column.field]);
+              setHiddenColumns((oldState) => [...oldState, column.orderField]);
             }}
           >
             Hide this columns

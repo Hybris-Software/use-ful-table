@@ -22,6 +22,7 @@ const TestView = () => {
     {
       Header: "User",
       field: "user",
+      sortable: false,
       accessor: (row) => {
         return row.user.username;
       },
@@ -30,6 +31,7 @@ const TestView = () => {
       Header: "Date",
       field: "createdAt",
       searchable: false,
+      orderField:"created_at",
       accessor: (row) => {
         return row.createdAt;
       },
@@ -37,6 +39,7 @@ const TestView = () => {
     {
       Header: "Subject",
       field: "subject",
+      orderField:"subject",
       accessor: (row) => {
         return row.subject;
       },
@@ -44,6 +47,7 @@ const TestView = () => {
     {
       Header: "Title",
       field: "title",
+      orderField:"title",
       searchable: false,
       accessor: (row) => {
         return row.title;
@@ -52,6 +56,7 @@ const TestView = () => {
     {
       Header: "Status",
       field: "status",
+      orderField:"status",
       searchable: false,
       accessor: (row) => {
         return row.status;
@@ -60,6 +65,7 @@ const TestView = () => {
     {
       Header: "Priority",
       field: "priority",
+      orderField:"priority",
       searchable: false,
       accessor: (row) => {
         return row.priority;
@@ -78,6 +84,7 @@ const TestView = () => {
     {
       Header: "User",
       field: "user",
+      sortable: false,
       accessor: (row) => {
         return row.user;
       },
@@ -85,6 +92,7 @@ const TestView = () => {
     {
       Header: "Date",
       field: "createdAt",
+      orderField:"created_at",
       searchable: false,
       accessor: (row) => {
         return row.createdAt;
@@ -93,6 +101,7 @@ const TestView = () => {
     {
       Header: "Deposit Type",
       field: "depositType",
+      orderField:"deposit_type",
       accessor: (row) => {
         return row.depositType;
       },
@@ -100,6 +109,7 @@ const TestView = () => {
     {
       Header: "Destination",
       field: "destination",
+      orderField:"destination",
       searchable: false,
       accessor: (row) => {
         return row.destination;
@@ -108,6 +118,7 @@ const TestView = () => {
     {
       Header: "RequestedCryptoAmount",
       field: "requestedCryptoAmount",
+      orderField:"requested_crypto_amount",
       searchable: false,
       accessor: (row) => {
         return row.requestedCryptoAmount;
@@ -116,6 +127,7 @@ const TestView = () => {
     {
       Header: "CryptoCurrency",
       field: "cryptoCurrency",
+      orderField:"crypto_currency",
       searchable: false,
       accessor: (row) => {
         return row.cryptoCurrency;
@@ -124,6 +136,7 @@ const TestView = () => {
     {
       Header: "Status",
       field: "status",
+      orderField:"status",
       searchable: false,
       accessor: (row) => {
         return row.status;

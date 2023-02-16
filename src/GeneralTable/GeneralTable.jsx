@@ -498,8 +498,8 @@ const GeneralTable = forwardRef(function GeneralTable(
                                   onClick={() => {
                                     const computedSorting =
                                       (tableSettings.sortingSettings.includes("-"))
-                                        ? column.field
-                                        : "-" + column.field;
+                                        ? column.orderField
+                                        : "-" + column.orderField;
                                     tableRef.current.setSortingSettings(
                                       computedSorting
                                     );
@@ -509,7 +509,7 @@ const GeneralTable = forwardRef(function GeneralTable(
                                     condition={
                                       !tableSettings.sortingSettings.includes("-") &&
                                       tableSettings.sortingSettings ===
-                                        column.field
+                                        column.orderField
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -522,7 +522,7 @@ const GeneralTable = forwardRef(function GeneralTable(
                                     condition={
                                       tableSettings.sortingSettings.includes("-") &&
                                       tableSettings.sortingSettings ===
-                                        "-"+column.field
+                                        "-"+column.orderField
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName

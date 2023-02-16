@@ -23,6 +23,7 @@ const TestView = () => {
       Header: "User",
       field: "user",
       sortable: false,
+      searchField:"user__username",
       accessor: (row) => {
         return row.user.username;
       },
@@ -224,6 +225,7 @@ const TestView = () => {
       {ticketsFiltersAPI.isSuccess && searchFields.length > 0 && (
         <GeneralTable
           height="410"
+          defaultPageSize={1}
           allowedActions={allowedActions}
           enableAllowedActions={true}
           searchFieldSelectClassName={Style.test}
@@ -247,6 +249,7 @@ const TestView = () => {
       {depositsFiltersAPI.isSuccess && searchFieldsDeposit.length > 0 && (
         <GeneralTable
           height="410"
+          defaultPageSize={1}
           allowedActions={allowedActions}
           enableAllowedActions={true}
           searchFieldSelectClassName={Style.test}

@@ -170,7 +170,7 @@ const GeneralTable = forwardRef(function GeneralTable(
   const computedColumns = useMemo(() => {
     return [
       ...(enableSelectableRows ? [selectColumn] : []),
-      ...columns.filter((item) => !hiddenColumns.includes(item.field)),
+      ...columns.filter((item) => !hiddenColumns.includes(item.field)).map(column => ({...column, searchField: column.searchField || column.field})),
     ];
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
 
@@ -337,12 +337,12 @@ const GeneralTable = forwardRef(function GeneralTable(
                   classNameOpened={searchFieldSelectClassNameOpened}
                   classNameOption={searchFieldSelectClassNameOptions}
                   columnLabel="Header"
-                  columnValue="field"
+                  columnValue="searchField"
                   placeholder={searchFieldSelectPlaceholder}
-                  columns={searchFields}
+                  columns={computedColumns.filter((item) => item.searchable !== false)}
                   selectedItem={
-                    searchFields.filter(
-                      (item) => item.field === tableSettings.search.field
+                    computedColumns.filter(
+                      (item) => item.searchField === tableSettings.search.field
                     )[0]?.Header
                   }
                   setValue={(value) => {
@@ -613,13 +613,14 @@ const GeneralTable = forwardRef(function GeneralTable(
             </div>
             <div className={Style.inputChangePage}>
               <Button
-                disabled={tableSettings.pagination.page === 1}
+                disabled={!tableAPI?.response?.data?.links?.previous}
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.previousPage()}
               >
                 Previous
               </Button>
               <Button
+                disabled={tableAPI?.response?.data?.links?.next ? false : true}
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.nextPage()}
               >

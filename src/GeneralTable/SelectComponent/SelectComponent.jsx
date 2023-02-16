@@ -53,7 +53,6 @@ const SelectComponent = ({ className, classNameOpened, classNameOption, placehol
                 {isntNormalList
                     ?
                     columns
-                        .filter((item) => item.searchable !== false)
                         .map((option, i) => (
                             <div
                                 key={i}

@@ -28,8 +28,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
 						<ConditionalComponent condition={column.sortable !== false}>
 							<div
 								onClick={() => {
-									tableRef.current.setSortField(column.field);
-									tableRef.current.setSortType(sortType.UP);
+									tableRef.current.setSortingSettings(column.orderField)
 								}}
 							>
 								Sort by ASC
@@ -38,8 +37,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
 						<ConditionalComponent condition={column.sortable !== false}>
 							<div
 								onClick={() => {
-									tableRef.current.setSortField(column.field);
-									tableRef.current.setSortType(sortType.DOWN);
+									tableRef.current.setSortingSettings("-"+column.orderField)
 								}}
 							>
 								Sort by DESC

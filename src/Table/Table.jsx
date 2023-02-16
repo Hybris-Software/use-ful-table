@@ -89,10 +89,7 @@ const Table = forwardRef(function Table(
       page: 1,
       pageSize: defaultPageSize,
     },
-    sorting: {
-      field: null,
-      type: null,
-    },
+    sortingSettings: "",
     search: {
       field: defaultSearchField,
       value: "",
@@ -172,7 +169,7 @@ const Table = forwardRef(function Table(
   const computedColumns = useMemo(() => {
     return [
       ...(enableSelectableRows ? [selectColumn] : []),
-      ...columns.filter((item) => !hiddenColumns.includes(item.field)),
+      ...columns.filter((item) => !hiddenColumns.includes(item.field)).map(column => ({...column, searchField: column.searchField || column.field})),
     ];
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
 
@@ -258,12 +255,8 @@ const Table = forwardRef(function Table(
         setSearchField(value) {
           updateObjectState("search", "field", value, setTableSettings);
         },
-        setSortField(value) {
-          updateObjectState("sorting", "field", value, setTableSettings);
-          onSortChange(tableContext);
-        },
-        setSortType(value) {
-          updateObjectState("sorting", "type", value, setTableSettings);
+        setSortingSettings(value) {
+          updateObjectState("sortingSettings", null, value, setTableSettings);
           onSortChange(tableContext);
         },
         setSelectedData(value) {
@@ -298,6 +291,18 @@ const Table = forwardRef(function Table(
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
+
+  const sortHandler = (column) => {
+    const computedSorting =
+      tableSettings.sortingSettings.includes(
+        "-"
+      )
+        ? column.orderField
+        : "-" + column.orderField;
+    tableRef.current.setSortingSettings(
+      computedSorting
+    );
+  }
 
   return (
     <ComputedStyles>
@@ -344,12 +349,12 @@ const Table = forwardRef(function Table(
                   classNameOpened={searchFieldSelectClassNameOpened}
                   classNameOption={searchFieldSelectClassNameOptions}
                   columnLabel="Header"
-                  columnValue="field"
+                  columnValue="searchField"
                   placeholder={searchFieldSelectPlaceholder}
-                  columns={columns}
+                  columns={computedColumns.filter((item) => item.searchable !== false)}
                   selectedItem={
-                    columns.filter(
-                      (item) => item.field === tableSettings.search.field
+                    computedColumns.filter(
+                      (item) => item.searchField === tableSettings.search.field
                     )[0]?.Header
                   }
                   setValue={(value) => {
@@ -502,21 +507,15 @@ const Table = forwardRef(function Table(
                               >
                                 <div
                                   className={computedSortingClassName}
-                                  onClick={() => {
-                                    tableRef.current.setSortField(column.field);
-                                    tableRef.current.setSortType(
-                                      tableSettings.sorting.type === sortType.UP
-                                        ? sortType.DOWN
-                                        : sortType.UP
-                                    );
-                                  }}
+                                  onClick={() => sortHandler(column)}
                                 >
                                   <ComputedUpSortIcon
                                     condition={
-                                      tableSettings.sorting.type ===
-                                        sortType.UP &&
-                                      tableSettings.sorting.field ===
-                                        column.field
+                                      !tableSettings.sortingSettings.includes(
+                                        "-"
+                                      ) &&
+                                      tableSettings.sortingSettings ===
+                                        column.orderField
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -527,10 +526,11 @@ const Table = forwardRef(function Table(
                                   ></ComputedUpSortIcon>
                                   <ComputedDownSortIcon
                                     condition={
-                                      tableSettings.sorting.type ===
-                                        sortType.DOWN &&
-                                      tableSettings.sorting.field ===
-                                        column.field
+                                      tableSettings.sortingSettings.includes(
+                                        "-"
+                                      ) &&
+                                      tableSettings.sortingSettings ===
+                                        "-" + column.orderField
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -621,13 +621,14 @@ const Table = forwardRef(function Table(
             </div>
             <div className={Style.inputChangePage}>
               <Button
-                disabled={tableSettings.pagination.page === 1}
+                disabled={tableAPI?.response?.data?.links?.previous ? false : true}
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.previousPage()}
               >
                 Previous
               </Button>
               <Button
+              disabled={tableAPI?.response?.data?.links?.next ? false : true}
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.nextPage()}
               >

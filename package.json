@@ -1,7 +1,8 @@
 {
   "name": "@hybris-software/use-table",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": false,
+  "main": "index.js",
   "dependencies": {
     "@hybris-software/ui-kit": "^2.1.18",
     "@hybris-software/use-query": "^2.3.17",

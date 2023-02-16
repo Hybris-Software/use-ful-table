@@ -41,7 +41,7 @@ const Table = forwardRef(function Table(
     endPoint,
     emptyDataMessage = "No data available",
     extraFilters = {},
-    defaultPageSize = 10,
+    defaultPageSize = 5,
     enablePageSizeSelect = true,
     dragWithMouse = true,
     enableSearch = true,

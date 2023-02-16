@@ -10,7 +10,7 @@ import Theme from "./Theme.module.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const apiClient = generateApiClient({
-  baseUrl: "https://9d9874c0-3e0a-4f65-8e89-f285475ed554.mock.pstmn.io/",
+  baseUrl: "https://api-poliant.testing-room.com/api/v1/",
   authorizationHeader: "Authorization",
   authorizationPrefix: "Token ",
 });

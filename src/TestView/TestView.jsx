@@ -5,9 +5,6 @@ import Table from "../Table/Table";
 import Style from "./TestView.module.css";
 
 const TestView = () => {
-  const [searchFields, setSearchFields] = useState([]);
-  const [searchFieldsDeposit, setSearchFieldsDeposits] = useState([]);
-
   const columns = [
     {
       Header: "#",
@@ -92,50 +89,7 @@ const TestView = () => {
     },
   ];
 
-  // From the API we should create the search array
-  const ticketsFiltersAPI = useQuery({
-    url: "administration/tickets-filters/",
-    method: "GET",
-    executeImmediately: true,
-    onSuccess: (response) => {
-      const tempArray = [];
-      response.data.search.map((item) => {
-        const temp = {
-          Header: item,
-          field: item,
-        };
-        tempArray.push(temp);
-        return item;
-      });
-      setSearchFields([...tempArray]);
-    },
-    onUnauthorized: (response) => {},
-    onError: () => {},
-  });
-
-  // From the API we should create the search array
-  const depositsFiltersAPI = useQuery({
-    url: "administration/deposits-filters/",
-    method: "GET",
-    executeImmediately: true,
-    onSuccess: (response) => {
-      const tempArray = [];
-      response.data.search.map((item) => {
-        const temp = {
-          Header: item,
-          field: item,
-        };
-        tempArray.push(temp);
-        return item;
-      });
-      setSearchFieldsDeposits([...tempArray]);
-    },
-    onUnauthorized: (response) => {},
-    onError: () => {},
-  });
-
   const endPoint = "administration/tickets/";
-  const endPointDeposit = "administration/deposits/";
   const ref = useRef(null);
   const extraFilters = {
     test: "test",

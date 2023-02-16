@@ -150,7 +150,7 @@ const Table = forwardRef(function Table(
         );
       },
     }),
-    [tableSettings]
+    [tableSettings, tableRef]
   );
 
   const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
@@ -280,6 +280,7 @@ const Table = forwardRef(function Table(
 
   useEffect(() => {
     if (url) tableAPI.executeQuery();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   useEffect(() => {
@@ -295,6 +296,7 @@ const Table = forwardRef(function Table(
     } else {
       setSelectAllRows(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
   return (

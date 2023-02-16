@@ -5,6 +5,9 @@ import Table from "../Table/Table";
 import Style from "./TestView.module.css";
 
 const TestView = () => {
+  const [searchFields, setSearchFields] = useState([]);
+  const [searchFieldsDeposit, setSearchFieldsDeposits] = useState([]);
+
   const columns = [
     {
       Header: "#",
@@ -17,31 +20,53 @@ const TestView = () => {
     {
       Header: "User",
       field: "user",
+      sortable: false,
       accessor: (row) => {
-        return row.user;
+        return row.user.username;
       },
     },
     {
       Header: "Date",
-      field: "date",
-      searchable: false,
-      accessor: (row) => {
-        return row.date;
-      },
-    },
-    {
-      Header: "Description",
-      field: "description",
-      accessor: (row) => {
-        return row.description;
-      },
-    },
-    {
-      Header: "createdAt",
       field: "createdAt",
       searchable: false,
+      orderField:"created_at",
       accessor: (row) => {
         return row.createdAt;
+      },
+    },
+    {
+      Header: "Subject",
+      field: "subject",
+      orderField:"subject",
+      accessor: (row) => {
+        return row.subject;
+      },
+    },
+    {
+      Header: "Title",
+      field: "title",
+      orderField:"title",
+      searchable: false,
+      accessor: (row) => {
+        return row.title;
+      },
+    },
+    {
+      Header: "Status",
+      field: "status",
+      orderField:"status",
+      searchable: false,
+      accessor: (row) => {
+        return row.status;
+      },
+    },
+    {
+      Header: "Priority",
+      field: "priority",
+      orderField:"priority",
+      searchable: false,
+      accessor: (row) => {
+        return row.priority;
       },
     },
   ];
@@ -66,7 +91,51 @@ const TestView = () => {
       },
     },
   ];
-  const endPoint = "https://run.mocky.io/v3/425daabc-00ab-44c9-8d29-3e95b5a2238f/";
+
+  // From the API we should create the search array
+  const ticketsFiltersAPI = useQuery({
+    url: "administration/tickets-filters/",
+    method: "GET",
+    executeImmediately: true,
+    onSuccess: (response) => {
+      const tempArray = [];
+      response.data.search.map((item) => {
+        const temp = {
+          Header: item,
+          field: item,
+        };
+        tempArray.push(temp);
+        return item;
+      });
+      setSearchFields([...tempArray]);
+    },
+    onUnauthorized: (response) => {},
+    onError: () => {},
+  });
+
+  // From the API we should create the search array
+  const depositsFiltersAPI = useQuery({
+    url: "administration/deposits-filters/",
+    method: "GET",
+    executeImmediately: true,
+    onSuccess: (response) => {
+      const tempArray = [];
+      response.data.search.map((item) => {
+        const temp = {
+          Header: item,
+          field: item,
+        };
+        tempArray.push(temp);
+        return item;
+      });
+      setSearchFieldsDeposits([...tempArray]);
+    },
+    onUnauthorized: (response) => {},
+    onError: () => {},
+  });
+
+  const endPoint = "administration/tickets/";
+  const endPointDeposit = "administration/deposits/";
   const ref = useRef(null);
   const extraFilters = {
     test: "test",
@@ -75,7 +144,6 @@ const TestView = () => {
 
   return (
     <div style={{ padding: 20 }}>
-      {/* <h2>test Table</h2> */}
       <Table
         height="410"
         allowedActions={allowedActions}

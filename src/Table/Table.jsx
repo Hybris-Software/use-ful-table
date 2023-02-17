@@ -26,6 +26,7 @@ import {
 
 //Icon
 import { ImWrench } from "react-icons/im";
+import { GrFormClose } from "react-icons/gr";
 
 // Styles
 import Style from "./Table.module.css";
@@ -47,7 +48,9 @@ const Table = forwardRef(function Table(
     enableSearchFieldSelect = true,
     defaultSearchField = "",
     searchBarPlaceholder = "Search...",
+    inputSearchBaseClassName = Style.inputSearchBaseClass,
     enableSelectableRows = true,
+    selectabledRowsClassName = Style.selectableRowsClass,
     enableAllowedActions = false,
     allowedActions,
     searchFieldSelectPlaceholder = "Select a column",
@@ -63,6 +66,7 @@ const Table = forwardRef(function Table(
     pageSizeSelectClassNameOpened = Style.pageSizeSelectClassOpened,
     pageSizeSelectClassNameOptions = Style.pageSizeSelectClassOptions,
     toPageInputClassName = Style.toPageInputClass,
+    toPageInputBaseClassName = Style.toPageInputBaseClass,
     paginationButtonClassName = Style.paginationButtonClass,
     paginationClassName = Style.paginationClass,
     sortingClassName = Style.sortingClass,
@@ -364,6 +368,7 @@ const Table = forwardRef(function Table(
               </ConditionalComponent>
               <ConditionalComponent condition={enableSearch}>
                 <InputField
+                  baseClassName={inputSearchBaseClassName}
                   showError={false}
                   placeholder={searchBarPlaceholder}
                   className={searchBarClassName}
@@ -424,6 +429,12 @@ const Table = forwardRef(function Table(
                 </div>
               </ConditionalComponent>
             </div>
+            <ConditionalComponent condition={tableSettings.selectedData.length > 0}>
+              <div className={Style.rowsSelected}>
+                {tableSettings.selectedData.length} row(s) selected
+                <GrFormClose onClick={() => { tableRef.current.setSelectedData([]) }} />
+              </div>
+            </ConditionalComponent>
           </div>
 
           <div
@@ -558,7 +569,10 @@ const Table = forwardRef(function Table(
                   {rows.map((row, i) => {
                     prepareRow(row);
                     return (
-                      <tr {...row.getRowProps()}>
+                      <tr
+                        {...row.getRowProps()}
+                        className={tableSettings.selectedData.map(row => row.id).includes(row.original.id) ? selectabledRowsClassName : undefined}
+                      >
                         {row.cells.map((cell) => {
                           return (
                             <td {...cell.getCellProps()}>
@@ -610,6 +624,7 @@ const Table = forwardRef(function Table(
               <div className={Style.recordPaginationInfo}>
                 <span>Page</span>
                 <InputField
+                  baseClassName={toPageInputBaseClassName}
                   showError={false}
                   className={toPageInputClassName}
                   value={tableSettings.pagination.page}

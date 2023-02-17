@@ -47,7 +47,17 @@
 	border-top-right-radius: 0;
 	border-bottom-left-radius: 5;
 	border-bottom-right-radius: 5;
+	overflow: -moz-scrollbars-none;
+	-ms-overflow-style: none;
 }
+.searchFieldSelectClassOpened::-webkit-scrollbar,
+.allowedActionsSelectClassOpened::-webkit-scrollbar,
+.pageSizeSelectClassOpened::-webkit-scrollbar {
+	width: 0px;
+	display: none;
+	background: transparent;
+}
+
 .searchFieldSelectClassOptions,
 .allowedActionsSelectClassOptions,
 .pageSizeSelectClassOptions {
@@ -62,6 +72,9 @@
 /** Search */
 .searchBarClass {
 	min-height: 43px;
+}
+.inputSearchBaseClass {
+	margin-top: 0;
 }
 
 /** Options */
@@ -228,6 +241,9 @@
 .sortingIconActive path {
 	fill: black;
 }
+.selectableRowsClass {
+	background-color: #bfcae41f;
+}
 .clampedCell {
 	white-space: nowrap;
 	overflow: hidden;
@@ -264,6 +280,9 @@
 }
 .toPageInputClass {
 	max-width: 70px;
+}
+.toPageInputBaseClass {
+	margin-top: 0;
 }
 .inputChangePage {
 	display: grid;

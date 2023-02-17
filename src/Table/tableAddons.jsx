@@ -6,7 +6,7 @@ function createUrl(tableSettings, extraFilters) {
       page: tableSettings.pagination.page,
       limit: tableSettings.pagination.pageSize,
       ordering: tableSettings.sortingSettings,
-      [tableSettings.search.field+"__icontains"]: tableSettings.search.value
+      [tableSettings.search.field + "__icontains"]: tableSettings.search.value
     },
     ...extraFilters,
   };
@@ -48,8 +48,12 @@ const CommonStyles = styled.div`
           max-width: 500px;
           text-align: center;
           padding: 0 5px;
+          border-left: 1px solid #F3F3F3;
           :first-child{
             min-width: 60px;
+          }
+          :last-child{
+          border-right: 1px solid #F3F3F3;
           }
         }
       }
@@ -67,9 +71,13 @@ const CommonStyles = styled.div`
           text-align: center;
           border-top: 1px solid #F3F3F3;
           padding: 0 5px;
+          border-left: 1px solid #F3F3F3;
           :first-child{
             min-width: 60px;
           }
+          :last-child{
+            border-right: 1px solid #F3F3F3;
+            }
         }
       }
     }

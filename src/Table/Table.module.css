@@ -47,7 +47,17 @@
 	border-top-right-radius: 0;
 	border-bottom-left-radius: 5;
 	border-bottom-right-radius: 5;
+	overflow: -moz-scrollbars-none;
+	-ms-overflow-style: none;
 }
+.searchFieldSelectClassOpened::-webkit-scrollbar,
+.allowedActionsSelectClassOpened::-webkit-scrollbar,
+.pageSizeSelectClassOpened::-webkit-scrollbar {
+	width: 0px;
+	display: none;
+	background: transparent;
+}
+
 .searchFieldSelectClassOptions,
 .allowedActionsSelectClassOptions,
 .pageSizeSelectClassOptions {
@@ -63,20 +73,29 @@
 .searchBarClass {
 	min-height: 43px;
 }
+.inputSearchBaseClass {
+	margin-top: 0;
+}
 
 /** Options */
 .selectContainer {
-	display: inline-block;
+	display: flex;
+	gap: 10px;
 }
 .select {
 	cursor: pointer;
 	position: relative;
 	font-size: 12px;
-	border: 1px solid #bababa;
+	border: 1px solid #dbdbdb;
 	border-radius: 8px;
+	min-height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .select:hover {
 	border: 1px solid #dad0d0;
+	background-color: #f3f3f3;
 }
 
 .iconContainer {
@@ -109,6 +128,24 @@
 
 .options > div {
 	padding: 5px 0;
+	cursor: pointer;
+}
+
+.rowsSelected {
+	min-height: 30px;
+	max-height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	border: 1px solid #dbdbdb;
+	border-radius: 8px;
+	padding: 7px 10px;
+	white-space: nowrap;
+}
+.rowsSelected svg {
+	margin-left: 10px;
+	font-size: 15px;
 	cursor: pointer;
 }
 
@@ -204,6 +241,9 @@
 .sortingIconActive path {
 	fill: black;
 }
+.selectableRowsClass {
+	background-color: #bfcae41f;
+}
 .clampedCell {
 	white-space: nowrap;
 	overflow: hidden;
@@ -240,6 +280,9 @@
 }
 .toPageInputClass {
 	max-width: 70px;
+}
+.toPageInputBaseClass {
+	margin-top: 0;
 }
 .inputChangePage {
 	display: grid;

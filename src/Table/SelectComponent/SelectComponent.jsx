@@ -47,6 +47,7 @@ const SelectComponent = ({
     } else {
       select.style.top = "0";
     }
+
   };
 
   return (
@@ -55,7 +56,7 @@ const SelectComponent = ({
       onClick={() => {
         checkPosition(selectRef);
       }}
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={() => { setOpen(false); selectRef.current.style.top = "97%" }}
     >
       <div className={Style.selected}>
         <span>{selectedItem || placeholder}</span>
@@ -70,50 +71,50 @@ const SelectComponent = ({
         style={
           open
             ? {
-                maxHeight: "150px",
-                overflow: "auto",
-                position: "absolute",
-                zIndex: 3,
-                opacity: 1,
-                transition: "all 0.3s",
-                visibility: "visible",
-              }
+              maxHeight: "150px",
+              overflow: "auto",
+              position: "absolute",
+              zIndex: 3,
+              opacity: 1,
+              transition: "all 0.3s",
+              visibility: "visible",
+            }
             : {
-                maxHeight: 0,
-                overflow: "hidden",
-                position: "absolute",
-                visibility: "hidden",
-                transition: "all 0.2s",
-                zIndex: 3,
-                opacity: 0,
-              }
+              maxHeight: 0,
+              overflow: "hidden",
+              position: "absolute",
+              visibility: "hidden",
+              transition: "all 0.2s",
+              zIndex: 3,
+              opacity: 0,
+            }
         }
       >
         {isntNormalList
           ? columns
-              .filter((item) => item.searchable !== false)
-              .map((option, i) => (
-                <div
-                  key={i}
-                  className={classNameOption}
-                  onClick={() => {
-                    setValue(columnValue ? option[columnValue] : option.value);
-                  }}
-                >
-                  {columnLabel ? option[columnLabel] : option.label}
-                </div>
-              ))
-          : columns.map((option, i) => (
+            .filter((item) => item.searchable !== false)
+            .map((option, i) => (
               <div
                 key={i}
                 className={classNameOption}
                 onClick={() => {
-                  setValue(option);
+                  setValue(columnValue ? option[columnValue] : option.value);
                 }}
               >
-                {option}
+                {columnLabel ? option[columnLabel] : option.label}
               </div>
-            ))}
+            ))
+          : columns.map((option, i) => (
+            <div
+              key={i}
+              className={classNameOption}
+              onClick={() => {
+                setValue(option);
+              }}
+            >
+              {option}
+            </div>
+          ))}
       </div>
     </div>
   );

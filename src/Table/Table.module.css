@@ -66,17 +66,23 @@
 
 /** Options */
 .selectContainer {
-	display: inline-block;
+	display: flex;
+	gap: 10px;
 }
 .select {
 	cursor: pointer;
 	position: relative;
 	font-size: 12px;
-	border: 1px solid #bababa;
+	border: 1px solid #dbdbdb;
 	border-radius: 8px;
+	min-height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .select:hover {
 	border: 1px solid #dad0d0;
+	background-color: #f3f3f3;
 }
 
 .iconContainer {
@@ -109,6 +115,24 @@
 
 .options > div {
 	padding: 5px 0;
+	cursor: pointer;
+}
+
+.rowsSelected {
+	min-height: 30px;
+	max-height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	border: 1px solid #dbdbdb;
+	border-radius: 8px;
+	padding: 7px 10px;
+	white-space: nowrap;
+}
+.rowsSelected svg {
+	margin-left: 10px;
+	font-size: 15px;
 	cursor: pointer;
 }
 

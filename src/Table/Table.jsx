@@ -27,6 +27,7 @@ import {
 
 //Icon
 import { ImWrench } from "react-icons/im";
+import { GrFormClose } from "react-icons/gr";
 
 // Styles
 import Style from "./Table.module.css";
@@ -71,15 +72,15 @@ const Table = forwardRef(function Table(
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => {},
-    onUnauthorized = () => {},
-    onError = () => {},
-    onSearch = () => {},
-    onSearchFieldChange = () => {},
-    onPageChange = () => {},
-    onPageSizeChange = () => {},
-    onSelectionChange = () => {},
-    onSortChange = () => {},
+    onSuccess = () => { },
+    onUnauthorized = () => { },
+    onError = () => { },
+    onSearch = () => { },
+    onSearchFieldChange = () => { },
+    onPageChange = () => { },
+    onPageSizeChange = () => { },
+    onSelectionChange = () => { },
+    onSortChange = () => { },
   },
   ref
 ) {
@@ -299,6 +300,8 @@ const Table = forwardRef(function Table(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
+  console.log(tableSettings.selectedData)
+
   return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
@@ -401,18 +404,18 @@ const Table = forwardRef(function Table(
                             onChange={(e) => {
                               hiddenColumns.includes(item.field)
                                 ? setHiddenColumns((oldState) =>
-                                    oldState.filter(
-                                      (field) => field !== item.field
-                                    )
+                                  oldState.filter(
+                                    (field) => field !== item.field
                                   )
+                                )
                                 : setHiddenColumns((oldState) => [
-                                    ...oldState,
-                                    item.field,
-                                  ]);
+                                  ...oldState,
+                                  item.field,
+                                ]);
                             }}
                           />
                           <i></i>
-                          <span>{item.Header} </span>
+                          <span>{item.Header}</span>
                         </label>
                       </div>
                     ))}
@@ -420,6 +423,14 @@ const Table = forwardRef(function Table(
                 </div>
               </ConditionalComponent>
             </div>
+
+            <ConditionalComponent condition={tableSettings.selectedData.length > 0}>
+              <div className={Style.rowsSelected}>
+                {tableSettings.selectedData.length} row(s) selected
+                <GrFormClose onClick={() => { tableRef.current.setSelectedData([]) }} />
+              </div>
+            </ConditionalComponent>
+
           </div>
 
           <div
@@ -514,9 +525,9 @@ const Table = forwardRef(function Table(
                                   <ComputedUpSortIcon
                                     condition={
                                       tableSettings.sorting.type ===
-                                        sortType.UP &&
+                                      sortType.UP &&
                                       tableSettings.sorting.field ===
-                                        column.field
+                                      column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -528,9 +539,9 @@ const Table = forwardRef(function Table(
                                   <ComputedDownSortIcon
                                     condition={
                                       tableSettings.sorting.type ===
-                                        sortType.DOWN &&
+                                      sortType.DOWN &&
                                       tableSettings.sorting.field ===
-                                        column.field
+                                      column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName

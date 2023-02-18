@@ -230,8 +230,6 @@ const Table = forwardRef(function Table(
       data: tableAPI?.response?.data.results || [],
     });
 
-  console.log(tableSettings.pagination.pageSize); // NUMBER OF ROWS
-
   useImperativeHandle(
     tableRef,
     () => {

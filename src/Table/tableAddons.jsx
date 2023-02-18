@@ -35,11 +35,9 @@ const CommonStyles = styled.div`
   table {
     width: 100%;
     border-spacing: 0;
-    padding-top: 1rem;
 
     thead {
       tr {
-        height: 50px;
         color: #757575;
         font-weight: 600;
         font-size: 14px;

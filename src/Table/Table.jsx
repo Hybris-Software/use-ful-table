@@ -22,6 +22,7 @@ import {
   createUrl,
   updateObjectState,
   CommonStyles,
+  sortType,
 } from "./tableAddons";
 
 //Icon
@@ -36,7 +37,9 @@ const Table = forwardRef(function Table(
   {
     pageSizes = [5, 10, 25, 50, 100],
     columns,
-    height = 750,
+    headerHeight = 50,
+    rowHeight = 65,
+    height,
     Styles,
     endPoint,
     emptyDataMessage = "No data available",
@@ -74,15 +77,15 @@ const Table = forwardRef(function Table(
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => {},
-    onUnauthorized = () => {},
-    onError = () => {},
-    onSearch = () => {},
-    onSearchFieldChange = () => {},
-    onPageChange = () => {},
-    onPageSizeChange = () => {},
-    onSelectionChange = () => {},
-    onSortChange = () => {},
+    onSuccess = () => { },
+    onUnauthorized = () => { },
+    onError = () => { },
+    onSearch = () => { },
+    onSearchFieldChange = () => { },
+    onPageChange = () => { },
+    onPageSizeChange = () => { },
+    onSelectionChange = () => { },
+    onSortChange = () => { },
   },
   ref
 ) {
@@ -92,7 +95,10 @@ const Table = forwardRef(function Table(
       page: 1,
       pageSize: defaultPageSize,
     },
-    sortingSettings: "",
+    sorting: {
+      field: null,
+      type: null,
+    },
     search: {
       field: defaultSearchField,
       value: "",
@@ -172,7 +178,7 @@ const Table = forwardRef(function Table(
   const computedColumns = useMemo(() => {
     return [
       ...(enableSelectableRows ? [selectColumn] : []),
-      ...columns.filter((item) => !hiddenColumns.includes(item.field)).map(column => ({...column, searchField: column.searchField || column.field})),
+      ...columns.filter((item) => !hiddenColumns.includes(item.field)),
     ];
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
 
@@ -207,6 +213,7 @@ const Table = forwardRef(function Table(
     },
   });
 
+
   const tableContext = useMemo(
     () => ({
       tableSettings: tableSettings,
@@ -216,11 +223,14 @@ const Table = forwardRef(function Table(
     [tableSettings, extraFilters, tableAPI?.response]
   );
 
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns: computedColumns,
       data: tableAPI?.response?.data.results || [],
     });
+
+  console.log(tableSettings.pagination.pageSize); // NUMBER OF ROWS
 
   useImperativeHandle(
     tableRef,
@@ -258,8 +268,12 @@ const Table = forwardRef(function Table(
         setSearchField(value) {
           updateObjectState("search", "field", value, setTableSettings);
         },
-        setSortingSettings(value) {
-          updateObjectState("sortingSettings", null, value, setTableSettings);
+        setSortField(value) {
+          updateObjectState("sorting", "field", value, setTableSettings);
+          onSortChange(tableContext);
+        },
+        setSortType(value) {
+          updateObjectState("sorting", "type", value, setTableSettings);
           onSortChange(tableContext);
         },
         setSelectedData(value) {
@@ -294,18 +308,6 @@ const Table = forwardRef(function Table(
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
-
-  const sortHandler = (column) => {
-    const computedSorting =
-      tableSettings.sortingSettings.includes(
-        "-"
-      )
-        ? column.orderField
-        : "-" + column.orderField;
-    tableRef.current.setSortingSettings(
-      computedSorting
-    );
-  }
 
   return (
     <ComputedStyles>
@@ -352,12 +354,12 @@ const Table = forwardRef(function Table(
                   classNameOpened={searchFieldSelectClassNameOpened}
                   classNameOption={searchFieldSelectClassNameOptions}
                   columnLabel="Header"
-                  columnValue="searchField"
+                  columnValue="field"
                   placeholder={searchFieldSelectPlaceholder}
-                  columns={computedColumns.filter((item) => item.searchable !== false)}
+                  columns={columns}
                   selectedItem={
-                    computedColumns.filter(
-                      (item) => item.searchField === tableSettings.search.field
+                    columns.filter(
+                      (item) => item.field === tableSettings.search.field
                     )[0]?.Header
                   }
                   setValue={(value) => {
@@ -410,18 +412,18 @@ const Table = forwardRef(function Table(
                             onChange={(e) => {
                               hiddenColumns.includes(item.field)
                                 ? setHiddenColumns((oldState) =>
-                                    oldState.filter(
-                                      (field) => field !== item.field
-                                    )
+                                  oldState.filter(
+                                    (field) => field !== item.field
                                   )
+                                )
                                 : setHiddenColumns((oldState) => [
-                                    ...oldState,
-                                    item.field,
-                                  ]);
+                                  ...oldState,
+                                  item.field,
+                                ]);
                             }}
                           />
                           <i></i>
-                          <span>{item.Header} </span>
+                          <span>{item.Header}</span>
                         </label>
                       </div>
                     ))}
@@ -429,16 +431,22 @@ const Table = forwardRef(function Table(
                 </div>
               </ConditionalComponent>
             </div>
+
             <ConditionalComponent condition={tableSettings.selectedData.length > 0}>
               <div className={Style.rowsSelected}>
                 {tableSettings.selectedData.length} row(s) selected
                 <GrFormClose onClick={() => { tableRef.current.setSelectedData([]) }} />
               </div>
             </ConditionalComponent>
+
           </div>
 
           <div
-            style={{ minHeight: `${height}px` }}
+            style={
+              !height
+                ? { minHeight: `${(rowHeight * tableSettings.pagination.pageSize) + headerHeight}px` }
+                : { minHeight: `${height}px` }
+            }
             className={Style.tableContent}
             onMouseDown={(e) => {
               if (dragWithMouse) {
@@ -473,7 +481,9 @@ const Table = forwardRef(function Table(
               <table {...getTableProps()}>
                 <thead>
                   {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
+                    <tr {...headerGroup.getHeaderGroupProps()}
+                      style={{ height: `${headerHeight}px` }}
+                    >
                       {headerGroup.headers.map((column) => (
                         <th {...column.getHeaderProps()}>
                           <div className={Style.headerSection}>
@@ -517,15 +527,21 @@ const Table = forwardRef(function Table(
                               >
                                 <div
                                   className={computedSortingClassName}
-                                  onClick={() => sortHandler(column)}
+                                  onClick={() => {
+                                    tableRef.current.setSortField(column.field);
+                                    tableRef.current.setSortType(
+                                      tableSettings.sorting.type === sortType.UP
+                                        ? sortType.DOWN
+                                        : sortType.UP
+                                    );
+                                  }}
                                 >
                                   <ComputedUpSortIcon
                                     condition={
-                                      !tableSettings.sortingSettings.includes(
-                                        "-"
-                                      ) &&
-                                      tableSettings.sortingSettings ===
-                                        column.orderField
+                                      tableSettings.sorting.type ===
+                                      sortType.UP &&
+                                      tableSettings.sorting.field ===
+                                      column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -536,11 +552,10 @@ const Table = forwardRef(function Table(
                                   ></ComputedUpSortIcon>
                                   <ComputedDownSortIcon
                                     condition={
-                                      tableSettings.sortingSettings.includes(
-                                        "-"
-                                      ) &&
-                                      tableSettings.sortingSettings ===
-                                        "-" + column.orderField
+                                      tableSettings.sorting.type ===
+                                      sortType.DOWN &&
+                                      tableSettings.sorting.field ===
+                                      column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -572,6 +587,7 @@ const Table = forwardRef(function Table(
                       <tr
                         {...row.getRowProps()}
                         className={tableSettings.selectedData.map(row => row.id).includes(row.original.id) ? selectabledRowsClassName : undefined}
+                        style={{ height: `${rowHeight}px` }}
                       >
                         {row.cells.map((cell) => {
                           return (
@@ -635,14 +651,13 @@ const Table = forwardRef(function Table(
             </div>
             <div className={Style.inputChangePage}>
               <Button
-                disabled={tableAPI?.response?.data?.links?.previous ? false : true}
+                disabled={tableSettings.pagination.page === 1}
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.previousPage()}
               >
                 Previous
               </Button>
               <Button
-              disabled={tableAPI?.response?.data?.links?.next ? false : true}
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.nextPage()}
               >

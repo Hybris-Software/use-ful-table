@@ -42,20 +42,17 @@
 	border-top-color: transparent;
 	width: calc(100% + 2px);
 	left: -1px;
-	/* top: 97%; */
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	border-bottom-left-radius: 5;
 	border-bottom-right-radius: 5;
-	overflow: -moz-scrollbars-none;
-	-ms-overflow-style: none;
+	scrollbar-color: transparent transparent; /* Only Firefox */
 }
 .searchFieldSelectClassOpened::-webkit-scrollbar,
 .allowedActionsSelectClassOpened::-webkit-scrollbar,
 .pageSizeSelectClassOpened::-webkit-scrollbar {
-	width: 0px;
-	display: none;
-	background: transparent;
+	width: 0px; /* Chrome */
+	background: transparent; /* Chrome */
 }
 
 .searchFieldSelectClassOptions,
@@ -216,7 +213,7 @@
 .tableContent {
 	overflow-x: auto;
 	position: relative;
-	margin-block: 5px;
+	margin-block: 21px 5px;
 }
 .tableContent.active {
 	cursor: grabbing;
@@ -291,10 +288,7 @@
 	text-align: center;
 }
 .paginationButtonClass {
-	background-color: #bababa;
-	border: 1px solid #bababa;
 	border-radius: 5px;
-	color: white;
 	padding: 10px 20px;
 	font-size: 13px;
 	font-weight: 600;

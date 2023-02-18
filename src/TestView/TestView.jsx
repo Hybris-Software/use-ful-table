@@ -19,7 +19,7 @@ const TestView = () => {
       Header: "User",
       field: "user",
       sortable: false,
-      searchField:"user__username",
+      searchField: "user__username",
       accessor: (row) => {
         return row.user.username;
       },
@@ -28,7 +28,7 @@ const TestView = () => {
       Header: "Date",
       field: "createdAt",
       searchable: false,
-      orderField:"created_at",
+      orderField: "created_at",
       accessor: (row) => {
         return row.createdAt;
       },
@@ -36,7 +36,7 @@ const TestView = () => {
     {
       Header: "Subject",
       field: "subject",
-      orderField:"subject",
+      orderField: "subject",
       accessor: (row) => {
         return row.subject;
       },
@@ -44,7 +44,7 @@ const TestView = () => {
     {
       Header: "Title",
       field: "title",
-      orderField:"title",
+      orderField: "title",
       searchable: false,
       accessor: (row) => {
         return row.title;
@@ -53,7 +53,7 @@ const TestView = () => {
     {
       Header: "Status",
       field: "status",
-      orderField:"status",
+      orderField: "status",
       searchable: false,
       accessor: (row) => {
         return row.status;
@@ -62,7 +62,7 @@ const TestView = () => {
     {
       Header: "Priority",
       field: "priority",
-      orderField:"priority",
+      orderField: "priority",
       searchable: false,
       accessor: (row) => {
         return row.priority;
@@ -101,7 +101,8 @@ const TestView = () => {
   return (
     <div style={{ padding: 20 }}>
       <Table
-        height="410"
+        // height="310"
+        rowHeight="70"
         allowedActions={allowedActions}
         enableAllowedActions={true}
         searchFieldSelectClassName={Style.test}

@@ -46,4 +46,9 @@
 	border-bottom-left-radius: 5;
 	border-bottom-right-radius: 5;
 	overflow-y: auto;
+	scrollbar-color: transparent transparent;
+}
+.testOpenedPage::-webkit-scrollbar {
+	width: 0px;
+	background: transparent;
 }

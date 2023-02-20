@@ -24,6 +24,7 @@ import { createUrl, updateObjectState, CommonStyles } from "./tableAddons";
 //Icon
 import { ImWrench } from "react-icons/im";
 import { GrFormClose } from "react-icons/gr";
+import { HiCheck } from "react-icons/hi"
 
 // Styles
 import Style from "./Table.module.css";
@@ -68,20 +69,21 @@ const Table = forwardRef(function Table(
     toPageInputBaseClassName = Style.toPageInputBaseClass,
     paginationButtonClassName = Style.paginationButtonClass,
     paginationClassName = Style.paginationClass,
+    checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
     activeSortIconClassName,
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => {},
-    onUnauthorized = () => {},
-    onError = () => {},
-    onSearch = () => {},
-    onSearchFieldChange = () => {},
-    onPageChange = () => {},
-    onPageSizeChange = () => {},
-    onSelectionChange = () => {},
-    onSortChange = () => {},
+    onSuccess = () => { },
+    onUnauthorized = () => { },
+    onError = () => { },
+    onSearch = () => { },
+    onSearchFieldChange = () => { },
+    onPageChange = () => { },
+    onPageSizeChange = () => { },
+    onSelectionChange = () => { },
+    onSortChange = () => { },
     loader = <Loader />,
   },
   ref
@@ -130,26 +132,35 @@ const Table = forwardRef(function Table(
       noAction: true,
       accessor: (row) => {
         return (
-          <input
-            type="checkbox"
-            checked={
-              tableSettings.selectedData.find((item) => item.id === row.id) !==
-              undefined
-            }
-            onChange={(e) => {
-              let tempList = [...tableSettings.selectedData];
-              if (e.target.checked) {
-                // tempList.push(row);
-                tempList = [...tempList, row];
-              } else {
-                tempList = tempList.filter((item) => item.id !== row.id);
+          <div className={Style.checkboxContainer}>
+            <input
+              id={row.id}
+              className={Style.simpleCheckbox}
+              type="checkbox"
+              checked={
+                tableSettings.selectedData.find((item) => item.id === row.id) !==
+                undefined
               }
-              tableRef.current.setSelectedData(tempList);
-            }}
-          />
+              onChange={(e) => {
+                let tempList = [...tableSettings.selectedData];
+                if (e.target.checked) {
+                  // tempList.push(row);
+                  tempList = [...tempList, row];
+                } else {
+                  tempList = tempList.filter((item) => item.id !== row.id);
+                }
+                tableRef.current.setSelectedData(tempList);
+              }}
+            />
+            <label htmlFor={row.id} className={checkboxClassName}>
+              <HiCheck />
+            </label>
+          </div>
+
         );
       },
     }),
+    // eslint-disable-next-line 
     [tableSettings, tableRef]
   );
 
@@ -321,7 +332,7 @@ const Table = forwardRef(function Table(
                     classNameOpened={allowedActionsSelectClassNameOpened}
                     classNameOption={allowedActionsSelectClassNameOptions}
                     placeholder={allowedActionsSelectPlaceholder}
-                    columns={allowedActions}
+                    items={allowedActions}
                     selectedItem={
                       allowedActions.filter(
                         (item) => item.value === selectedAction
@@ -352,10 +363,10 @@ const Table = forwardRef(function Table(
                   className={searchFieldSelectClassName}
                   classNameOpened={searchFieldSelectClassNameOpened}
                   classNameOption={searchFieldSelectClassNameOptions}
-                  columnLabel="Header"
-                  columnValue="searchField"
+                  label="Header"
+                  value="searchField"
                   placeholder={searchFieldSelectPlaceholder}
-                  columns={computedColumns.filter(
+                  items={computedColumns.filter(
                     (item) => item.searchable !== false
                   )}
                   selectedItem={
@@ -413,14 +424,14 @@ const Table = forwardRef(function Table(
                             onChange={(e) => {
                               hiddenColumns.includes(item.field)
                                 ? setHiddenColumns((oldState) =>
-                                    oldState.filter(
-                                      (field) => field !== item.field
-                                    )
+                                  oldState.filter(
+                                    (field) => field !== item.field
                                   )
+                                )
                                 : setHiddenColumns((oldState) => [
-                                    ...oldState,
-                                    item.field,
-                                  ]);
+                                  ...oldState,
+                                  item.field,
+                                ]);
                             }}
                           />
                           <i></i>
@@ -451,11 +462,10 @@ const Table = forwardRef(function Table(
             style={
               !height
                 ? {
-                    minHeight: `${
-                      rowHeight * tableSettings.pagination.pageSize +
-                      headerHeight
+                  minHeight: `${rowHeight * tableSettings.pagination.pageSize +
+                    headerHeight
                     }px`,
-                  }
+                }
                 : { minHeight: `${height}px` }
             }
             className={Style.tableContent}
@@ -504,35 +514,42 @@ const Table = forwardRef(function Table(
                               <ConditionalComponent
                                 condition={column.field === "select"}
                               >
-                                <input
-                                  type="checkbox"
-                                  checked={selectAllRows}
-                                  onChange={(e) => {
-                                    const temp = [
-                                      ...tableSettings.selectedData,
-                                      ...tableAPI?.response?.data.results.filter(
-                                        (item) =>
-                                          !tableSettings.selectedData
-                                            .map((value) => value.id)
-                                            .includes(item.id)
-                                      ),
-                                    ];
-                                    if (e.target.checked) {
-                                      setSelectAllRows(true);
-                                      tableRef.current.setSelectedData(temp);
-                                    } else {
-                                      const temp =
-                                        tableSettings.selectedData.filter(
+                                <div className={Style.checkboxContainer}>
+                                  <input
+                                    id="allSelect"
+                                    type="checkbox"
+                                    className={Style.simpleCheckbox}
+                                    checked={selectAllRows}
+                                    onChange={(e) => {
+                                      const temp = [
+                                        ...tableSettings.selectedData,
+                                        ...tableAPI?.response?.data.results.filter(
                                           (item) =>
-                                            !tableAPI?.response?.data.results
+                                            !tableSettings.selectedData
                                               .map((value) => value.id)
                                               .includes(item.id)
-                                        );
-                                      setSelectAllRows(false);
-                                      tableRef.current.setSelectedData(temp);
-                                    }
-                                  }}
-                                />
+                                        ),
+                                      ];
+                                      if (e.target.checked) {
+                                        setSelectAllRows(true);
+                                        tableRef.current.setSelectedData(temp);
+                                      } else {
+                                        const temp =
+                                          tableSettings.selectedData.filter(
+                                            (item) =>
+                                              !tableAPI?.response?.data.results
+                                                .map((value) => value.id)
+                                                .includes(item.id)
+                                          );
+                                        setSelectAllRows(false);
+                                        tableRef.current.setSelectedData(temp);
+                                      }
+                                    }}
+                                  />
+                                  <label htmlFor="allSelect" className={checkboxClassName}>
+                                    <HiCheck />
+                                  </label>
+                                </div>
                               </ConditionalComponent>
                               <ConditionalComponent
                                 condition={column.sortable !== false}
@@ -547,9 +564,9 @@ const Table = forwardRef(function Table(
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                          column.orderField) ||
+                                        column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                        column.field
+                                      column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -564,9 +581,9 @@ const Table = forwardRef(function Table(
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                          "-" + column.orderField) ||
+                                        "-" + column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                        "-" + column.field
+                                      "-" + column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -634,7 +651,7 @@ const Table = forwardRef(function Table(
                   className={pageSizeSelectClassName}
                   classNameOpened={pageSizeSelectClassNameOpened}
                   classNameOption={pageSizeSelectClassNameOptions}
-                  columns={pageSizes}
+                  items={pageSizes}
                   selectedItem={tableSettings.pagination.pageSize}
                   setValue={(value) => tableRef.current.setPageSize(value)}
                 />

@@ -28,7 +28,6 @@ const TestView = () => {
       Header: "Date",
       field: "createdAt",
       searchable: false,
-      orderField: "created_at",
       accessor: (row) => {
         return row.createdAt;
       },

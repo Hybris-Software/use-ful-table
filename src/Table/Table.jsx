@@ -543,11 +543,13 @@ const Table = forwardRef(function Table(
                                 >
                                   <ComputedUpSortIcon
                                     condition={
-                                      !tableSettings.sortingSettings.includes(
+                                      (!tableSettings.sortingSettings.includes(
                                         "-"
                                       ) &&
+                                        tableSettings.sortingSettings ===
+                                          column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                        column.orderField
+                                        column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -558,11 +560,13 @@ const Table = forwardRef(function Table(
                                   ></ComputedUpSortIcon>
                                   <ComputedDownSortIcon
                                     condition={
-                                      tableSettings.sortingSettings.includes(
+                                      (tableSettings.sortingSettings.includes(
                                         "-"
                                       ) &&
+                                        tableSettings.sortingSettings ===
+                                          "-" + column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                        "-" + column.orderField
+                                        "-" + column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName

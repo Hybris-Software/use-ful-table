@@ -74,6 +74,7 @@ const Table = forwardRef(function Table(
       columnsSelect: "Select a column",
       placeholderSearch: "Search...",
       settingTitle: "Hide columns",
+      rowsSelected: "row(s) selected",
       columnByAsc: "Sort by ASC",
       columnByDesc: "Sort by DESC",
       hideColumn: "Hide this column",
@@ -460,7 +461,7 @@ const Table = forwardRef(function Table(
               condition={tableSettings.selectedData.length > 0}
             >
               <div className={Style.rowsSelected}>
-                {tableSettings.selectedData.length} row(s) selected
+                {tableSettings.selectedData.length} {texts.rowsSelected}
                 <GrFormClose
                   onClick={() => {
                     tableRef.current.setSelectedData([]);

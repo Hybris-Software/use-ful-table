@@ -1,6 +1,6 @@
 {
   "name": "@hybris-software/use-table",
-  "version": "0.1.4",
+  "version": "0.1.12",
   "private": false,
   "main": "index.js",
   "dependencies": {

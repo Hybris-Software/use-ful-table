@@ -72,7 +72,7 @@
 
 /** Search */
 .searchBarClass {
-	margin-top: 0;
+	margin-top: 0 !important;
 	min-height: 43px;
 }
 
@@ -273,6 +273,8 @@
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+	transition: all 0.3s ease;
+	
 }
 
 .checkboxContainer .labelClass svg {
@@ -284,6 +286,7 @@
 	background-color: #2e58e2;
 	border: 1px solid #2e58e2;
 }
+
 .checkboxContainer input[type="checkbox"]:checked ~ .labelClass svg {
 	display: block;
 }
@@ -306,7 +309,7 @@
 	column-gap: 8px;
 }
 .toPageInputClass {
-	margin-top: 0;
+	margin-top: 0 !important;
 	max-width: 70px;
 }
 .inputChangePage {

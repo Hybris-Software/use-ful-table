@@ -615,7 +615,7 @@ const Table = forwardRef(function Table(
                 </tbody>
               </table>
             ) : tableAPI.isLoading ? (
-              { loader }
+              loader
             ) : (
               <div className={Style.noResults}>{emptyDataMessage}</div>
             )}

@@ -29,7 +29,11 @@
 	border: 1px solid #e7e7e7;
 	padding: 11px 15px;
 	min-width: 150px;
-	border-radius: 3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	transition: all 0.3s ease;
 	font-size: 12px;
 }
 .searchFieldSelectClassOpened,
@@ -44,8 +48,8 @@
 	left: -0.95px;
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
-	border-bottom-left-radius: 6;
-	border-bottom-right-radius: 6;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
 	scrollbar-color: transparent transparent; /* Only Firefox */
 }
 .searchFieldSelectClassOpened::-webkit-scrollbar,
@@ -254,6 +258,34 @@
 	position: absolute;
 	top: 0;
 	left: 0;
+}
+.simpleCheckbox{
+	display: none;
+}
+.checkboxContainer .labelClass{
+	display: block;
+	border-radius: 3px;
+	margin-inline: auto;
+	width: 16px;
+	height: 16px;
+	border: 1px solid #bfcae4;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.checkboxContainer .labelClass svg {
+	color: rgb(255, 255, 255);
+	display: none;
+}
+
+.checkboxContainer input[type="checkbox"]:checked ~ .labelClass{
+	background-color: #2e58e2;
+	border: 1px solid #2e58e2;
+}
+.checkboxContainer input[type="checkbox"]:checked ~ .labelClass svg {
+	display: block;
 }
 
 /** Pagination */

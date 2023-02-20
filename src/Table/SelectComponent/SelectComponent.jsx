@@ -7,117 +7,135 @@ import { IoIosArrowDown } from "react-icons/io";
 import Style from "./SelectComponent.module.css";
 
 const SelectComponent = ({
-  className,
-  classNameOpened,
-  classNameOption,
-  placeholder,
-  setValue,
-  columns,
-  columnLabel,
-  columnValue,
-  selectedItem,
+	className,
+	classNameOpened,
+	classNameOption,
+	placeholder,
+	setValue,
+	items,
+	label,
+	value,
+	selectedItem,
+	maxHeightOpened = 150,
+	styleOpened = {
+		maxHeight: maxHeightOpened,
+		overflow: "auto",
+		position: "absolute",
+		opacity: 1,
+		zIndex: 3,
+		transition: "all 0.3s",
+		visibility: "visible",
+	},
+	styleClosed = {
+		maxHeight: 0,
+		overflow: "hidden",
+		position: "absolute",
+		visibility: "hidden",
+		transition: "all 0.2s",
+		zIndex: 3,
+		opacity: 0,
+	}
 }) => {
-  const [open, setOpen] = useState(false);
-  const isntNormalList = columns.some((el) => typeof el === "object");
+	const [open, setOpen] = useState(false);
+	const [position, setPosition] = useState("")
+	const computedItems = items || [];
+	const isntNormalList = computedItems.some((el) => typeof el === "object");
 
-  const selectRef = useRef(null);
+	const selectRef = useRef(null);
+	const selectOpenedRef = useRef(null);
 
-  const checkPosition = (selectRef) => {
-    setOpen((OldState) => !OldState);
-    const select = selectRef.current;
-    const selectTop = select.getBoundingClientRect().top;
-    const windowHeight = window.innerHeight;
+	const checkPosition = (refSelect, refOpened, state) => {
+		setOpen((OldState) => !OldState);
+		const refSelectClose = refSelect.current;
+		const selectOpened = refOpened.current;
+		const selectTop = selectOpened.getBoundingClientRect().top;
+		const windowHeight = window.innerHeight;
 
-    if (windowHeight - selectTop < 150) {
-      select.style.top = `-148px`;
-      select.style.borderTopColor = "inherit";
-      select.style.borderBottomColor = "transparent";
-      select.style.borderBottomLeftRadius = "0px";
-      select.style.borderBottomRightRadius = "0px";
-      select.style.borderTopRightRadius = "6px";
-      select.style.borderTopLeftRadius = "6px";
-    } else if (windowHeight - selectTop >= 150) {
-      select.style.top = "97%";
-      select.style.borderTopColor = "transparent";
-      select.style.borderBottomColor = "inherit";
-      select.style.borderTopLeftRadius = "0px";
-      select.style.borderTopRightRadius = "0px";
-      select.style.borderBottomRightRadius = "6px";
-      select.style.borderBottomLeftRadius = "6px";
-    } else {
-      select.style.top = "0";
-    }
 
-  };
+		if (!state) {
+			if (windowHeight - selectTop < maxHeightOpened) {
+				setPosition("top")
+				selectOpened.style.bottom = `${refSelectClose.clientHeight}px`;
+				selectOpened.style.top = `auto`;
+				selectOpened.style.borderTopColor = "inherit";
+				selectOpened.style.borderBottomColor = "transparent";
+				selectOpened.style.borderRadius = "3px 3px 0 0";
+				refSelectClose.style.borderRadius = "0 0 3px 3px";
+			}
+			if (windowHeight - selectTop >= maxHeightOpened) {
+				setPosition("bottom")
+				selectOpened.style.top = `${refSelectClose.clientHeight}px`;
+				selectOpened.style.bottom = "auto";
+				selectOpened.style.borderTopColor = "transparent";
+				selectOpened.style.borderBottomColor = "inherit";
+				selectOpened.style.borderRadius = "0 0 3px 3px";
+				refSelectClose.style.borderRadius = "3px 3px 0 0";
+			}
+		}
+	};
 
-  return (
-    <div
-      className={Style.select + " " + className}
-      onClick={() => {
-        checkPosition(selectRef);
-      }}
-    // onMouseLeave={() => { setOpen(false); selectRef.current.style.top = "97%" }}
-    >
-      <div className={Style.selected}>
-        <span>{selectedItem || placeholder}</span>
-        <span className={open ? Style.arrowOpened : Style.arrow}>
-          <IoIosArrowDown />
-        </span>
-      </div>
+	return (
+		<div
+			ref={selectRef}
+			className={Style.select + " " + className}
+			onClick={() => {
+				checkPosition(selectRef, selectOpenedRef, open);
+				if (open === true) {
+					selectRef.current.style.borderRadius = "3px";
+				}
+			}}
+			onMouseLeave={() => {
+				setOpen(false);
+				position === "top"
+					? selectOpenedRef.current.style.bottom = "0"
+					: selectOpenedRef.current.style.top = "0";
+				selectRef.current.style.borderRadius = "3px";
+			}}
+		>
+			<div className={Style.selected}>
+				<span>{selectedItem || placeholder}</span>
+				<span className={open ? Style.arrowOpened : Style.arrow}>
+					<IoIosArrowDown />
+				</span>
+			</div>
 
-      <div
-        ref={selectRef}
-        className={classNameOpened}
-        style={
-          open
-            ? {
-              maxHeight: "150px",
-              overflow: "auto",
-              position: "absolute",
-              zIndex: 3,
-              opacity: 1,
-              transition: "all 0.3s",
-              visibility: "visible",
-            }
-            : {
-              maxHeight: 0,
-              overflow: "hidden",
-              position: "absolute",
-              visibility: "hidden",
-              transition: "all 0.2s",
-              zIndex: 3,
-              opacity: 0,
-            }
-        }
-      >
-        {isntNormalList
-          ? columns
-            .filter((item) => item.searchable !== false)
-            .map((option, i) => (
-              <div
-                key={i}
-                className={classNameOption}
-                onClick={() => {
-                  setValue(columnValue ? option[columnValue] : option.value);
-                }}
-              >
-                {columnLabel ? option[columnLabel] : option.label}
-              </div>
-            ))
-          : columns.map((option, i) => (
-            <div
-              key={i}
-              className={classNameOption}
-              onClick={() => {
-                setValue(option);
-              }}
-            >
-              {option}
-            </div>
-          ))}
-      </div>
-    </div>
-  );
+			<div
+				ref={selectOpenedRef}
+				className={classNameOpened}
+				style={
+					open
+						? styleOpened
+						: styleClosed
+				}
+			>
+				{isntNormalList
+					? computedItems
+						.filter((item) => item.searchable !== false)
+						.map((option, i) => (
+							<div
+								key={i}
+								className={classNameOption}
+								onClick={() => {
+									setValue(value ? option[value] : option.value);
+								}}
+							>
+								{label ? option[label] : option.label}
+							</div>
+						))
+					: computedItems.map((option, i) => (
+						<div
+							key={i}
+							className={classNameOption}
+							onClick={() => {
+								setValue(option);
+							}}
+						>
+							{option}
+						</div>
+					))}
+			</div>
+		</div>
+	);
 };
 
 export default SelectComponent;

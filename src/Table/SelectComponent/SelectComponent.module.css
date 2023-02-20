@@ -6,6 +6,8 @@
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
+	position: relative;
+	z-index: 4;
 }
 .selected > span {
 	display: flex;

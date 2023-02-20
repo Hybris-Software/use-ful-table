@@ -10,7 +10,7 @@ import { sortType } from "../tableAddons";
 // Styles
 import Style from "./HeaderActionList.module.css";
 
-function HeaderActionList({ column, tableRef, setHiddenColumns }) {
+function HeaderActionList({ column, tableRef, setHiddenColumns, texts }) {
 	const [showActionList, setShowActionList] = useState(false);
 
 	return (
@@ -31,16 +31,16 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
 									tableRef.current.setSortingSettings(column.orderField)
 								}}
 							>
-								Sort by ASC
+								{texts.columnByAsc}
 							</div>
 						</ConditionalComponent>
 						<ConditionalComponent condition={column.sortable !== false}>
 							<div
 								onClick={() => {
-									tableRef.current.setSortingSettings("-"+column.orderField)
+									tableRef.current.setSortingSettings("-" + column.orderField)
 								}}
 							>
-								Sort by DESC
+								{texts.columnByDesc}
 							</div>
 						</ConditionalComponent>
 
@@ -49,14 +49,14 @@ function HeaderActionList({ column, tableRef, setHiddenColumns }) {
 								setHiddenColumns((oldState) => [...oldState, column.field]);
 							}}
 						>
-							Hide this columns
+							{texts.hideColumn}
 						</div>
 						<div
 							onClick={() => {
 								setHiddenColumns([]);
 							}}
 						>
-							Show all columns
+							{texts.showColumns}
 						</div>
 					</div>
 				</div>

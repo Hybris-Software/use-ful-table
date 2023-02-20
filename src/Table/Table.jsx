@@ -47,14 +47,11 @@ const Table = forwardRef(function Table(
     enableSearch = true,
     enableSearchFieldSelect = true,
     defaultSearchField = "",
-    searchBarPlaceholder = "Search...",
     inputSearchBaseClassName = Style.inputSearchBaseClass,
     enableSelectableRows = true,
     selectabledRowsClassName = Style.selectableRowsClass,
     enableAllowedActions = false,
     allowedActions,
-    searchFieldSelectPlaceholder = "Select a column",
-    allowedActionsSelectPlaceholder = "Select an action",
     searchBarClassName = Style.searchBarClass,
     searchFieldSelectClassName = Style.searchFieldSelectClass,
     searchFieldSelectClassNameOpened = Style.searchFieldSelectClassOpened,
@@ -71,6 +68,21 @@ const Table = forwardRef(function Table(
     paginationClassName = Style.paginationClass,
     checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
+    texts = {
+      actionSelect: "Select an action",
+      buttonAction: "Apply",
+      columnsSelect: "Select a column",
+      placeholderSearch: "Search...",
+      settingTitle: "Hide columns",
+      columnByAsc: "Sort by ASC",
+      columnByDesc: "Sort by DESC",
+      hideColumn: "Hide this column",
+      showColumns: "Show all columns",
+      pageLabel: "Page",
+      ofPageLabel: "of",
+      buttonPrevious: "Previous",
+      buttonNext: "Next",
+    },
     activeSortIconClassName,
     disableSortIconClassName,
     sortingUpIcon,
@@ -331,7 +343,7 @@ const Table = forwardRef(function Table(
                     className={allowedActionsSelectClassName}
                     classNameOpened={allowedActionsSelectClassNameOpened}
                     classNameOption={allowedActionsSelectClassNameOptions}
-                    placeholder={allowedActionsSelectPlaceholder}
+                    placeholder={texts.actionSelect}
                     items={allowedActions}
                     selectedItem={
                       allowedActions.filter(
@@ -352,7 +364,7 @@ const Table = forwardRef(function Table(
                         ?.action()
                     }
                   >
-                    Apply
+                    {texts.buttonAction}
                   </Button>
                 </div>
               </ConditionalComponent>
@@ -365,7 +377,7 @@ const Table = forwardRef(function Table(
                   classNameOption={searchFieldSelectClassNameOptions}
                   label="Header"
                   value="searchField"
-                  placeholder={searchFieldSelectPlaceholder}
+                  placeholder={texts.columnsSelect}
                   items={computedColumns.filter(
                     (item) => item.searchable !== false
                   )}
@@ -384,7 +396,7 @@ const Table = forwardRef(function Table(
                 <InputField
                   baseClassName={inputSearchBaseClassName}
                   showError={false}
-                  placeholder={searchBarPlaceholder}
+                  placeholder={texts.placeholderSearch}
                   className={searchBarClassName}
                   onChange={(e) => {
                     clearTimeout(timeoutId.current);
@@ -414,7 +426,7 @@ const Table = forwardRef(function Table(
               <ConditionalComponent condition={showDropdown}>
                 <div className={Style.tooltopOptions}>
                   <div className={Style.options}>
-                    <h4 className={Style.heading}>Hide columns</h4>
+                    <h4 className={Style.heading}>{texts.settingTitle}</h4>
                     {columns.map((item, index) => (
                       <div key={index}>
                         <label className={Style.checkboxInput}>
@@ -597,6 +609,7 @@ const Table = forwardRef(function Table(
                             </div>
                             {!column?.noAction && (
                               <HeaderActionList
+                                texts={texts}
                                 column={column}
                                 tableRef={tableRef}
                                 setHiddenColumns={setHiddenColumns}
@@ -657,7 +670,7 @@ const Table = forwardRef(function Table(
                 />
               </ConditionalComponent>
               <div className={Style.recordPaginationInfo}>
-                <span>Page</span>
+                <span>{texts.pageLabel}</span>
                 <InputField
                   baseClassName={toPageInputBaseClassName}
                   showError={false}
@@ -665,7 +678,7 @@ const Table = forwardRef(function Table(
                   value={tableSettings.pagination.page}
                   onChange={(e) => tableRef.current.toPage(e.target.value)}
                 />
-                <span>of {"100"}</span>
+                <span>{texts.ofPageLabel} {"100"}</span>
               </div>
             </div>
             <div className={Style.inputChangePage}>
@@ -676,14 +689,14 @@ const Table = forwardRef(function Table(
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.previousPage()}
               >
-                Previous
+                {texts.buttonPrevious}
               </Button>
               <Button
                 disabled={tableAPI?.response?.data?.links?.next ? false : true}
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.nextPage()}
               >
-                Next
+                {texts.buttonNext}
               </Button>
             </div>
           </div>

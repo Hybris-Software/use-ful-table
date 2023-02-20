@@ -1,7 +1,7 @@
 import React from "react";
 
 // Styles
-import Style from "../Table.module.scss";
+import Style from "../Table.module.css";
 
 const Loader = () => {
   return (

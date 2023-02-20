@@ -40,12 +40,12 @@
 	border-color: #e7e7e7;
 	background-color: white;
 	border-top-color: transparent;
-	width: calc(100% + 2px);
-	left: -1px;
+	width: calc(100% + 1.9px);
+	left: -0.95px;
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
-	border-bottom-left-radius: 5;
-	border-bottom-right-radius: 5;
+	border-bottom-left-radius: 6;
+	border-bottom-right-radius: 6;
 	scrollbar-color: transparent transparent; /* Only Firefox */
 }
 .searchFieldSelectClassOpened::-webkit-scrollbar,
@@ -68,10 +68,8 @@
 
 /** Search */
 .searchBarClass {
-	min-height: 43px;
-}
-.inputSearchBaseClass {
 	margin-top: 0;
+	min-height: 43px;
 }
 
 /** Options */
@@ -276,10 +274,8 @@
 	column-gap: 8px;
 }
 .toPageInputClass {
-	max-width: 70px;
-}
-.toPageInputBaseClass {
 	margin-top: 0;
+	max-width: 70px;
 }
 .inputChangePage {
 	display: grid;

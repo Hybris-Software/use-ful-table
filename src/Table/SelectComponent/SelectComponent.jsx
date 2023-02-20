@@ -34,16 +34,16 @@ const SelectComponent = ({
       select.style.borderBottomColor = "transparent";
       select.style.borderBottomLeftRadius = "0px";
       select.style.borderBottomRightRadius = "0px";
-      select.style.borderTopRightRadius = "5px";
-      select.style.borderTopLeftRadius = "5px";
+      select.style.borderTopRightRadius = "6px";
+      select.style.borderTopLeftRadius = "6px";
     } else if (windowHeight - selectTop >= 150) {
       select.style.top = "97%";
       select.style.borderTopColor = "transparent";
       select.style.borderBottomColor = "inherit";
       select.style.borderTopLeftRadius = "0px";
       select.style.borderTopRightRadius = "0px";
-      select.style.borderBottomRightRadius = "5px";
-      select.style.borderBottomLeftRadius = "5px";
+      select.style.borderBottomRightRadius = "6px";
+      select.style.borderBottomLeftRadius = "6px";
     } else {
       select.style.top = "0";
     }
@@ -56,7 +56,7 @@ const SelectComponent = ({
       onClick={() => {
         checkPosition(selectRef);
       }}
-      onMouseLeave={() => { setOpen(false); selectRef.current.style.top = "97%" }}
+    // onMouseLeave={() => { setOpen(false); selectRef.current.style.top = "97%" }}
     >
       <div className={Style.selected}>
         <span>{selectedItem || placeholder}</span>

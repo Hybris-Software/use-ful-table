@@ -276,9 +276,10 @@ const Table = forwardRef(function Table(
   );
 
   const sortHandler = (column) => {
+    const columnName = column.orderField || column.field;
     const computedSorting = tableSettings.sortingSettings.includes("-")
-      ? column.orderField
-      : "-" + column.orderField;
+      ? columnName
+      : "-" + columnName;
     tableRef.current.setSortingSettings(computedSorting);
   };
 

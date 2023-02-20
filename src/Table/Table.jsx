@@ -265,6 +265,7 @@ const Table = forwardRef(function Table(
         },
         setSortingSettings(value) {
           updateObjectState("sortingSettings", null, value, setTableSettings);
+          onSortChange(tableContext);
         },
         setSelectedData(value) {
           updateObjectState("selectedData", null, value, setTableSettings);

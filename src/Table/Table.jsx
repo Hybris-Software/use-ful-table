@@ -15,7 +15,7 @@ import Loader from "./Loader/Loader";
 
 // Libraries
 import { useTable } from "react-table";
-import { Button, InputField } from "@hybris-software/ui-kit";
+import { Button, InputField, Select } from "@hybris-software/ui-kit";
 import useQuery from "@hybris-software/use-query";
 
 //Addons
@@ -24,7 +24,7 @@ import { createUrl, updateObjectState, CommonStyles } from "./tableAddons";
 //Icon
 import { ImWrench } from "react-icons/im";
 import { GrFormClose } from "react-icons/gr";
-import { HiCheck } from "react-icons/hi"
+import { HiCheck } from "react-icons/hi";
 
 // Styles
 import Style from "./Table.module.css";
@@ -53,12 +53,6 @@ const Table = forwardRef(function Table(
     enableAllowedActions = false,
     allowedActions,
     searchBarClassName = Style.searchBarClass,
-    searchFieldSelectClassName = Style.searchFieldSelectClass,
-    searchFieldSelectClassNameOpened = Style.searchFieldSelectClassOpened,
-    searchFieldSelectClassNameOptions = Style.searchFieldSelectClassOptions,
-    allowedActionsSelectClassName = Style.allowedActionsSelectClass,
-    allowedActionsSelectClassNameOpened = Style.allowedActionsSelectClassOpened,
-    allowedActionsSelectClassNameOptions = Style.allowedActionsSelectClassOptions,
     pageSizeSelectClassName = Style.pageSizeSelectClass,
     pageSizeSelectClassNameOpened = Style.pageSizeSelectClassOpened,
     pageSizeSelectClassNameOptions = Style.pageSizeSelectClassOptions,
@@ -88,15 +82,15 @@ const Table = forwardRef(function Table(
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => { },
-    onUnauthorized = () => { },
-    onError = () => { },
-    onSearch = () => { },
-    onSearchFieldChange = () => { },
-    onPageChange = () => { },
-    onPageSizeChange = () => { },
-    onSelectionChange = () => { },
-    onSortChange = () => { },
+    onSuccess = () => {},
+    onUnauthorized = () => {},
+    onError = () => {},
+    onSearch = () => {},
+    onSearchFieldChange = () => {},
+    onPageChange = () => {},
+    onPageSizeChange = () => {},
+    onSelectionChange = () => {},
+    onSortChange = () => {},
     loader = <Loader />,
   },
   ref
@@ -151,8 +145,9 @@ const Table = forwardRef(function Table(
               className={Style.simpleCheckbox}
               type="checkbox"
               checked={
-                tableSettings.selectedData.find((item) => item.id === row.id) !==
-                undefined
+                tableSettings.selectedData.find(
+                  (item) => item.id === row.id
+                ) !== undefined
               }
               onChange={(e) => {
                 let tempList = [...tableSettings.selectedData];
@@ -169,11 +164,10 @@ const Table = forwardRef(function Table(
               <HiCheck />
             </label>
           </div>
-
         );
       },
     }),
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     [tableSettings, tableRef]
   );
 
@@ -332,6 +326,10 @@ const Table = forwardRef(function Table(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
+  function selectAction(a, b) {
+    console.log(a, b);
+  }
+
   return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
@@ -340,29 +338,20 @@ const Table = forwardRef(function Table(
             <div className={Style.leftSideFilter}>
               <ConditionalComponent condition={enableAllowedActions}>
                 <div className={Style.actions}>
-                  <SelectComponent
-                    className={allowedActionsSelectClassName}
-                    classNameOpened={allowedActionsSelectClassNameOpened}
-                    classNameOption={allowedActionsSelectClassNameOptions}
+                  <Select
                     placeholder={texts.actionSelect}
                     items={allowedActions}
-                    selectedItem={
-                      allowedActions.filter(
-                        (item) => item.value === selectedAction
-                      )[0]?.label
-                    }
                     setValue={(value) => {
                       setSelectedAction(value);
                     }}
+                    value = {selectedAction}
                   />
                   <Button
                     disabled={
                       tableSettings.selectedData.length <= 0 || !selectedAction
                     }
                     onClick={() =>
-                      allowedActions
-                        .find((item) => item.value === selectedAction)
-                        ?.action()
+                      selectedAction.action()
                     }
                   >
                     {texts.buttonAction}
@@ -372,23 +361,20 @@ const Table = forwardRef(function Table(
             </div>
             <div className={Style.rightSideFilter}>
               <ConditionalComponent condition={enableSearchFieldSelect}>
-                <SelectComponent
-                  className={searchFieldSelectClassName}
-                  classNameOpened={searchFieldSelectClassNameOpened}
-                  classNameOption={searchFieldSelectClassNameOptions}
-                  label="Header"
-                  value="searchField"
-                  placeholder={texts.columnsSelect}
+                <Select
                   items={computedColumns.filter(
                     (item) => item.searchable !== false
                   )}
-                  selectedItem={
-                    computedColumns.filter(
-                      (item) => item.searchField === tableSettings.search.field
-                    )[0]?.header
-                  }
+                  placeholder={texts.columnsSelect}
+                  labelKey="Header"
+                  value={tableSettings?.search?.field}
                   setValue={(value) => {
-                    tableRef.current.setSearchField(value);
+                    updateObjectState(
+                      "search",
+                      "field",
+                      value,
+                      setTableSettings
+                    );
                     onSearchFieldChange(tableContext);
                   }}
                 />
@@ -437,14 +423,14 @@ const Table = forwardRef(function Table(
                             onChange={(e) => {
                               hiddenColumns.includes(item.field)
                                 ? setHiddenColumns((oldState) =>
-                                  oldState.filter(
-                                    (field) => field !== item.field
+                                    oldState.filter(
+                                      (field) => field !== item.field
+                                    )
                                   )
-                                )
                                 : setHiddenColumns((oldState) => [
-                                  ...oldState,
-                                  item.field,
-                                ]);
+                                    ...oldState,
+                                    item.field,
+                                  ]);
                             }}
                           />
                           <i></i>
@@ -475,10 +461,11 @@ const Table = forwardRef(function Table(
             style={
               !height
                 ? {
-                  minHeight: `${rowHeight * tableSettings.pagination.pageSize +
-                    headerHeight
+                    minHeight: `${
+                      rowHeight * tableSettings.pagination.pageSize +
+                      headerHeight
                     }px`,
-                }
+                  }
                 : { minHeight: `${height}px` }
             }
             className={Style.tableContent}
@@ -559,7 +546,10 @@ const Table = forwardRef(function Table(
                                       }
                                     }}
                                   />
-                                  <label htmlFor="allSelect" className={checkboxClassName}>
+                                  <label
+                                    htmlFor="allSelect"
+                                    className={checkboxClassName}
+                                  >
                                     <HiCheck />
                                   </label>
                                 </div>
@@ -577,9 +567,9 @@ const Table = forwardRef(function Table(
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                        column.orderField) ||
+                                          column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                      column.field
+                                        column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -594,9 +584,9 @@ const Table = forwardRef(function Table(
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                        "-" + column.orderField) ||
+                                          "-" + column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                      "-" + column.field
+                                        "-" + column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -679,7 +669,9 @@ const Table = forwardRef(function Table(
                   value={tableSettings.pagination.page}
                   onChange={(e) => tableRef.current.toPage(e.target.value)}
                 />
-                <span>{texts.ofPageLabel} {"100"}</span>
+                <span>
+                  {texts.ofPageLabel} {"100"}
+                </span>
               </div>
             </div>
             <div className={Style.inputChangePage}>

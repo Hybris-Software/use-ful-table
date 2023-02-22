@@ -749,7 +749,6 @@ Table.propTypes = {
   enableAllowedActions: PropTypes.bool,
   defaultSearchField: PropTypes.string,
   searchBarPlaceholder: PropTypes.string,
-  // searchBarClassName ---> sortingDownIcon Styles How is the default
   onSuccess: PropTypes.func,
   onUnauthorized: PropTypes.func,
   onError: PropTypes.func,

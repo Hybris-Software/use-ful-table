@@ -1,15 +1,18 @@
 import styled from "styled-components";
 
 function createUrl(tableSettings, extraFilters) {
-  const parametersObject = {
+  let parametersObject = {
     ...{
       page: tableSettings.pagination.page,
       limit: tableSettings.pagination.pageSize,
       ordering: tableSettings.sortingSettings,
-      [tableSettings.search.field + "__icontains"]: tableSettings.search.value
+      [tableSettings.search.field + "__icontains"]: tableSettings.search.value,
     },
     ...extraFilters,
   };
+  parametersObject = Object.fromEntries(
+    Object.entries(parametersObject).filter(([_, v]) => v != null)
+  );
   const url =
     tableSettings.endPoint + "?" + new URLSearchParams(parametersObject);
   return url;
@@ -41,47 +44,45 @@ const CommonStyles = styled.div`
         color: #757575;
         font-weight: 600;
         font-size: 14px;
-        th{
+        th {
           min-width: 200px;
           max-width: 500px;
           text-align: center;
           padding: 0 5px;
-          border-left: 1px solid #F3F3F3;
-          :first-child{
+          border-left: 1px solid #f3f3f3;
+          :first-child {
             min-width: 60px;
           }
-          :last-child{
-          border-right: 1px solid #F3F3F3;
+          :last-child {
+            border-right: 1px solid #f3f3f3;
           }
         }
       }
     }
 
-    tbody{
-      tr{
+    tbody {
+      tr {
         height: 65px;
         font-weight: 500;
         font-size: 14px;
         color: #757575;
-        td{
+        td {
           min-width: 200px;
           max-width: 500px;
           text-align: center;
-          border-top: 1px solid #F3F3F3;
+          border-top: 1px solid #f3f3f3;
           padding: 0 5px;
-          border-left: 1px solid #F3F3F3;
-          :first-child{
+          border-left: 1px solid #f3f3f3;
+          :first-child {
             min-width: 60px;
           }
-          :last-child{
-            border-right: 1px solid #F3F3F3;
-            }
+          :last-child {
+            border-right: 1px solid #f3f3f3;
+          }
         }
       }
     }
   }
-
-  
 `;
 const sortType = {
   UP: "asc",

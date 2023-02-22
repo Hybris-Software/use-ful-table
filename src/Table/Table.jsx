@@ -367,7 +367,7 @@ const Table = forwardRef(function Table(
                   )}
                   placeholder={texts.columnsSelect}
                   labelKey="Header"
-                  value={tableSettings?.search?.field}
+                  value={tableSettings?.search?.field.field}
                   setValue={(value) => {
                     updateObjectState(
                       "search",

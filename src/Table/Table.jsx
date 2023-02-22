@@ -15,7 +15,7 @@ import Loader from "./Loader/Loader";
 
 // Libraries
 import { useTable } from "react-table";
-import { Button, InputField } from "@hybris-software/ui-kit";
+import { Button, InputField, Select } from "@hybris-software/ui-kit";
 import useQuery from "@hybris-software/use-query";
 
 //Addons
@@ -24,6 +24,7 @@ import { createUrl, updateObjectState, CommonStyles } from "./tableAddons";
 //Icon
 import { ImWrench } from "react-icons/im";
 import { GrFormClose } from "react-icons/gr";
+import { HiCheck } from "react-icons/hi";
 
 // Styles
 import Style from "./Table.module.css";
@@ -46,21 +47,12 @@ const Table = forwardRef(function Table(
     enableSearch = true,
     enableSearchFieldSelect = true,
     defaultSearchField = "",
-    searchBarPlaceholder = "Search...",
     inputSearchBaseClassName = Style.inputSearchBaseClass,
     enableSelectableRows = true,
     selectabledRowsClassName = Style.selectableRowsClass,
     enableAllowedActions = false,
     allowedActions,
-    searchFieldSelectPlaceholder = "Select a column",
-    allowedActionsSelectPlaceholder = "Select an action",
     searchBarClassName = Style.searchBarClass,
-    searchFieldSelectClassName = Style.searchFieldSelectClass,
-    searchFieldSelectClassNameOpened = Style.searchFieldSelectClassOpened,
-    searchFieldSelectClassNameOptions = Style.searchFieldSelectClassOptions,
-    allowedActionsSelectClassName = Style.allowedActionsSelectClass,
-    allowedActionsSelectClassNameOpened = Style.allowedActionsSelectClassOpened,
-    allowedActionsSelectClassNameOptions = Style.allowedActionsSelectClassOptions,
     pageSizeSelectClassName = Style.pageSizeSelectClass,
     pageSizeSelectClassNameOpened = Style.pageSizeSelectClassOpened,
     pageSizeSelectClassNameOptions = Style.pageSizeSelectClassOptions,
@@ -68,7 +60,24 @@ const Table = forwardRef(function Table(
     toPageInputBaseClassName = Style.toPageInputBaseClass,
     paginationButtonClassName = Style.paginationButtonClass,
     paginationClassName = Style.paginationClass,
+    checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
+    texts = {
+      actionSelect: "Select an action",
+      buttonAction: "Apply",
+      columnsSelect: "Select a column",
+      placeholderSearch: "Search...",
+      settingTitle: "Hide columns",
+      rowsSelected: "row(s) selected",
+      columnByAsc: "Sort by ASC",
+      columnByDesc: "Sort by DESC",
+      hideColumn: "Hide this column",
+      showColumns: "Show all columns",
+      pageLabel: "Page",
+      ofPageLabel: "of",
+      buttonPrevious: "Previous",
+      buttonNext: "Next",
+    },
     activeSortIconClassName,
     disableSortIconClassName,
     sortingUpIcon,
@@ -130,26 +139,35 @@ const Table = forwardRef(function Table(
       noAction: true,
       accessor: (row) => {
         return (
-          <input
-            type="checkbox"
-            checked={
-              tableSettings.selectedData.find((item) => item.id === row.id) !==
-              undefined
-            }
-            onChange={(e) => {
-              let tempList = [...tableSettings.selectedData];
-              if (e.target.checked) {
-                // tempList.push(row);
-                tempList = [...tempList, row];
-              } else {
-                tempList = tempList.filter((item) => item.id !== row.id);
+          <div className={Style.checkboxContainer}>
+            <input
+              id={row.id}
+              className={Style.simpleCheckbox}
+              type="checkbox"
+              checked={
+                tableSettings.selectedData.find(
+                  (item) => item.id === row.id
+                ) !== undefined
               }
-              tableRef.current.setSelectedData(tempList);
-            }}
-          />
+              onChange={(e) => {
+                let tempList = [...tableSettings.selectedData];
+                if (e.target.checked) {
+                  // tempList.push(row);
+                  tempList = [...tempList, row];
+                } else {
+                  tempList = tempList.filter((item) => item.id !== row.id);
+                }
+                tableRef.current.setSelectedData(tempList);
+              }}
+            />
+            <label htmlFor={row.id} className={checkboxClassName}>
+              <HiCheck />
+            </label>
+          </div>
         );
       },
     }),
+    // eslint-disable-next-line
     [tableSettings, tableRef]
   );
 
@@ -308,6 +326,10 @@ const Table = forwardRef(function Table(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
+  function selectAction(a, b) {
+    console.log(a, b);
+  }
+
   return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
@@ -316,55 +338,43 @@ const Table = forwardRef(function Table(
             <div className={Style.leftSideFilter}>
               <ConditionalComponent condition={enableAllowedActions}>
                 <div className={Style.actions}>
-                  <SelectComponent
-                    className={allowedActionsSelectClassName}
-                    classNameOpened={allowedActionsSelectClassNameOpened}
-                    classNameOption={allowedActionsSelectClassNameOptions}
-                    placeholder={allowedActionsSelectPlaceholder}
-                    columns={allowedActions}
-                    selectedItem={
-                      allowedActions.filter(
-                        (item) => item.value === selectedAction
-                      )[0]?.label
-                    }
+                  <Select
+                    placeholder={texts.actionSelect}
+                    items={allowedActions}
                     setValue={(value) => {
                       setSelectedAction(value);
                     }}
+                    value = {selectedAction}
                   />
                   <Button
                     disabled={
                       tableSettings.selectedData.length <= 0 || !selectedAction
                     }
                     onClick={() =>
-                      allowedActions
-                        .find((item) => item.value === selectedAction)
-                        ?.action()
+                      selectedAction.action()
                     }
                   >
-                    Apply
+                    {texts.buttonAction}
                   </Button>
                 </div>
               </ConditionalComponent>
             </div>
             <div className={Style.rightSideFilter}>
               <ConditionalComponent condition={enableSearchFieldSelect}>
-                <SelectComponent
-                  className={searchFieldSelectClassName}
-                  classNameOpened={searchFieldSelectClassNameOpened}
-                  classNameOption={searchFieldSelectClassNameOptions}
-                  columnLabel="Header"
-                  columnValue="searchField"
-                  placeholder={searchFieldSelectPlaceholder}
-                  columns={computedColumns.filter(
+                <Select
+                  items={computedColumns.filter(
                     (item) => item.searchable !== false
                   )}
-                  selectedItem={
-                    computedColumns.filter(
-                      (item) => item.searchField === tableSettings.search.field
-                    )[0]?.header
-                  }
+                  placeholder={texts.columnsSelect}
+                  labelKey="Header"
+                  value={tableSettings?.search?.field}
                   setValue={(value) => {
-                    tableRef.current.setSearchField(value);
+                    updateObjectState(
+                      "search",
+                      "field",
+                      value,
+                      setTableSettings
+                    );
                     onSearchFieldChange(tableContext);
                   }}
                 />
@@ -373,7 +383,7 @@ const Table = forwardRef(function Table(
                 <InputField
                   baseClassName={inputSearchBaseClassName}
                   showError={false}
-                  placeholder={searchBarPlaceholder}
+                  placeholder={texts.placeholderSearch}
                   className={searchBarClassName}
                   onChange={(e) => {
                     clearTimeout(timeoutId.current);
@@ -403,7 +413,7 @@ const Table = forwardRef(function Table(
               <ConditionalComponent condition={showDropdown}>
                 <div className={Style.tooltopOptions}>
                   <div className={Style.options}>
-                    <h4 className={Style.heading}>Hide columns</h4>
+                    <h4 className={Style.heading}>{texts.settingTitle}</h4>
                     {columns.map((item, index) => (
                       <div key={index}>
                         <label className={Style.checkboxInput}>
@@ -437,7 +447,7 @@ const Table = forwardRef(function Table(
               condition={tableSettings.selectedData.length > 0}
             >
               <div className={Style.rowsSelected}>
-                {tableSettings.selectedData.length} row(s) selected
+                {tableSettings.selectedData.length} {texts.rowsSelected}
                 <GrFormClose
                   onClick={() => {
                     tableRef.current.setSelectedData([]);
@@ -504,35 +514,45 @@ const Table = forwardRef(function Table(
                               <ConditionalComponent
                                 condition={column.field === "select"}
                               >
-                                <input
-                                  type="checkbox"
-                                  checked={selectAllRows}
-                                  onChange={(e) => {
-                                    const temp = [
-                                      ...tableSettings.selectedData,
-                                      ...tableAPI?.response?.data.results.filter(
-                                        (item) =>
-                                          !tableSettings.selectedData
-                                            .map((value) => value.id)
-                                            .includes(item.id)
-                                      ),
-                                    ];
-                                    if (e.target.checked) {
-                                      setSelectAllRows(true);
-                                      tableRef.current.setSelectedData(temp);
-                                    } else {
-                                      const temp =
-                                        tableSettings.selectedData.filter(
+                                <div className={Style.checkboxContainer}>
+                                  <input
+                                    id="allSelect"
+                                    type="checkbox"
+                                    className={Style.simpleCheckbox}
+                                    checked={selectAllRows}
+                                    onChange={(e) => {
+                                      const temp = [
+                                        ...tableSettings.selectedData,
+                                        ...tableAPI?.response?.data.results.filter(
                                           (item) =>
-                                            !tableAPI?.response?.data.results
+                                            !tableSettings.selectedData
                                               .map((value) => value.id)
                                               .includes(item.id)
-                                        );
-                                      setSelectAllRows(false);
-                                      tableRef.current.setSelectedData(temp);
-                                    }
-                                  }}
-                                />
+                                        ),
+                                      ];
+                                      if (e.target.checked) {
+                                        setSelectAllRows(true);
+                                        tableRef.current.setSelectedData(temp);
+                                      } else {
+                                        const temp =
+                                          tableSettings.selectedData.filter(
+                                            (item) =>
+                                              !tableAPI?.response?.data.results
+                                                .map((value) => value.id)
+                                                .includes(item.id)
+                                          );
+                                        setSelectAllRows(false);
+                                        tableRef.current.setSelectedData(temp);
+                                      }
+                                    }}
+                                  />
+                                  <label
+                                    htmlFor="allSelect"
+                                    className={checkboxClassName}
+                                  >
+                                    <HiCheck />
+                                  </label>
+                                </div>
                               </ConditionalComponent>
                               <ConditionalComponent
                                 condition={column.sortable !== false}
@@ -580,6 +600,7 @@ const Table = forwardRef(function Table(
                             </div>
                             {!column?.noAction && (
                               <HeaderActionList
+                                texts={texts}
                                 column={column}
                                 tableRef={tableRef}
                                 setHiddenColumns={setHiddenColumns}
@@ -634,13 +655,13 @@ const Table = forwardRef(function Table(
                   className={pageSizeSelectClassName}
                   classNameOpened={pageSizeSelectClassNameOpened}
                   classNameOption={pageSizeSelectClassNameOptions}
-                  columns={pageSizes}
+                  items={pageSizes}
                   selectedItem={tableSettings.pagination.pageSize}
                   setValue={(value) => tableRef.current.setPageSize(value)}
                 />
               </ConditionalComponent>
               <div className={Style.recordPaginationInfo}>
-                <span>Page</span>
+                <span>{texts.pageLabel}</span>
                 <InputField
                   baseClassName={toPageInputBaseClassName}
                   showError={false}
@@ -648,7 +669,9 @@ const Table = forwardRef(function Table(
                   value={tableSettings.pagination.page}
                   onChange={(e) => tableRef.current.toPage(e.target.value)}
                 />
-                <span>of {"100"}</span>
+                <span>
+                  {texts.ofPageLabel} {"100"}
+                </span>
               </div>
             </div>
             <div className={Style.inputChangePage}>
@@ -659,14 +682,14 @@ const Table = forwardRef(function Table(
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.previousPage()}
               >
-                Previous
+                {texts.buttonPrevious}
               </Button>
               <Button
                 disabled={tableAPI?.response?.data?.links?.next ? false : true}
                 className={paginationButtonClassName}
                 onClick={() => tableRef.current.nextPage()}
               >
-                Next
+                {texts.buttonNext}
               </Button>
             </div>
           </div>

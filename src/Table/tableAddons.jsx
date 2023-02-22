@@ -6,7 +6,7 @@ function createUrl(tableSettings, extraFilters) {
       page: tableSettings.pagination.page,
       limit: tableSettings.pagination.pageSize,
       ordering: tableSettings.sortingSettings,
-      [tableSettings.search.field + "__icontains"]: tableSettings.search.value,
+      [tableSettings.search.field.field + "__icontains"]: tableSettings.search.value
     },
     ...extraFilters,
   };

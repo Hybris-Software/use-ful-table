@@ -113,6 +113,7 @@ const TestView = () => {
         columns={columns}
         endPoint={endPoint}
         extraFilters={extraFilters}
+        onSearchFieldChange={(e) => console.log(e)}
       />
     </div>
   );

@@ -22,7 +22,7 @@
 .testOptions:hover {
 	background-color: rgba(159, 159, 236, 0.596);
 } */
-
+/* 
 .testPage {
 	border: 1px solid #e7e7e7;
 	background-color: white;
@@ -40,7 +40,6 @@
 	border-top-color: transparent;
 	width: calc(100% + 2px);
 	left: -1px;
-	/* top: 97%; */
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 	border-bottom-left-radius: 5;
@@ -51,4 +50,4 @@
 .testOpenedPage::-webkit-scrollbar {
 	width: 0px;
 	background: transparent;
-}
+} */

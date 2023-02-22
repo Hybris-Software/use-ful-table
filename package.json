@@ -4,7 +4,7 @@
   "private": false,
   "main": "index.js",
   "dependencies": {
-    "@hybris-software/ui-kit": "^2.1.18",
+    "@hybris-software/ui-kit": "^2.1.51",
     "@hybris-software/use-query": "^2.3.17",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

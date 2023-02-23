@@ -28,9 +28,37 @@ import { HiCheck } from "react-icons/hi";
 
 // Styles
 import Style from "./Table.module.css";
-import SelectComponent from "./SelectComponent/SelectComponent";
 
-const Table = forwardRef(function Table(
+/**
+ * @param {Object} props
+ * @param {Array} props.pageSizes - Array of numbers that will be used as options for the page size select
+ * @param {Array} props.columns - Array of objects that will be used as columns for the table
+ * @param {Number} props.headerHeight - Height of the header
+ * @param {Number} props.rowHeight - Height of the rows
+ * @param {Number} props.height - Height of the table
+ * @param {Object} props.Styles - Object with custom styles
+ * @param {String} props.endPoint - Endpoint to fetch the data
+ * @param {String} props.emptyDataMessage - Message to show when there is no data
+ * @param {Object} props.extraFilters - Object with extra filters to add to the query
+ * @param {Number} props.defaultPageSize - Default page size
+ * @param {Boolean} props.enablePageSizeSelect - Enable page size select
+ * @param {Boolean} props.dragWithMouse - Enable drag with mouse
+ * @param {Boolean} props.enableSearch - Enable search
+ * @param {Boolean} props.enableSearchFieldSelect - Enable search field select
+ * @param {String} props.defaultSearchField - Default search field
+ * @param {String} props.inputSearchBaseClassName - Base class name for the search input
+ * @param {Boolean} props.enableSelectableRows - Enable selectable rows
+ * @param {String} props.selectabledRowsClassName - Class name for the selectable rows
+ * @param {Boolean} props.enableAllowedActions - Enable allowed actions
+ * @param {Array} props.allowedActions - Array of objects with the allowed actions
+ * @param {String} props.searchBarClassName - Class name for the search bar
+ * @param {String} props.toPageInputClassName - Class name for the to page input
+ * @param {String} props.toPageInputBaseClassName - Base class name for the to page input
+ * @param {String} props.paginationButtonClassName - Class name for the pagination buttons
+ * @param {String} props.paginationButtonBaseClassName - Base class name for the pagination buttons
+ */
+
+const TableComponent = (
   {
     pageSizes = [5, 10, 25, 50, 100],
     columns,
@@ -53,9 +81,6 @@ const Table = forwardRef(function Table(
     enableAllowedActions = false,
     allowedActions,
     searchBarClassName = Style.searchBarClass,
-    pageSizeSelectClassName = Style.pageSizeSelectClass,
-    pageSizeSelectClassNameOpened = Style.pageSizeSelectClassOpened,
-    pageSizeSelectClassNameOptions = Style.pageSizeSelectClassOptions,
     toPageInputClassName = Style.toPageInputClass,
     toPageInputBaseClassName = Style.toPageInputBaseClass,
     paginationButtonClassName = Style.paginationButtonClass,
@@ -94,8 +119,8 @@ const Table = forwardRef(function Table(
     loader = <Loader />,
   },
   ref
-) {
-  //Constants
+) => {
+  // Constants
   const initialSettings = {
     pagination: {
       page: 1,
@@ -110,14 +135,14 @@ const Table = forwardRef(function Table(
     selectedData: [],
   };
 
-  //Refs
+  // Refs
   const defaultRef = useRef(null);
   const tableRef = ref || defaultRef;
 
-  //For debounce mechanisms
+  // For debounce mechanisms
   const timeoutId = useRef(null);
 
-  //States
+  // States
   const [url, setUrl] = useState(null);
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -127,7 +152,7 @@ const Table = forwardRef(function Table(
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  //For select all
+  // To select all
   const [selectAllRows, setSelectAllRows] = useState(false);
 
   const selectColumn = useMemo(
@@ -172,7 +197,6 @@ const Table = forwardRef(function Table(
   );
 
   const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
-
   const ComputedDownSortIcon = sortingDownIcon
     ? sortingDownIcon
     : IconDownComponent;
@@ -326,10 +350,6 @@ const Table = forwardRef(function Table(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
-  function selectAction(a, b) {
-    console.log(a, b);
-  }
-
   return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
@@ -344,15 +364,13 @@ const Table = forwardRef(function Table(
                     setValue={(value) => {
                       setSelectedAction(value);
                     }}
-                    value = {selectedAction}
+                    value={selectedAction}
                   />
                   <Button
                     disabled={
                       tableSettings.selectedData.length <= 0 || !selectedAction
                     }
-                    onClick={() =>
-                      selectedAction.action()
-                    }
+                    onClick={() => selectedAction.action()}
                   >
                     {texts.buttonAction}
                   </Button>
@@ -367,7 +385,7 @@ const Table = forwardRef(function Table(
                   )}
                   placeholder={texts.columnsSelect}
                   labelKey="Header"
-                  value={tableSettings?.search?.field.field}
+                  value={tableSettings?.search?.field}
                   setValue={(value) => {
                     updateObjectState(
                       "search",
@@ -651,13 +669,14 @@ const Table = forwardRef(function Table(
           <div className={paginationClassName}>
             <div className={Style.leftPagination}>
               <ConditionalComponent condition={enablePageSizeSelect}>
-                <SelectComponent
-                  className={pageSizeSelectClassName}
-                  classNameOpened={pageSizeSelectClassNameOpened}
-                  classNameOption={pageSizeSelectClassNameOptions}
+                <Select
                   items={pageSizes}
-                  selectedItem={tableSettings.pagination.pageSize}
-                  setValue={(value) => tableRef.current.setPageSize(value)}
+                  placeholder={texts.columnsSelect}
+                  labelKey="Header"
+                  value={tableSettings?.pagination?.pageSize}
+                  setValue={(value) => {
+                    tableRef.current.setPageSize(value);
+                  }}
                 />
               </ConditionalComponent>
               <div className={Style.recordPaginationInfo}>
@@ -697,7 +716,9 @@ const Table = forwardRef(function Table(
       </div>
     </ComputedStyles>
   );
-});
+};
+
+const Table = forwardRef(TableComponent);
 
 const IconUpComponent = ({ condition, activeClassName, disabledClassName }) => {
   return (
@@ -757,7 +778,7 @@ const IconDownComponent = ({
   );
 };
 
-Table.propTypes = {
+TableComponent.propTypes = {
   pageSizes: PropTypes.arrayOf(PropTypes.number),
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   height: PropTypes.string,
@@ -782,4 +803,5 @@ Table.propTypes = {
   onSelectionChange: PropTypes.func,
   onSortChange: PropTypes.func,
 };
+
 export default Table;

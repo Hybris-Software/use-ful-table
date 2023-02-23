@@ -9,8 +9,6 @@ const TestView = () => {
     {
       Header: "#",
       field: "id",
-      searchable: false,
-      sortable: false,
       accessor: (row) => {
         return row.id;
       },

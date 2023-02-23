@@ -563,7 +563,7 @@ const Table = forwardRef(function Table(
                                 >
                                   <ComputedUpSortIcon
                                     condition={
-                                      (!tableSettings.sortingSettings.includes(
+                                      (!tableSettings?.sortingSettings?.includes(
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
@@ -580,7 +580,7 @@ const Table = forwardRef(function Table(
                                   ></ComputedUpSortIcon>
                                   <ComputedDownSortIcon
                                     condition={
-                                      (tableSettings.sortingSettings.includes(
+                                      (tableSettings?.sortingSettings?.includes(
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===

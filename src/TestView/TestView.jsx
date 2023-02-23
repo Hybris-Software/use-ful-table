@@ -71,20 +71,17 @@ const TestView = () => {
     {
       label: "Edit",
       value: "edit",
-      action: () => {
-      },
+      action: () => {},
     },
     {
       label: "Add",
       value: "add",
-      action: () => {
-      },
+      action: () => {},
     },
     {
       label: "Delete",
       value: "delete",
-      action: () => {
-      },
+      action: () => {},
     },
   ];
 
@@ -98,7 +95,6 @@ const TestView = () => {
   return (
     <div style={{ padding: 20 }}>
       <Table
-        // height="310"
         rowHeight="70"
         allowedActions={allowedActions}
         enableAllowedActions={true}
@@ -111,7 +107,6 @@ const TestView = () => {
         columns={columns}
         endPoint={endPoint}
         extraFilters={extraFilters}
-        onSearchFieldChange={(e) => console.log(e)}
       />
     </div>
   );

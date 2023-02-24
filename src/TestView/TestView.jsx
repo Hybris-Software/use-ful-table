@@ -48,7 +48,7 @@ const TestView = () => {
       },
     },
     {
-      Header: "Status",
+      Header: "Status is the best header ever for test this table component ma io scrivo ancora un po ma siii",
       field: "status",
       orderField: "status",
       searchable: false,
@@ -71,17 +71,17 @@ const TestView = () => {
     {
       label: "Edit",
       value: "edit",
-      action: () => {},
+      action: () => { },
     },
     {
       label: "Add",
       value: "add",
-      action: () => {},
+      action: () => { },
     },
     {
       label: "Delete",
       value: "delete",
-      action: () => {},
+      action: () => { },
     },
   ];
 

@@ -172,6 +172,13 @@
 .tableContent.active {
   cursor: grabbing;
   cursor: -webkit-grabbing;
+  -webkit-touch-callout: none; 
+  -webkit-user-select: none; 
+  -khtml-user-select: none; 
+  -moz-user-select: none;
+  -ms-user-select: none; 
+  user-select: none; 
+
 }
 .headerSection {
   position: relative;
@@ -182,12 +189,16 @@
   overflow: hidden;
   text-align: center;
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
+  padding-inline: 22px;
 }
 .sortingClassName {
   cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
 }
 .sortingIconActive path {
   fill: black;

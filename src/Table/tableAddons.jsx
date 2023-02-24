@@ -46,7 +46,7 @@ const CommonStyles = styled.div`
         font-size: 14px;
         th {
           min-width: 200px;
-          max-width: 500px;
+          max-width: 800px;
           text-align: center;
           padding: 0 5px;
           border-left: 1px solid #f3f3f3;
@@ -68,7 +68,7 @@ const CommonStyles = styled.div`
         color: #757575;
         td {
           min-width: 200px;
-          max-width: 500px;
+          max-width: 800px;
           text-align: center;
           border-top: 1px solid #f3f3f3;
           padding: 0 5px;

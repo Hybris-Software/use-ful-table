@@ -80,6 +80,7 @@ const TableComponent = (
     selectabledRowsClassName = Style.selectableRowsClass,
     enableAllowedActions = false,
     allowedActions,
+    settingClassName = Style.tooltopOptions,
     searchBarClassName = Style.searchBarClass,
     toPageInputClassName = Style.toPageInputClass,
     toPageInputBaseClassName = Style.toPageInputBaseClass,
@@ -107,15 +108,15 @@ const TableComponent = (
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => {},
-    onUnauthorized = () => {},
-    onError = () => {},
-    onSearch = () => {},
-    onSearchFieldChange = () => {},
-    onPageChange = () => {},
-    onPageSizeChange = () => {},
-    onSelectionChange = () => {},
-    onSortChange = () => {},
+    onSuccess = () => { },
+    onUnauthorized = () => { },
+    onError = () => { },
+    onSearch = () => { },
+    onSearchFieldChange = () => { },
+    onPageChange = () => { },
+    onPageSizeChange = () => { },
+    onSelectionChange = () => { },
+    onSortChange = () => { },
     loader = <Loader />,
   },
   ref
@@ -429,33 +430,35 @@ const TableComponent = (
                 />
               </span>
               <ConditionalComponent condition={showDropdown}>
-                <div className={Style.tooltopOptions}>
+                <div className={settingClassName}>
                   <div className={Style.options}>
                     <h4 className={Style.heading}>{texts.settingTitle}</h4>
-                    {columns.map((item, index) => (
-                      <div key={index}>
-                        <label className={Style.checkboxInput}>
-                          <input
-                            type="checkbox"
-                            checked={hiddenColumns.includes(item.field)}
-                            onChange={(e) => {
-                              hiddenColumns.includes(item.field)
-                                ? setHiddenColumns((oldState) =>
+                    <div className={Style.scrollableList}>
+                      {columns.map((item, index) => (
+                        <div key={index} className={Style.singleOption}>
+                          <label className={Style.checkboxInput}>
+                            <input
+                              type="checkbox"
+                              checked={hiddenColumns.includes(item.field)}
+                              onChange={(e) => {
+                                hiddenColumns.includes(item.field)
+                                  ? setHiddenColumns((oldState) =>
                                     oldState.filter(
                                       (field) => field !== item.field
                                     )
                                   )
-                                : setHiddenColumns((oldState) => [
+                                  : setHiddenColumns((oldState) => [
                                     ...oldState,
                                     item.field,
                                   ]);
-                            }}
-                          />
-                          <i></i>
-                          <span>{item.Header} </span>
-                        </label>
-                      </div>
-                    ))}
+                              }}
+                            />
+                            <i></i>
+                          </label>
+                          <div className={Style.optionText}>{item.Header}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </ConditionalComponent>
@@ -479,11 +482,10 @@ const TableComponent = (
             style={
               !height
                 ? {
-                    minHeight: `${
-                      rowHeight * tableSettings.pagination.pageSize +
-                      headerHeight
+                  minHeight: `${rowHeight * tableSettings.pagination.pageSize +
+                    headerHeight
                     }px`,
-                  }
+                }
                 : { minHeight: `${height}px` }
             }
             className={Style.tableContent}
@@ -525,7 +527,15 @@ const TableComponent = (
                       style={{ height: `${headerHeight}px` }}
                     >
                       {headerGroup.headers.map((column) => (
-                        <th {...column.getHeaderProps()}>
+                        <th {...column.getHeaderProps()} style={{ position: "relative" }}>
+                          {!column?.noAction && (
+                            <HeaderActionList
+                              texts={texts}
+                              column={column}
+                              tableRef={tableRef}
+                              setHiddenColumns={setHiddenColumns}
+                            />
+                          )}
                           <div className={Style.headerSection}>
                             <div className={Style.clampedText}>
                               {column.render("Header")}
@@ -585,9 +595,9 @@ const TableComponent = (
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                          column.orderField) ||
+                                        column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                        column.field
+                                      column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -602,9 +612,9 @@ const TableComponent = (
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                          "-" + column.orderField) ||
+                                        "-" + column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                        "-" + column.field
+                                      "-" + column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -616,14 +626,6 @@ const TableComponent = (
                                 </div>
                               </ConditionalComponent>
                             </div>
-                            {!column?.noAction && (
-                              <HeaderActionList
-                                texts={texts}
-                                column={column}
-                                tableRef={tableRef}
-                                setHiddenColumns={setHiddenColumns}
-                              />
-                            )}
                           </div>
                         </th>
                       ))}

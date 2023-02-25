@@ -48,7 +48,7 @@ const TestView = () => {
       },
     },
     {
-      Header: "Status",
+      Header: "Status fweuyg uiegfiu gwifug wei",
       field: "status",
       orderField: "status",
       searchable: false,
@@ -71,17 +71,17 @@ const TestView = () => {
     {
       label: "Edit",
       value: "edit",
-      action: () => {},
+      action: () => { },
     },
     {
       label: "Add",
       value: "add",
-      action: () => {},
+      action: () => { },
     },
     {
       label: "Delete",
       value: "delete",
-      action: () => {},
+      action: () => { },
     },
   ];
 

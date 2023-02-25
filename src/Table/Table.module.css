@@ -34,11 +34,10 @@
   gap: 10px;
 }
 .select {
-  cursor: pointer;
   position: relative;
   font-size: 12px;
   border: 1px solid #dbdbdb;
-  border-radius: 8px;
+  border-radius: 3px;
   min-height: 30px;
   display: flex;
   align-items: center;
@@ -52,6 +51,7 @@
 .iconContainer {
   display: flex;
   padding: 7px 20px;
+  cursor: pointer;
 }
 
 .tooltopOptions {
@@ -59,16 +59,20 @@
   padding-top: 10px;
   top: 100%;
   left: 0;
-  z-index: 2;
-  min-width: 150px;
+  z-index: 6;
+  min-width: 200px;
+  max-width: 50vw;
+  white-space: nowrap;
 }
 
 .options {
+  overflow: hidden;
   width: 100%;
   padding: 10px;
   background-color: white;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  border-radius: 3px;
+  box-shadow: rgba(0, 0, 0, 0.03) 0px 3px 12px;
+  border: 1px solid #e7e7e7;
   color: black;
 }
 
@@ -77,10 +81,33 @@
   font-size: 14px;
 }
 
-.options > div {
-  padding: 5px 0;
-  cursor: pointer;
+.scrollableList{
+  max-height: 215px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-color: transparent transparent; /* Only Firefox */
 }
+
+.scrollableList::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* Chrome/Safari/Webkit */
+}
+
+.singleOption{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.optionText {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 
 .rowsSelected {
   min-height: 30px;

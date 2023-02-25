@@ -48,7 +48,7 @@ const TestView = () => {
       },
     },
     {
-      Header: "Status is the best header ever for test this table component ma io scrivo ancora un po ma siii",
+      Header: "Status fweuyg uiegfiu gwifug wei",
       field: "status",
       orderField: "status",
       searchable: false,

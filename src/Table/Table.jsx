@@ -80,6 +80,7 @@ const TableComponent = (
     selectabledRowsClassName = Style.selectableRowsClass,
     enableAllowedActions = false,
     allowedActions,
+    settingClassName = Style.tooltopOptions,
     searchBarClassName = Style.searchBarClass,
     toPageInputClassName = Style.toPageInputClass,
     toPageInputBaseClassName = Style.toPageInputBaseClass,
@@ -429,33 +430,35 @@ const TableComponent = (
                 />
               </span>
               <ConditionalComponent condition={showDropdown}>
-                <div className={Style.tooltopOptions}>
+                <div className={settingClassName}>
                   <div className={Style.options}>
                     <h4 className={Style.heading}>{texts.settingTitle}</h4>
-                    {columns.map((item, index) => (
-                      <div key={index}>
-                        <label className={Style.checkboxInput}>
-                          <input
-                            type="checkbox"
-                            checked={hiddenColumns.includes(item.field)}
-                            onChange={(e) => {
-                              hiddenColumns.includes(item.field)
-                                ? setHiddenColumns((oldState) =>
-                                  oldState.filter(
-                                    (field) => field !== item.field
+                    <div className={Style.scrollableList}>
+                      {columns.map((item, index) => (
+                        <div key={index} className={Style.singleOption}>
+                          <label className={Style.checkboxInput}>
+                            <input
+                              type="checkbox"
+                              checked={hiddenColumns.includes(item.field)}
+                              onChange={(e) => {
+                                hiddenColumns.includes(item.field)
+                                  ? setHiddenColumns((oldState) =>
+                                    oldState.filter(
+                                      (field) => field !== item.field
+                                    )
                                   )
-                                )
-                                : setHiddenColumns((oldState) => [
-                                  ...oldState,
-                                  item.field,
-                                ]);
-                            }}
-                          />
-                          <i></i>
-                          <span>{item.Header} </span>
-                        </label>
-                      </div>
-                    ))}
+                                  : setHiddenColumns((oldState) => [
+                                    ...oldState,
+                                    item.field,
+                                  ]);
+                              }}
+                            />
+                            <i></i>
+                          </label>
+                          <div className={Style.optionText}>{item.Header}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </ConditionalComponent>

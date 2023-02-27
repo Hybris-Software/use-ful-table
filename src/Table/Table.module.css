@@ -207,11 +207,20 @@
 .selectableRowsClass {
   background-color: #bfcae41f;
 }
+.tdCell{
+  position: relative;
+}
 .clampedCell {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
+}
+.copyFeature{
+  position: absolute;
+  top: 0;
+  cursor: pointer;
+  right: 5px;
 }
 .noResults {
   width: 100%;

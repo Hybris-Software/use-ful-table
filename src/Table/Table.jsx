@@ -349,6 +349,14 @@ const TableComponent = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
+  function copyToClipboard(value) {
+    const textarea = document.createElement("textarea");
+    textarea.value = value;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  }
   return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
@@ -476,119 +484,125 @@ const TableComponent = (
             {tableAPI?.response?.data.results ? (
               <table {...getTableProps()}>
                 <thead>
-                  {headerGroups.map((headerGroup) => (
-                    <tr
-                      {...headerGroup.getHeaderGroupProps()}
-                      style={{ height: `${headerHeight}px` }}
-                    >
-                      {headerGroup.headers.map((column) => (
-                        <th
-                          {...column.getHeaderProps()}
-                          style={{ position: "relative" }}
-                        >
-                          {!column?.noAction && (
-                            <HeaderActionList
-                              texts={texts}
-                              column={column}
-                              tableRef={tableRef}
-                              setHiddenColumns={setHiddenColumns}
-                            />
-                          )}
-                          <div className={Style.headerSection}>
-                            <div className={Style.clampedText}>
-                              {column.render("Header")}
-                              <ConditionalComponent
-                                condition={column.field === "select"}
-                              >
-                                <div className={Style.checkboxContainer}>
-                                  <input
-                                    id="allSelect"
-                                    type="checkbox"
-                                    className={Style.simpleCheckbox}
-                                    checked={selectAllRows}
-                                    onChange={(e) => {
-                                      const temp = [
-                                        ...tableSettings.selectedData,
-                                        ...tableAPI?.response?.data.results.filter(
-                                          (item) =>
-                                            !tableSettings.selectedData
-                                              .map((value) => value.id)
-                                              .includes(item.id)
-                                        ),
-                                      ];
-                                      if (e.target.checked) {
-                                        setSelectAllRows(true);
-                                        tableRef.current.setSelectedData(temp);
-                                      } else {
-                                        const temp =
-                                          tableSettings.selectedData.filter(
+                  {headerGroups.map((headerGroup) => {
+                    return (
+                      <tr
+                        {...headerGroup.getHeaderGroupProps()}
+                        style={{ height: `${headerHeight}px` }}
+                      >
+                        {headerGroup.headers.map((column) => (
+                          <th
+                            {...column.getHeaderProps()}
+                            style={{ position: "relative" }}
+                          >
+                            {!column?.noAction && (
+                              <HeaderActionList
+                                texts={texts}
+                                column={column}
+                                tableRef={tableRef}
+                                setHiddenColumns={setHiddenColumns}
+                              />
+                            )}
+                            <div className={Style.headerSection}>
+                              <div className={Style.clampedText}>
+                                {column.render("Header")}
+                                <ConditionalComponent
+                                  condition={column.field === "select"}
+                                >
+                                  <div className={Style.checkboxContainer}>
+                                    <input
+                                      id="allSelect"
+                                      type="checkbox"
+                                      className={Style.simpleCheckbox}
+                                      checked={selectAllRows}
+                                      onChange={(e) => {
+                                        const temp = [
+                                          ...tableSettings.selectedData,
+                                          ...tableAPI?.response?.data.results.filter(
                                             (item) =>
-                                              !tableAPI?.response?.data.results
+                                              !tableSettings.selectedData
                                                 .map((value) => value.id)
                                                 .includes(item.id)
+                                          ),
+                                        ];
+                                        if (e.target.checked) {
+                                          setSelectAllRows(true);
+                                          tableRef.current.setSelectedData(
+                                            temp
                                           );
-                                        setSelectAllRows(false);
-                                        tableRef.current.setSelectedData(temp);
-                                      }
-                                    }}
-                                  />
-                                  <label
-                                    htmlFor="allSelect"
-                                    className={checkboxClassName}
-                                  >
-                                    <HiCheck />
-                                  </label>
-                                </div>
-                              </ConditionalComponent>
-                              <ConditionalComponent
-                                condition={column.sortable !== false}
-                              >
-                                <div
-                                  className={computedSortingClassName}
-                                  onClick={() => sortHandler(column)}
+                                        } else {
+                                          const temp =
+                                            tableSettings.selectedData.filter(
+                                              (item) =>
+                                                !tableAPI?.response?.data.results
+                                                  .map((value) => value.id)
+                                                  .includes(item.id)
+                                            );
+                                          setSelectAllRows(false);
+                                          tableRef.current.setSelectedData(
+                                            temp
+                                          );
+                                        }
+                                      }}
+                                    />
+                                    <label
+                                      htmlFor="allSelect"
+                                      className={checkboxClassName}
+                                    >
+                                      <HiCheck />
+                                    </label>
+                                  </div>
+                                </ConditionalComponent>
+                                <ConditionalComponent
+                                  condition={column.sortable !== false}
                                 >
-                                  <ComputedUpSortIcon
-                                    condition={
-                                      (!tableSettings?.sortingSettings?.includes(
-                                        "-"
-                                      ) &&
+                                  <div
+                                    className={computedSortingClassName}
+                                    onClick={() => sortHandler(column)}
+                                  >
+                                    <ComputedUpSortIcon
+                                      condition={
+                                        (!tableSettings?.sortingSettings?.includes(
+                                          "-"
+                                        ) &&
+                                          tableSettings.sortingSettings ===
+                                            column.orderField) ||
                                         tableSettings.sortingSettings ===
-                                          column.orderField) ||
-                                      tableSettings.sortingSettings ===
-                                        column.field
-                                    }
-                                    activeClassName={
-                                      computedActiveSortIconClassName
-                                    }
-                                    disabledClassName={
-                                      computedDisableSortIconClassName
-                                    }
-                                  ></ComputedUpSortIcon>
-                                  <ComputedDownSortIcon
-                                    condition={
-                                      (tableSettings?.sortingSettings?.includes(
-                                        "-"
-                                      ) &&
+                                          column.field
+                                      }
+                                      activeClassName={
+                                        computedActiveSortIconClassName
+                                      }
+                                      disabledClassName={
+                                        computedDisableSortIconClassName
+                                      }
+                                    ></ComputedUpSortIcon>
+                                    <ComputedDownSortIcon
+                                      condition={
+                                        (tableSettings?.sortingSettings?.includes(
+                                          "-"
+                                        ) &&
+                                          tableSettings.sortingSettings ===
+                                            "-" + column.orderField) ||
                                         tableSettings.sortingSettings ===
-                                          "-" + column.orderField) ||
-                                      tableSettings.sortingSettings ===
-                                        "-" + column.field
-                                    }
-                                    activeClassName={
-                                      computedActiveSortIconClassName
-                                    }
-                                    disabledClassName={
-                                      computedDisableSortIconClassName
-                                    }
-                                  ></ComputedDownSortIcon>
-                                </div>
-                              </ConditionalComponent>
+                                          "-" + column.field
+                                      }
+                                      activeClassName={
+                                        computedActiveSortIconClassName
+                                      }
+                                      disabledClassName={
+                                        computedDisableSortIconClassName
+                                      }
+                                    ></ComputedDownSortIcon>
+                                  </div>
+                                </ConditionalComponent>
+                              </div>
                             </div>
-                          </div>
-                        </th>
-                      ))}
-                    </tr>
-                  ))}
+                          </th>
+                        ))}
+                      </tr>
+                    );
+                  })}
                 </thead>
                 <tbody {...getTableBodyProps()}>
                   {rows.map((row, i) => {
@@ -605,11 +619,14 @@ const TableComponent = (
                         }
                         style={{ height: `${rowHeight}px` }}
                       >
-                        {row.cells.map((cell) => {
+                        {row.cells.map((cell, i) => {
                           return (
-                            <td {...cell.getCellProps()}>
+                            <td className={Style.tdCell} {...cell.getCellProps()}>
                               <div className={Style.clampedCell}>
                                 {cell.render("Cell")}
+                                {cell.column.copyable && (
+                                  <div className={Style.copyFeature} onClick={()=> copyToClipboard(cell.value)}>Copy</div>
+                                )}
                               </div>
                             </td>
                           );

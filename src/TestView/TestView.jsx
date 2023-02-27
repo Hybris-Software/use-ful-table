@@ -9,6 +9,7 @@ const TestView = () => {
     {
       Header: "#",
       field: "id",
+      copyable: true,
       accessor: (row) => {
         return row.id;
       },
@@ -26,6 +27,7 @@ const TestView = () => {
       Header: "Date",
       field: "createdAt",
       searchable: false,
+      copyable: true,
       accessor: (row) => {
         return row.createdAt;
       },
@@ -52,6 +54,7 @@ const TestView = () => {
       field: "status",
       orderField: "status",
       searchable: false,
+      copyable: true,
       accessor: (row) => {
         return row.status;
       },

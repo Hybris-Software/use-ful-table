@@ -99,7 +99,7 @@ const TestView = () => {
     <div style={{ padding: 20 }}>
       <Table
         rowHeight="70"
-        pageSizes={[2,5,10]}
+        pageSizes={[1,5,10]}
         allowedActions={allowedActions}
         enableAllowedActions={true}
         searchFieldSelectClassName={Style.test}

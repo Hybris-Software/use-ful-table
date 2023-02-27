@@ -31,7 +31,7 @@ function PaginationBar({
 
   useEffect(() => {
       setPageTo(tableSettings.pagination.page)
-  }, [tableSettings.pagination.page]);
+  }, [tableSettings.pagination.page, tableSettings.pagination.pageSize]);
 
   return (
     <div className={paginationClassName}>

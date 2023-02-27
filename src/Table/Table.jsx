@@ -12,10 +12,10 @@ import PropTypes from "prop-types";
 import HeaderActionList from "./HeaderActionList/HeaderActionList";
 import ConditionalComponent from "./ConditionalComponent/ConditionalComponent";
 import Loader from "./Loader/Loader";
+import PaginationBar from "./PaginationBar/PaginationBar";
 
 // Libraries
 import { useTable } from "react-table";
-import { Button, InputField, Select } from "@hybris-software/ui-kit";
 import useQuery from "@hybris-software/use-query";
 
 //Addons
@@ -28,6 +28,7 @@ import { HiCheck } from "react-icons/hi";
 
 // Styles
 import Style from "./Table.module.css";
+import ActionBar from "./ActionBar/ActionBar";
 
 /**
  * @param {Object} props
@@ -81,11 +82,11 @@ const TableComponent = (
     enableAllowedActions = false,
     allowedActions,
     settingClassName = Style.tooltopOptions,
-    searchBarClassName = Style.searchBarClass,
-    toPageInputClassName = Style.toPageInputClass,
-    toPageInputBaseClassName = Style.toPageInputBaseClass,
-    paginationButtonClassName = Style.paginationButtonClass,
-    paginationClassName = Style.paginationClass,
+    searchBarClassName,
+    toPageInputClassName,
+    toPageInputBaseClassName,
+    paginationButtonClassName,
+    paginationClassName,
     checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
     texts = {
@@ -108,15 +109,15 @@ const TableComponent = (
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => { },
-    onUnauthorized = () => { },
-    onError = () => { },
-    onSearch = () => { },
-    onSearchFieldChange = () => { },
-    onPageChange = () => { },
-    onPageSizeChange = () => { },
-    onSelectionChange = () => { },
-    onSortChange = () => { },
+    onSuccess = () => {},
+    onUnauthorized = () => {},
+    onError = () => {},
+    onSearch = () => {},
+    onSearchFieldChange = () => {},
+    onPageChange = () => {},
+    onPageSizeChange = () => {},
+    onSelectionChange = () => {},
+    onSortChange = () => {},
     loader = <Loader />,
   },
   ref
@@ -140,15 +141,11 @@ const TableComponent = (
   const defaultRef = useRef(null);
   const tableRef = ref || defaultRef;
 
-  // For debounce mechanisms
-  const timeoutId = useRef(null);
-
   // States
   const [url, setUrl] = useState(null);
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
-  const [selectedAction, setSelectedAction] = useState("");
   // Draggable
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -298,6 +295,7 @@ const TableComponent = (
             pageSize,
             setTableSettings
           );
+          updateObjectState("pagination", "page", 1, setTableSettings);
           onPageSizeChange(tableContext);
         },
         setSearchValue(value) {
@@ -355,67 +353,23 @@ const TableComponent = (
     <ComputedStyles>
       <div className={Style.tableContainer}>
         <div style={{ position: "relative" }}>
-          <div className={Style.filterRow}>
-            <div className={Style.leftSideFilter}>
-              <ConditionalComponent condition={enableAllowedActions}>
-                <div className={Style.actions}>
-                  <Select
-                    placeholder={texts.actionSelect}
-                    items={allowedActions}
-                    setValue={(value) => {
-                      setSelectedAction(value);
-                    }}
-                    value={selectedAction}
-                  />
-                  <Button
-                    disabled={
-                      tableSettings.selectedData.length <= 0 || !selectedAction
-                    }
-                    onClick={() => selectedAction.action()}
-                  >
-                    {texts.buttonAction}
-                  </Button>
-                </div>
-              </ConditionalComponent>
-            </div>
-            <div className={Style.rightSideFilter}>
-              <ConditionalComponent condition={enableSearchFieldSelect}>
-                <Select
-                  items={computedColumns.filter(
-                    (item) => item.searchable !== false
-                  )}
-                  placeholder={texts.columnsSelect}
-                  labelKey="Header"
-                  value={tableSettings?.search?.field}
-                  setValue={(value) => {
-                    updateObjectState(
-                      "search",
-                      "field",
-                      value,
-                      setTableSettings
-                    );
-                    onSearchFieldChange(tableContext);
-                  }}
-                />
-              </ConditionalComponent>
-              <ConditionalComponent condition={enableSearch}>
-                <InputField
-                  baseClassName={inputSearchBaseClassName}
-                  showError={false}
-                  placeholder={texts.placeholderSearch}
-                  className={searchBarClassName}
-                  onChange={(e) => {
-                    clearTimeout(timeoutId.current);
-                    timeoutId.current = setTimeout(() => {
-                      tableRef.current.setSearchValue(e.target.value);
-                      onSearch(tableContext);
-                    }, 1000);
-                  }}
-                />
-              </ConditionalComponent>
-            </div>
-          </div>
-
+          <ActionBar
+            tableRef={tableRef}
+            tableSettings={tableSettings}
+            setTableSettings={setTableSettings}
+            texts={texts}
+            enableAllowedActions={enableAllowedActions}
+            allowedActions={allowedActions}
+            enableSearch={enableSearch}
+            enableSearchFieldSelect={enableSearchFieldSelect}
+            computedColumns={computedColumns}
+            updateObjectState={updateObjectState}
+            onSearchFieldChange={onSearchFieldChange}
+            tableContext={tableContext}
+            onSearch={onSearch}
+            inputSearchBaseClassName={inputSearchBaseClassName}
+            searchBarClassName={searchBarClassName}
+          />
           <div className={Style.selectContainer}>
             <div
               className={Style.select}
@@ -443,14 +397,14 @@ const TableComponent = (
                               onChange={(e) => {
                                 hiddenColumns.includes(item.field)
                                   ? setHiddenColumns((oldState) =>
-                                    oldState.filter(
-                                      (field) => field !== item.field
+                                      oldState.filter(
+                                        (field) => field !== item.field
+                                      )
                                     )
-                                  )
                                   : setHiddenColumns((oldState) => [
-                                    ...oldState,
-                                    item.field,
-                                  ]);
+                                      ...oldState,
+                                      item.field,
+                                    ]);
                               }}
                             />
                             <i></i>
@@ -482,10 +436,11 @@ const TableComponent = (
             style={
               !height
                 ? {
-                  minHeight: `${rowHeight * tableSettings.pagination.pageSize +
-                    headerHeight
+                    minHeight: `${
+                      rowHeight * tableSettings.pagination.pageSize +
+                      headerHeight
                     }px`,
-                }
+                  }
                 : { minHeight: `${height}px` }
             }
             className={Style.tableContent}
@@ -527,7 +482,10 @@ const TableComponent = (
                       style={{ height: `${headerHeight}px` }}
                     >
                       {headerGroup.headers.map((column) => (
-                        <th {...column.getHeaderProps()} style={{ position: "relative" }}>
+                        <th
+                          {...column.getHeaderProps()}
+                          style={{ position: "relative" }}
+                        >
                           {!column?.noAction && (
                             <HeaderActionList
                               texts={texts}
@@ -595,9 +553,9 @@ const TableComponent = (
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                        column.orderField) ||
+                                          column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                      column.field
+                                        column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -612,9 +570,9 @@ const TableComponent = (
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                        "-" + column.orderField) ||
+                                          "-" + column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                      "-" + column.field
+                                        "-" + column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -667,53 +625,18 @@ const TableComponent = (
               <div className={Style.noResults}>{emptyDataMessage}</div>
             )}
           </div>
-
-          <div className={paginationClassName}>
-            <div className={Style.leftPagination}>
-              <ConditionalComponent condition={enablePageSizeSelect}>
-                <Select
-                  items={pageSizes}
-                  placeholder={texts.columnsSelect}
-                  labelKey="Header"
-                  value={tableSettings?.pagination?.pageSize}
-                  setValue={(value) => {
-                    tableRef.current.setPageSize(value);
-                  }}
-                />
-              </ConditionalComponent>
-              <div className={Style.recordPaginationInfo}>
-                <span>{texts.pageLabel}</span>
-                <InputField
-                  baseClassName={toPageInputBaseClassName}
-                  showError={false}
-                  className={toPageInputClassName}
-                  value={tableSettings.pagination.page}
-                  onChange={(e) => tableRef.current.toPage(e.target.value)}
-                />
-                <span>
-                  {texts.ofPageLabel} {"100"}
-                </span>
-              </div>
-            </div>
-            <div className={Style.inputChangePage}>
-              <Button
-                disabled={
-                  tableAPI?.response?.data?.links?.previous ? false : true
-                }
-                className={paginationButtonClassName}
-                onClick={() => tableRef.current.previousPage()}
-              >
-                {texts.buttonPrevious}
-              </Button>
-              <Button
-                disabled={tableAPI?.response?.data?.links?.next ? false : true}
-                className={paginationButtonClassName}
-                onClick={() => tableRef.current.nextPage()}
-              >
-                {texts.buttonNext}
-              </Button>
-            </div>
-          </div>
+          <PaginationBar
+            tableRef={tableRef}
+            tableAPI={tableAPI}
+            tableSettings={tableSettings}
+            texts={texts}
+            paginationClassName={paginationClassName}
+            enablePageSizeSelect={enablePageSizeSelect}
+            pageSizes={pageSizes}
+            toPageInputBaseClassName={toPageInputBaseClassName}
+            toPageInputClassName={toPageInputClassName}
+            paginationButtonClassName={paginationButtonClassName}
+          />
         </div>
       </div>
     </ComputedStyles>

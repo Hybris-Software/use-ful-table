@@ -81,7 +81,7 @@ const TestView = () => {
     {
       label: "Delete",
       value: "delete",
-      action: () => { },
+      action: () => {console.log("Delete")},
     },
   ];
 
@@ -96,6 +96,7 @@ const TestView = () => {
     <div style={{ padding: 20 }}>
       <Table
         rowHeight="70"
+        pageSizes={[2,5,10]}
         allowedActions={allowedActions}
         enableAllowedActions={true}
         searchFieldSelectClassName={Style.test}
@@ -107,6 +108,7 @@ const TestView = () => {
         columns={columns}
         endPoint={endPoint}
         extraFilters={extraFilters}
+        onSearch = {(e)=> console.log(e)}
       />
     </div>
   );

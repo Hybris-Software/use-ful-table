@@ -41,6 +41,7 @@ function ActionBar({
     setSearchValue(tableSettings.search.value);
   }, [tableSettings.search.value]);
 
+
   // For debounce mechanisms
   const timeoutId = useRef(null);
 

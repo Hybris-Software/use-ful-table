@@ -11,7 +11,7 @@ import Style from "./PaginationBar.module.css";
 
 function PaginationBar({
   tableRef,
-  tableAPI,
+  data,
   tableSettings,
   texts,
   enablePageSizeSelect,
@@ -22,15 +22,15 @@ function PaginationBar({
   paginationButtonClassName = Style.paginationButtonClass,
 }) {
   const [pageTo, setPageTo] = useState(tableSettings.pagination.page);
-
+  const totalPages = data?.length / tableSettings.pagination.pageSize;
   useEffect(() => {
-    if(pageTo) {
-      tableRef.current.toPage(pageTo)
+    if (pageTo) {
+      tableRef.current.toPage(pageTo);
     }
   }, [pageTo]);
 
   useEffect(() => {
-      setPageTo(tableSettings.pagination.page)
+    setPageTo(tableSettings.pagination.page);
   }, [tableSettings.pagination.page, tableSettings.pagination.pageSize]);
 
   return (
@@ -54,23 +54,25 @@ function PaginationBar({
             showError={false}
             className={toPageInputClassName}
             value={pageTo}
-            onChange={(e) => {setPageTo(e.target.value)} }
+            onChange={(e) => {
+              setPageTo(e.target.value);
+            }}
           />
           <span>
-            {texts.ofPageLabel} {tableAPI?.response?.data.totalPages}
+            {texts.ofPageLabel} {Math.ceil(totalPages)}
           </span>
         </div>
       </div>
       <div className={Style.inputChangePage}>
         <Button
-          disabled={tableAPI?.response?.data?.links?.previous ? false : true}
+          disabled={tableSettings.pagination.page === 1}
           className={paginationButtonClassName}
           onClick={() => tableRef.current.previousPage()}
         >
           {texts.buttonPrevious}
         </Button>
         <Button
-          disabled={tableAPI?.response?.data?.links?.next ? false : true}
+          disabled={tableSettings.pagination.page === Math.ceil(totalPages)}
           className={paginationButtonClassName}
           onClick={() => tableRef.current.nextPage()}
         >

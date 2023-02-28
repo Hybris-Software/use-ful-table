@@ -16,10 +16,9 @@ import PaginationBar from "./PaginationBar/PaginationBar";
 
 // Libraries
 import { useTable } from "react-table";
-import useQuery from "@hybris-software/use-query";
 
 //Addons
-import { createUrl, updateObjectState, CommonStyles } from "./tableAddons";
+import { updateObjectState, CommonStyles } from "./tableAddons";
 
 //Icon
 import { ImWrench } from "react-icons/im";
@@ -27,7 +26,7 @@ import { GrFormClose } from "react-icons/gr";
 import { HiCheck } from "react-icons/hi";
 
 // Styles
-import Style from "./Table.module.css";
+import Style from "./TableClient.module.css";
 import ActionBar from "./ActionBar/ActionBar";
 
 /**
@@ -38,7 +37,6 @@ import ActionBar from "./ActionBar/ActionBar";
  * @param {Number} props.rowHeight - Height of the rows
  * @param {Number} props.height - Height of the table
  * @param {Object} props.Styles - Object with custom styles
- * @param {String} props.endPoint - Endpoint to fetch the data
  * @param {String} props.emptyDataMessage - Message to show when there is no data
  * @param {Object} props.extraFilters - Object with extra filters to add to the query
  * @param {Number} props.defaultPageSize - Default page size
@@ -59,15 +57,15 @@ import ActionBar from "./ActionBar/ActionBar";
  * @param {String} props.paginationButtonBaseClassName - Base class name for the pagination buttons
  */
 
-const TableComponent = (
+const TableClientComponent = (
   {
     pageSizes = [5, 10, 25, 50, 100],
     columns,
+    rawData = [],
     headerHeight = 50,
     rowHeight = 65,
     height,
     Styles,
-    endPoint,
     emptyDataMessage = "No data available",
     extraFilters = {},
     defaultPageSize = 5,
@@ -133,7 +131,6 @@ const TableComponent = (
       field: defaultSearchField,
       value: "",
     },
-    endPoint: endPoint,
     selectedData: [],
   };
 
@@ -142,10 +139,10 @@ const TableComponent = (
   const tableRef = ref || defaultRef;
 
   // States
-  const [url, setUrl] = useState(null);
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
+  const [dataLists, setDataLists] = useState({});
   // Draggable
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -164,7 +161,7 @@ const TableComponent = (
         return (
           <div className={Style.checkboxContainer}>
             <input
-              id={row.id}
+              id={"clientTable"+row.id}
               className={Style.simpleCheckbox}
               type="checkbox"
               checked={
@@ -183,7 +180,7 @@ const TableComponent = (
                 tableRef.current.setSelectedData(tempList);
               }}
             />
-            <label htmlFor={row.id} className={checkboxClassName}>
+            <label htmlFor={"clientTable"+row.id} className={checkboxClassName}>
               <HiCheck />
             </label>
           </div>
@@ -223,48 +220,18 @@ const TableComponent = (
 
   //Customized settings
   const ComputedStyles = Styles ? Styles : CommonStyles;
-
-  const tableAPI = useQuery({
-    url: url,
-    method: "GET",
-    executeImmediately: false,
-    onSuccess: (response) => {
-      onSuccess();
-      if (
-        response?.data.results
-          .map((value) => value.id)
-          .every((tempItem) =>
-            tableSettings.selectedData
-              .map((value) => value.id)
-              .includes(tempItem)
-          )
-      ) {
-        setSelectAllRows(true);
-      } else {
-        setSelectAllRows(false);
-      }
-    },
-    onUnauthorized: (response) => {
-      onUnauthorized();
-    },
-    onError: () => {
-      onError();
-    },
-  });
-
   const tableContext = useMemo(
     () => ({
       tableSettings: tableSettings,
       extraFilters: extraFilters,
-      tableData: tableAPI?.response,
+      data: dataLists?.inPageData,
     }),
-    [tableSettings, extraFilters, tableAPI?.response]
+    [tableSettings, extraFilters, dataLists]
   );
-
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns: computedColumns,
-      data: tableAPI?.response?.data.results || [],
+      data: dataLists?.inPageData || [],
     });
 
   useImperativeHandle(
@@ -327,18 +294,9 @@ const TableComponent = (
   };
 
   useEffect(() => {
-    setUrl(createUrl(tableSettings, extraFilters));
-  }, [tableSettings, extraFilters]);
-
-  useEffect(() => {
-    if (url) tableAPI.executeQuery();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
-
-  useEffect(() => {
     onSelectionChange(tableContext);
     if (
-      tableAPI?.response?.data.results
+      rawData
         .map((value) => value.id)
         .every((item) =>
           tableSettings.selectedData.map((value) => value.id).includes(item)
@@ -350,6 +308,47 @@ const TableComponent = (
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
+
+  useEffect(() => {
+    let tempData = rawData;
+
+    //Search
+    if (tableSettings.search.field && tableSettings.search.value) {
+      tempData = tempData.filter((item) =>
+        item[tableSettings.search.field.field].toString().includes(
+          tableSettings.search.value
+        )
+      );
+    }
+
+    //Sorting
+    if (tableSettings.sortingSettings) {
+      tempData = sortingInClientTable(tempData)
+    }
+    
+    //Pagination
+    const start =
+      (tableSettings.pagination.page - 1) * tableSettings.pagination.pageSize;
+    const end = start + tableSettings.pagination.pageSize;
+
+    //Set the final data for table
+    updateObjectState("filteredData", null, tempData, setDataLists);
+    updateObjectState("inPageData", null, tempData.slice(start, end), setDataLists);
+  }, [tableSettings]);
+
+  function sortingInClientTable(data) {
+    const field = tableSettings.sortingSettings.replace("-", "");
+    if(data[0] && typeof  data[0][field] === "number") {
+      tableSettings.sortingSettings.includes("-")
+      ?(data = data.sort((a, b) => b[field] - a[field]))
+      : (data = data.sort((a, b) => a[field] - b[field]));
+    } else if (typeof  data[0][field] === "string") {
+      tableSettings.sortingSettings.includes("-")
+      ? (data = data.sort((a, b) => b[field].localeCompare(a[field])))
+      : (data = data.sort((a, b) => a[field].localeCompare(b[field])));
+    }
+    return data
+  }
 
   function copyToClipboard(value) {
     const textarea = document.createElement("textarea");
@@ -442,10 +441,13 @@ const TableComponent = (
             </ConditionalComponent>
 
             <ConditionalComponent
-              condition={tableSettings.search.field && tableSettings.search.value}
+              condition={
+                tableSettings.search.field && tableSettings.search.value
+              }
             >
               <div className={Style.rowsSelected}>
-                {tableSettings.search.field.Header}:  {tableSettings.search.value}
+                {tableSettings.search.field.Header}:{" "}
+                {tableSettings.search.value}
                 <GrFormClose
                   onClick={() => {
                     tableRef.current.setSearchField(defaultSearchField);
@@ -497,7 +499,7 @@ const TableComponent = (
               }
             }}
           >
-            {tableAPI?.response?.data.results ? (
+            {dataLists?.inPageData?.length > 0 ? (
               <table {...getTableProps()}>
                 <thead>
                   {headerGroups.map((headerGroup) => {
@@ -527,14 +529,14 @@ const TableComponent = (
                                 >
                                   <div className={Style.checkboxContainer}>
                                     <input
-                                      id="allSelect"
+                                      id="allSelectInClientTable"
                                       type="checkbox"
                                       className={Style.simpleCheckbox}
                                       checked={selectAllRows}
                                       onChange={(e) => {
                                         const temp = [
                                           ...tableSettings.selectedData,
-                                          ...tableAPI?.response?.data.results.filter(
+                                          ...rawData.filter(
                                             (item) =>
                                               !tableSettings.selectedData
                                                 .map((value) => value.id)
@@ -550,7 +552,7 @@ const TableComponent = (
                                           const temp =
                                             tableSettings.selectedData.filter(
                                               (item) =>
-                                                !tableAPI?.response?.data.results
+                                                !rawData
                                                   .map((value) => value.id)
                                                   .includes(item.id)
                                             );
@@ -562,7 +564,7 @@ const TableComponent = (
                                       }}
                                     />
                                     <label
-                                      htmlFor="allSelect"
+                                      htmlFor="allSelectInClientTable"
                                       className={checkboxClassName}
                                     >
                                       <HiCheck />
@@ -637,11 +639,19 @@ const TableComponent = (
                       >
                         {row.cells.map((cell, i) => {
                           return (
-                            <td className={Style.tdCell} {...cell.getCellProps()}>
+                            <td
+                              className={Style.tdCell}
+                              {...cell.getCellProps()}
+                            >
                               <div className={Style.clampedCell}>
                                 {cell.render("Cell")}
                                 {cell.column.copyable && (
-                                  <div className={Style.copyFeature} onClick={()=> copyToClipboard(cell.value)}>Copy</div>
+                                  <div
+                                    className={Style.copyFeature}
+                                    onClick={() => copyToClipboard(cell.value)}
+                                  >
+                                    Copy
+                                  </div>
                                 )}
                               </div>
                             </td>
@@ -652,15 +662,13 @@ const TableComponent = (
                   })}
                 </tbody>
               </table>
-            ) : tableAPI.isLoading ? (
-              loader
             ) : (
               <div className={Style.noResults}>{emptyDataMessage}</div>
             )}
           </div>
           <PaginationBar
             tableRef={tableRef}
-            tableAPI={tableAPI}
+            data={dataLists?.filteredData}
             tableSettings={tableSettings}
             texts={texts}
             paginationClassName={paginationClassName}
@@ -676,7 +684,7 @@ const TableComponent = (
   );
 };
 
-const Table = forwardRef(TableComponent);
+const TableClient = forwardRef(TableClientComponent);
 
 const IconUpComponent = ({ condition, activeClassName, disabledClassName }) => {
   return (
@@ -736,7 +744,7 @@ const IconDownComponent = ({
   );
 };
 
-TableComponent.propTypes = {
+TableClientComponent.propTypes = {
   pageSizes: PropTypes.arrayOf(PropTypes.number),
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   height: PropTypes.string,
@@ -762,4 +770,4 @@ TableComponent.propTypes = {
   onSortChange: PropTypes.func,
 };
 
-export default Table;
+export default TableClient;

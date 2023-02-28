@@ -213,7 +213,7 @@ const TableClientComponent = (
         .filter((item) => !hiddenColumns.includes(item.field))
         .map((column) => ({
           ...column,
-          searchField: column.searchField || column.field,
+          searchField: column.field,
         })),
     ];
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
@@ -286,7 +286,7 @@ const TableClientComponent = (
   );
 
   const sortHandler = (column) => {
-    const columnName = column.orderField || column.field;
+    const columnName = column.field;
     const computedSorting = tableSettings.sortingSettings.includes("-")
       ? columnName
       : "-" + columnName;
@@ -584,7 +584,7 @@ const TableClientComponent = (
                                           "-"
                                         ) &&
                                           tableSettings.sortingSettings ===
-                                            column.orderField) ||
+                                            column.field) ||
                                         tableSettings.sortingSettings ===
                                           column.field
                                       }
@@ -601,7 +601,7 @@ const TableClientComponent = (
                                           "-"
                                         ) &&
                                           tableSettings.sortingSettings ===
-                                            "-" + column.orderField) ||
+                                            "-" + column.field) ||
                                         tableSettings.sortingSettings ===
                                           "-" + column.field
                                       }

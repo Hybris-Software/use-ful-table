@@ -108,7 +108,6 @@ const TestView = () => {
     {
       Header: "Title",
       field: "title",
-      orderField: "title",
       searchable: false,
       accessor: (row) => {
         return row.title;
@@ -117,7 +116,6 @@ const TestView = () => {
     {
       Header: "Status fweuyg uiegfiu gwifug wei",
       field: "status",
-      orderField: "status",
       searchable: false,
       copyable: true,
       accessor: (row) => {
@@ -127,7 +125,6 @@ const TestView = () => {
     {
       Header: "Priority",
       field: "priority",
-      orderField: "priority",
       searchable: false,
       accessor: (row) => {
         return row.priority;

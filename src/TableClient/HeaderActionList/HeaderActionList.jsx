@@ -27,7 +27,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns, texts }) {
 						<ConditionalComponent condition={column.sortable !== false}>
 							<div
 								onClick={() => {
-									const columnName = column.orderField || column.field;
+									const columnName = column.field;
 									tableRef.current.setSortingSettings(columnName);
 								}}
 							>
@@ -37,7 +37,7 @@ function HeaderActionList({ column, tableRef, setHiddenColumns, texts }) {
 						<ConditionalComponent condition={column.sortable !== false}>
 							<div
 								onClick={() => {
-									const columnName = column.orderField || column.field;
+									const columnName = column.field;
 									tableRef.current.setSortingSettings("-" + columnName);
 								}}
 							>

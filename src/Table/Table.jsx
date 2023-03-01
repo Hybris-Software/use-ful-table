@@ -286,16 +286,13 @@ const TableComponent = (
         nextPage() {
           const value = +tableSettings.pagination.page + 1;
           updateObjectState("pagination", "page", value, setTableSettings);
-          onPageChange(tableContext);
         },
         previousPage() {
           const value = tableSettings.pagination.page - 1;
           updateObjectState("pagination", "page", value, setTableSettings);
-          onPageChange(tableContext);
         },
         toPage(page) {
           updateObjectState("pagination", "page", page, setTableSettings);
-          onPageChange(tableContext);
         },
         setPageSize(pageSize) {
           updateObjectState(
@@ -305,7 +302,6 @@ const TableComponent = (
             setTableSettings
           );
           updateObjectState("pagination", "page", 1, setTableSettings);
-          onPageSizeChange(tableContext);
         },
         setSearchValue(value) {
           updateObjectState("search", "value", value, setTableSettings);
@@ -317,14 +313,13 @@ const TableComponent = (
         },
         setSortingSettings(value) {
           updateObjectState("sortingSettings", null, value, setTableSettings);
-          onSortChange(tableContext);
         },
         setSelectedData(value) {
           updateObjectState("selectedData", null, value, setTableSettings);
         },
       };
     },
-    [tableSettings, tableContext, onPageChange, onPageSizeChange, onSortChange]
+    [tableSettings, tableContext]
   );
 
   const sortHandler = (column) => {
@@ -360,6 +355,26 @@ const TableComponent = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
+  useEffect(() => {
+    onPageChange(tableContext);
+  }, [tableSettings.pagination.page]);
+
+  useEffect(() => {
+    onPageSizeChange(tableContext);
+  }, [tableSettings.pagination.pageSize]);
+
+  useEffect(() => {
+    onSortChange(tableContext);
+  }, [tableSettings.sortingSettings]);
+
+  useEffect(() => {
+    onSearchFieldChange(tableContext);
+  }, [tableSettings.search.field]);
+
+  useEffect(() => {
+    onSearch(tableContext);
+  }, [tableSettings.search.value]);
+
   function copyToClipboard(str) {
     const el = document.createElement('textarea');
     el.value = str;
@@ -392,9 +407,6 @@ const TableComponent = (
             enableSearchFieldSelect={enableSearchFieldSelect}
             computedColumns={computedColumns}
             updateObjectState={updateObjectState}
-            onSearchFieldChange={onSearchFieldChange}
-            tableContext={tableContext}
-            onSearch={onSearch}
             inputSearchBaseClassName={inputSearchBaseClassName}
             searchBarClassName={searchBarClassName}
           />

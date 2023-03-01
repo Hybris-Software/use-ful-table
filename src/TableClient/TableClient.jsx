@@ -107,16 +107,12 @@ const TableClientComponent = (
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => {},
-    onUnauthorized = () => {},
-    onError = () => {},
     onSearch = () => {},
     onSearchFieldChange = () => {},
     onPageChange = () => {},
     onPageSizeChange = () => {},
     onSelectionChange = () => {},
     onSortChange = () => {},
-    loader = <Loader />,
   },
   ref
 ) => {
@@ -143,10 +139,12 @@ const TableClientComponent = (
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [dataLists, setDataLists] = useState({});
+
   // Draggable
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+
   // To select all
   const [selectAllRows, setSelectAllRows] = useState(false);
 
@@ -244,16 +242,13 @@ const TableClientComponent = (
         nextPage() {
           const value = +tableSettings.pagination.page + 1;
           updateObjectState("pagination", "page", value, setTableSettings);
-          onPageChange(tableContext);
         },
         previousPage() {
           const value = tableSettings.pagination.page - 1;
           updateObjectState("pagination", "page", value, setTableSettings);
-          onPageChange(tableContext);
         },
         toPage(page) {
           updateObjectState("pagination", "page", page, setTableSettings);
-          onPageChange(tableContext);
         },
         setPageSize(pageSize) {
           updateObjectState(
@@ -275,14 +270,13 @@ const TableClientComponent = (
         },
         setSortingSettings(value) {
           updateObjectState("sortingSettings", null, value, setTableSettings);
-          onSortChange(tableContext);
         },
         setSelectedData(value) {
           updateObjectState("selectedData", null, value, setTableSettings);
         },
       };
     },
-    [tableSettings, tableContext, onPageChange, onPageSizeChange, onSortChange]
+    [tableSettings, tableContext]
   );
 
   const sortHandler = (column) => {
@@ -295,19 +289,28 @@ const TableClientComponent = (
 
   useEffect(() => {
     onSelectionChange(tableContext);
-    if (
-      rawData
-        .map((value) => value.id)
-        .every((item) =>
-          tableSettings.selectedData.map((value) => value.id).includes(item)
-        )
-    ) {
-      setSelectAllRows(true);
-    } else {
-      setSelectAllRows(false);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
+
+  useEffect(() => {
+    onPageChange(tableContext);
+  }, [tableSettings.pagination.page]);
+
+  useEffect(() => {
+    onPageSizeChange(tableContext);
+  }, [tableSettings.pagination.pageSize]);
+
+  useEffect(() => {
+    onSortChange(tableContext);
+  }, [tableSettings.sortingSettings]);
+
+  useEffect(() => {
+    onSearchFieldChange(tableContext);
+  }, [tableSettings.search.field]);
+
+  useEffect(() => {
+    onSearch(tableContext);
+  }, [tableSettings.search.value]);
 
   useEffect(() => {
     let tempData = rawData;
@@ -331,6 +334,18 @@ const TableClientComponent = (
       (tableSettings.pagination.page - 1) * tableSettings.pagination.pageSize;
     const end = start + tableSettings.pagination.pageSize;
 
+    if ( tempData.slice(start, end) && 
+      tempData.slice(start, end)
+        .map((value) => value.id)
+        .every((item) =>
+          tableSettings.selectedData.map((value) => value.id).includes(item)
+        )
+    ) {
+      setSelectAllRows(true);
+    } else {
+      setSelectAllRows(false);
+    }
+
     //Set the final data for table
     updateObjectState("filteredData", null, tempData, setDataLists);
     updateObjectState("inPageData", null, tempData.slice(start, end), setDataLists);
@@ -342,7 +357,7 @@ const TableClientComponent = (
       tableSettings.sortingSettings.includes("-")
       ?(data = data.sort((a, b) => b[field] - a[field]))
       : (data = data.sort((a, b) => a[field] - b[field]));
-    } else if (typeof  data[0][field] === "string") {
+    } else if (data[0] && typeof  data[0][field] === "string") {
       tableSettings.sortingSettings.includes("-")
       ? (data = data.sort((a, b) => b[field].localeCompare(a[field])))
       : (data = data.sort((a, b) => a[field].localeCompare(b[field])));
@@ -373,9 +388,6 @@ const TableClientComponent = (
             enableSearchFieldSelect={enableSearchFieldSelect}
             computedColumns={computedColumns}
             updateObjectState={updateObjectState}
-            onSearchFieldChange={onSearchFieldChange}
-            tableContext={tableContext}
-            onSearch={onSearch}
             inputSearchBaseClassName={inputSearchBaseClassName}
             searchBarClassName={searchBarClassName}
           />
@@ -536,7 +548,7 @@ const TableClientComponent = (
                                       onChange={(e) => {
                                         const temp = [
                                           ...tableSettings.selectedData,
-                                          ...rawData.filter(
+                                          ...dataLists?.inPageData.filter(
                                             (item) =>
                                               !tableSettings.selectedData
                                                 .map((value) => value.id)
@@ -552,7 +564,7 @@ const TableClientComponent = (
                                           const temp =
                                             tableSettings.selectedData.filter(
                                               (item) =>
-                                                !rawData
+                                                !dataLists?.inPageData
                                                   .map((value) => value.id)
                                                   .includes(item.id)
                                             );

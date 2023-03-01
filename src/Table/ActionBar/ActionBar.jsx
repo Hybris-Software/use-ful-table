@@ -20,9 +20,6 @@ function ActionBar({
   enableSearchFieldSelect,
   computedColumns,
   updateObjectState,
-  onSearchFieldChange,
-  tableContext,
-  onSearch,
   inputSearchBaseClassName = Style.inputSearchBaseClass,
   searchBarClassName = Style.searchBarClass,
 }) {
@@ -33,7 +30,6 @@ function ActionBar({
     clearTimeout(timeoutId.current);
     timeoutId.current = setTimeout(() => {
       tableRef.current.setSearchValue(searchValue);
-      onSearch(tableContext);
     }, 1000);
   }, [searchValue]);
 
@@ -84,7 +80,6 @@ function ActionBar({
               value,
               setTableSettings
             );
-            onSearchFieldChange(tableContext);
           }}
         />
       </ConditionalComponent>

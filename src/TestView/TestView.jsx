@@ -6,6 +6,8 @@ import TableClient from "../TableClient/TableClient";
 import Style from "./TestView.module.css";
 
 const TestView = () => {
+
+
   const columns = [
     {
       Header: "#",
@@ -255,7 +257,7 @@ const TestView = () => {
         columns={[...columns]}
         endPoint={endPoint}
         extraFilters={extraFilters}
-        onSearch={(e) => console.log(e)}
+        onPageSizeChange={(e) => console.log(e)}
       />
 
       <TableClient
@@ -273,8 +275,7 @@ const TestView = () => {
         columns={[...clientTableColumns]}
         rawData={[...rawData]}
         extraFilters={extraFilters}
-        onSearch={(e) => console.log(e)}
-        onSelectionChange={(e) => console.log(e)}
+        onPageSizeChange={(e) => console.log(e)}
       />
     </div>
   );

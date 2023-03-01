@@ -401,7 +401,7 @@ const TableComponent = (
           <div className={Style.selectContainer}>
             <div
               className={Style.select}
-            // onMouseLeave={() => setShowDropdown(false)}
+              onMouseLeave={() => setShowDropdown(false)}
             >
               <span
                 className={Style.iconContainer}
@@ -409,7 +409,7 @@ const TableComponent = (
               >
                 {settingsIcon}
               </span>
-              {/* <ConditionalComponent condition={showDropdown}> */}
+
               <div className={!showDropdown ? settingClassName : settingClassNameOpened}
                 style={
                   showDropdown
@@ -453,7 +453,7 @@ const TableComponent = (
                   </div>
                 </div>
               </div>
-              {/* </ConditionalComponent> */}
+
             </div>
 
             <ConditionalComponent

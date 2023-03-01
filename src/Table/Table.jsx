@@ -83,6 +83,9 @@ const TableComponent = (
     enableAllowedActions = false,
     allowedActions,
     settingClassName = Style.tooltopOptions,
+    settingClassNameOpened = Style.tooltopOptionsOpened,
+    settingClassNameList = Style.scrollableList,
+    settingClassNameListOpened = Style.scrollableListOpened,
     searchBarClassName,
     toPageInputClassName,
     toPageInputBaseClassName,
@@ -90,6 +93,7 @@ const TableComponent = (
     paginationClassName,
     checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
+    settingsIcon = <ImWrench />,
     copyToClipboardIcon = <AiOutlineCopy />,
     tooltipClassName = Style.tooltip,
     texts = {
@@ -397,49 +401,59 @@ const TableComponent = (
           <div className={Style.selectContainer}>
             <div
               className={Style.select}
-              onMouseLeave={() => setShowDropdown(false)}
+            // onMouseLeave={() => setShowDropdown(false)}
             >
               <span
                 className={Style.iconContainer}
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                <ImWrench
-                  className={showDropdown ? Style.arrowOpened : Style.arrow}
-                />
+                {settingsIcon}
               </span>
-              <ConditionalComponent condition={showDropdown}>
-                <div className={settingClassName}>
-                  <div className={Style.options}>
-                    <h4 className={Style.heading}>{texts.settingTitle}</h4>
-                    <div className={Style.scrollableList}>
-                      {columns.map((item, index) => (
-                        <div key={index} className={Style.singleOption}>
-                          <label className={Style.checkboxInput}>
-                            <input
-                              type="checkbox"
-                              checked={hiddenColumns.includes(item.field)}
-                              onChange={(e) => {
-                                hiddenColumns.includes(item.field)
-                                  ? setHiddenColumns((oldState) =>
-                                    oldState.filter(
-                                      (field) => field !== item.field
-                                    )
+              {/* <ConditionalComponent condition={showDropdown}> */}
+              <div className={!showDropdown ? settingClassName : settingClassNameOpened}
+                style={
+                  showDropdown
+                    ? { transition: "all 0.3s ease 0s" }
+                    : { transition: "all 0.3s ease 0s" }
+                }
+              >
+                <div className={Style.options}>
+                  <h4 className={Style.heading}>{texts.settingTitle}</h4>
+                  <div className={showDropdown ? settingClassNameListOpened : settingClassNameList}
+                    style={
+                      showDropdown
+                        ? { transition: "all 0.3s ease" }
+                        : { transition: "all 0.3s ease", }
+                    }
+                  >
+                    {columns.map((item, index) => (
+                      <div key={index} className={Style.singleOption}>
+                        <label className={Style.checkboxInput}>
+                          <input
+                            type="checkbox"
+                            checked={hiddenColumns.includes(item.field)}
+                            onChange={(e) => {
+                              hiddenColumns.includes(item.field)
+                                ? setHiddenColumns((oldState) =>
+                                  oldState.filter(
+                                    (field) => field !== item.field
                                   )
-                                  : setHiddenColumns((oldState) => [
-                                    ...oldState,
-                                    item.field,
-                                  ]);
-                              }}
-                            />
-                            <i></i>
-                          </label>
-                          <div className={Style.optionText}>{item.Header}</div>
-                        </div>
-                      ))}
-                    </div>
+                                )
+                                : setHiddenColumns((oldState) => [
+                                  ...oldState,
+                                  item.field,
+                                ]);
+                            }}
+                          />
+                          <i></i>
+                        </label>
+                        <div className={Style.optionText}>{item.Header}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </ConditionalComponent>
+              </div>
+              {/* </ConditionalComponent> */}
             </div>
 
             <ConditionalComponent

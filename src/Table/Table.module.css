@@ -28,7 +28,8 @@
   cursor: pointer;
 }
 
-.tooltopOptions {
+.tooltopOptions,
+.tooltopOptionsOpened {
   position: absolute;
   padding-top: 10px;
   top: 100%;
@@ -37,6 +38,12 @@
   min-width: 200px;
   max-width: 50vw;
   white-space: nowrap;
+  opacity: 0;
+  visibility: "hidden";
+}
+.tooltopOptionsOpened {
+  opacity: 1;
+  visibility: "visible";
 }
 
 .options {
@@ -55,16 +62,21 @@
   font-size: 14px;
 }
 
-.scrollableList{
-  max-height: 215px;
+.scrollableList,
+.scrollableListOpened{
+  max-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
   scrollbar-color: transparent transparent; /* Only Firefox */
 }
+.scrollableListOpened{
+  max-height: 200px;
+}
 
-.scrollableList::-webkit-scrollbar {
+.scrollableList::-webkit-scrollbar,
+.scrollableListOpened::-webkit-scrollbar {
   width: 0px;
   background: transparent; /* Chrome/Safari/Webkit */
 }

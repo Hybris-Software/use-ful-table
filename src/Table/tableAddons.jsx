@@ -48,7 +48,7 @@ const CommonStyles = styled.div`
           min-width: 200px;
           max-width: 800px;
           text-align: center;
-          padding: 0 5px;
+          padding: 0 30px;
           border-left: 1px solid #f3f3f3;
           :first-child {
             min-width: 60px;
@@ -71,7 +71,7 @@ const CommonStyles = styled.div`
           max-width: 800px;
           text-align: center;
           border-top: 1px solid #f3f3f3;
-          padding: 0 5px;
+          padding: 0 30px;
           border-left: 1px solid #f3f3f3;
           :first-child {
             min-width: 60px;

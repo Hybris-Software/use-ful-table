@@ -25,6 +25,7 @@ import { createUrl, updateObjectState, CommonStyles } from "./tableAddons";
 import { ImWrench } from "react-icons/im";
 import { GrFormClose } from "react-icons/gr";
 import { HiCheck } from "react-icons/hi";
+import { AiOutlineCopy } from "react-icons/ai";
 
 // Styles
 import Style from "./Table.module.css";
@@ -89,6 +90,8 @@ const TableComponent = (
     paginationClassName,
     checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
+    copyToClipboardIcon = <AiOutlineCopy />,
+    tooltipClassName = Style.tooltip,
     texts = {
       actionSelect: "Select an action",
       buttonAction: "Apply",
@@ -104,20 +107,22 @@ const TableComponent = (
       ofPageLabel: "of",
       buttonPrevious: "Previous",
       buttonNext: "Next",
+      copyToClipboard: "Copy to clipboard",
+      copied: "Copied",
     },
     activeSortIconClassName,
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => {},
-    onUnauthorized = () => {},
-    onError = () => {},
-    onSearch = () => {},
-    onSearchFieldChange = () => {},
-    onPageChange = () => {},
-    onPageSizeChange = () => {},
-    onSelectionChange = () => {},
-    onSortChange = () => {},
+    onSuccess = () => { },
+    onUnauthorized = () => { },
+    onError = () => { },
+    onSearch = () => { },
+    onSearchFieldChange = () => { },
+    onPageChange = () => { },
+    onPageSizeChange = () => { },
+    onSelectionChange = () => { },
+    onSortChange = () => { },
     loader = <Loader />,
   },
   ref
@@ -351,14 +356,23 @@ const TableComponent = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
-  function copyToClipboard(value) {
-    const textarea = document.createElement("textarea");
-    textarea.value = value;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
+  function copyToClipboard(str) {
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    if (selected) {
+      document.getSelection().removeAllRanges();
+      document.getSelection().addRange(selected);
+    }
   }
+
   return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
@@ -407,14 +421,14 @@ const TableComponent = (
                               onChange={(e) => {
                                 hiddenColumns.includes(item.field)
                                   ? setHiddenColumns((oldState) =>
-                                      oldState.filter(
-                                        (field) => field !== item.field
-                                      )
+                                    oldState.filter(
+                                      (field) => field !== item.field
                                     )
+                                  )
                                   : setHiddenColumns((oldState) => [
-                                      ...oldState,
-                                      item.field,
-                                    ]);
+                                    ...oldState,
+                                    item.field,
+                                  ]);
                               }}
                             />
                             <i></i>
@@ -460,11 +474,10 @@ const TableComponent = (
             style={
               !height
                 ? {
-                    minHeight: `${
-                      rowHeight * tableSettings.pagination.pageSize +
-                      headerHeight
+                  minHeight: `${rowHeight * tableSettings.pagination.pageSize +
+                    headerHeight
                     }px`,
-                  }
+                }
                 : { minHeight: `${height}px` }
             }
             className={Style.tableContent}
@@ -582,9 +595,9 @@ const TableComponent = (
                                           "-"
                                         ) &&
                                           tableSettings.sortingSettings ===
-                                            column.orderField) ||
+                                          column.orderField) ||
                                         tableSettings.sortingSettings ===
-                                          column.field
+                                        column.field
                                       }
                                       activeClassName={
                                         computedActiveSortIconClassName
@@ -599,9 +612,9 @@ const TableComponent = (
                                           "-"
                                         ) &&
                                           tableSettings.sortingSettings ===
-                                            "-" + column.orderField) ||
+                                          "-" + column.orderField) ||
                                         tableSettings.sortingSettings ===
-                                          "-" + column.field
+                                        "-" + column.field
                                       }
                                       activeClassName={
                                         computedActiveSortIconClassName
@@ -641,7 +654,21 @@ const TableComponent = (
                               <div className={Style.clampedCell}>
                                 {cell.render("Cell")}
                                 {cell.column.copyable && (
-                                  <div className={Style.copyFeature} onClick={()=> copyToClipboard(cell.value)}>Copy</div>
+                                  <div
+                                    title={texts.copyToClipboard}
+                                    className={Style.copyFeature}
+                                    onClick={(e) => {
+                                      copyToClipboard(cell.value);
+                                      const target = e.currentTarget.children[1];
+                                      target.style.opacity = "1"
+                                      setTimeout(() => {
+                                        target.style.opacity = "0"
+                                      }, 1000)
+                                    }}
+                                  >
+                                    {copyToClipboardIcon}
+                                    <div className={tooltipClassName}>{texts.copied}</div>
+                                  </div>
                                 )}
                               </div>
                             </td>
@@ -672,7 +699,7 @@ const TableComponent = (
           />
         </div>
       </div>
-    </ComputedStyles>
+    </ComputedStyles >
   );
 };
 

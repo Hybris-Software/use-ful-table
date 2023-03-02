@@ -34,7 +34,7 @@ const CommonStyles = styled.div`
   padding: 1rem;
   box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
   border-radius: 5px;
-
+  
   table {
     width: 100%;
     border-spacing: 0;
@@ -44,6 +44,7 @@ const CommonStyles = styled.div`
         color: #757575;
         font-weight: 600;
         font-size: 14px;
+        
         th {
           min-width: 200px;
           max-width: 800px;

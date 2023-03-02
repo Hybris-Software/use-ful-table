@@ -17,6 +17,7 @@ import PaginationBar from "./PaginationBar/PaginationBar";
 // Libraries
 import { useTable } from "react-table";
 import useQuery from "@hybris-software/use-query";
+import styled from "styled-components";
 
 //Addons
 import { createUrl, updateObjectState, CommonStyles } from "./tableAddons";
@@ -60,6 +61,17 @@ import ActionBar from "./ActionBar/ActionBar";
  * @param {String} props.paginationButtonBaseClassName - Base class name for the pagination buttons
  */
 
+const StripedTable = styled(CommonStyles)`
+  table {
+    tbody {
+      tr {
+        &:nth-child(odd) {
+          background-color: #bfcae41f;
+        }
+      }
+    }
+  }
+`;
 const TableComponent = (
   {
     pageSizes = [5, 10, 25, 50, 100],
@@ -79,7 +91,7 @@ const TableComponent = (
     defaultSearchField = "",
     inputSearchBaseClassName = Style.inputSearchBaseClass,
     enableSelectableRows = true,
-    selectabledRowsClassName = Style.selectableRowsClass,
+    selectableRowsColor = "#bfcae4",
     enableAllowedActions = false,
     allowedActions,
     settingClassName = Style.tooltopOptions,
@@ -96,6 +108,8 @@ const TableComponent = (
     settingsIcon = <ImWrench />,
     copyToClipboardIcon = <AiOutlineCopy />,
     tooltipClassName = Style.tooltip,
+    enableStripedTable = false,
+    tableStripedRowColor = "#bfcae41f",
     texts = {
       actionSelect: "Select an action",
       buttonAction: "Apply",
@@ -118,15 +132,15 @@ const TableComponent = (
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => { },
-    onUnauthorized = () => { },
-    onError = () => { },
-    onSearch = () => { },
-    onSearchFieldChange = () => { },
-    onPageChange = () => { },
-    onPageSizeChange = () => { },
-    onSelectionChange = () => { },
-    onSortChange = () => { },
+    onSuccess = () => {},
+    onUnauthorized = () => {},
+    onError = () => {},
+    onSearch = () => {},
+    onSearchFieldChange = () => {},
+    onPageChange = () => {},
+    onPageSizeChange = () => {},
+    onSelectionChange = () => {},
+    onSortChange = () => {},
     loader = <Loader />,
   },
   ref
@@ -231,7 +245,12 @@ const TableComponent = (
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
 
   //Customized settings
-  const ComputedStyles = Styles ? Styles : CommonStyles;
+
+  const ComputedStyles = Styles
+    ? Styles
+    : enableStripedTable
+    ? StripedTable
+    : CommonStyles;
 
   const tableAPI = useQuery({
     url: url,
@@ -376,15 +395,18 @@ const TableComponent = (
   }, [tableSettings.search.value]);
 
   function copyToClipboard(str) {
-    const el = document.createElement('textarea');
+    const el = document.createElement("textarea");
     el.value = str;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
     document.body.appendChild(el);
-    const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+    const selected =
+      document.getSelection().rangeCount > 0
+        ? document.getSelection().getRangeAt(0)
+        : false;
     el.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     document.body.removeChild(el);
     if (selected) {
       document.getSelection().removeAllRanges();
@@ -422,7 +444,10 @@ const TableComponent = (
                 {settingsIcon}
               </span>
 
-              <div className={!showDropdown ? settingClassName : settingClassNameOpened}
+              <div
+                className={
+                  !showDropdown ? settingClassName : settingClassNameOpened
+                }
                 style={
                   showDropdown
                     ? { transition: "all 0.3s ease 0s" }
@@ -431,11 +456,16 @@ const TableComponent = (
               >
                 <div className={Style.options}>
                   <h4 className={Style.heading}>{texts.settingTitle}</h4>
-                  <div className={showDropdown ? settingClassNameListOpened : settingClassNameList}
+                  <div
+                    className={
+                      showDropdown
+                        ? settingClassNameListOpened
+                        : settingClassNameList
+                    }
                     style={
                       showDropdown
                         ? { transition: "all 0.3s ease" }
-                        : { transition: "all 0.3s ease", }
+                        : { transition: "all 0.3s ease" }
                     }
                   >
                     {columns.map((item, index) => (
@@ -447,14 +477,14 @@ const TableComponent = (
                             onChange={(e) => {
                               hiddenColumns.includes(item.field)
                                 ? setHiddenColumns((oldState) =>
-                                  oldState.filter(
-                                    (field) => field !== item.field
+                                    oldState.filter(
+                                      (field) => field !== item.field
+                                    )
                                   )
-                                )
                                 : setHiddenColumns((oldState) => [
-                                  ...oldState,
-                                  item.field,
-                                ]);
+                                    ...oldState,
+                                    item.field,
+                                  ]);
                             }}
                           />
                           <i></i>
@@ -465,7 +495,6 @@ const TableComponent = (
                   </div>
                 </div>
               </div>
-
             </div>
 
             <ConditionalComponent
@@ -482,10 +511,13 @@ const TableComponent = (
             </ConditionalComponent>
 
             <ConditionalComponent
-              condition={tableSettings.search.field && tableSettings.search.value}
+              condition={
+                tableSettings.search.field && tableSettings.search.value
+              }
             >
               <div className={Style.rowsSelected}>
-                {tableSettings.search.field.Header}:  {tableSettings.search.value}
+                {tableSettings.search.field.Header}:{" "}
+                {tableSettings.search.value}
                 <GrFormClose
                   onClick={() => {
                     tableRef.current.setSearchField(defaultSearchField);
@@ -500,10 +532,11 @@ const TableComponent = (
             style={
               !height
                 ? {
-                  minHeight: `${rowHeight * tableSettings.pagination.pageSize +
-                    headerHeight
+                    minHeight: `${
+                      rowHeight * tableSettings.pagination.pageSize +
+                      headerHeight
                     }px`,
-                }
+                  }
                 : { minHeight: `${height}px` }
             }
             className={Style.tableContent}
@@ -621,9 +654,9 @@ const TableComponent = (
                                           "-"
                                         ) &&
                                           tableSettings.sortingSettings ===
-                                          column.orderField) ||
+                                            column.orderField) ||
                                         tableSettings.sortingSettings ===
-                                        column.field
+                                          column.field
                                       }
                                       activeClassName={
                                         computedActiveSortIconClassName
@@ -638,9 +671,9 @@ const TableComponent = (
                                           "-"
                                         ) &&
                                           tableSettings.sortingSettings ===
-                                          "-" + column.orderField) ||
+                                            "-" + column.orderField) ||
                                         tableSettings.sortingSettings ===
-                                        "-" + column.field
+                                          "-" + column.field
                                       }
                                       activeClassName={
                                         computedActiveSortIconClassName
@@ -665,18 +698,21 @@ const TableComponent = (
                     return (
                       <tr
                         {...row.getRowProps()}
-                        className={
-                          tableSettings.selectedData
+                        style={{
+                          height: `${rowHeight}px`,
+                          backgroundColor: tableSettings.selectedData
                             .map((row) => row.id)
                             .includes(row.original.id)
-                            ? selectabledRowsClassName
-                            : undefined
-                        }
-                        style={{ height: `${rowHeight}px` }}
+                            ? selectableRowsColor
+                            : undefined,
+                        }}
                       >
                         {row.cells.map((cell, i) => {
                           return (
-                            <td className={Style.tdCell} {...cell.getCellProps()}>
+                            <td
+                              className={Style.tdCell}
+                              {...cell.getCellProps()}
+                            >
                               <div className={Style.clampedCell}>
                                 {cell.render("Cell")}
                                 {cell.column.copyable && (
@@ -685,15 +721,18 @@ const TableComponent = (
                                     className={Style.copyFeature}
                                     onClick={(e) => {
                                       copyToClipboard(cell.value);
-                                      const target = e.currentTarget.children[1];
-                                      target.style.opacity = "1"
+                                      const target =
+                                        e.currentTarget.children[1];
+                                      target.style.opacity = "1";
                                       setTimeout(() => {
-                                        target.style.opacity = "0"
-                                      }, 1000)
+                                        target.style.opacity = "0";
+                                      }, 1000);
                                     }}
                                   >
                                     {copyToClipboardIcon}
-                                    <div className={tooltipClassName}>{texts.copied}</div>
+                                    <div className={tooltipClassName}>
+                                      {texts.copied}
+                                    </div>
                                   </div>
                                 )}
                               </div>
@@ -725,7 +764,7 @@ const TableComponent = (
           />
         </div>
       </div>
-    </ComputedStyles >
+    </ComputedStyles>
   );
 };
 

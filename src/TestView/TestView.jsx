@@ -173,7 +173,7 @@ const TestView = () => {
       createdAt: "2023-02-11T06:37:13.289279Z",
       updatedAt: "2023-02-11T08:21:15.320096Z",
       title: "qweqwewqeqw",
-      subject: "wqeqwe",
+      subject: null,
       description:
         "Unlike traditional markets where fundamentals underpin asset prices trends, is mostly sentiment driven. Hence, it is through historical data that one can extract signals with predictive power. It is also only through a diversified portfolio one can limit and control downside risks, particulary when investing in such a volatile asset class",
       priority: "MEDIUM",
@@ -258,6 +258,7 @@ const TestView = () => {
         endPoint={endPoint}
         extraFilters={extraFilters}
         onPageSizeChange={(e) => console.log(e)}
+        enableStripedTable = {true}
       />
 
       <TableClient

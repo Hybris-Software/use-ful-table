@@ -24,6 +24,7 @@ import { updateObjectState, CommonStyles } from "./tableAddons";
 import { ImWrench } from "react-icons/im";
 import { GrFormClose } from "react-icons/gr";
 import { HiCheck } from "react-icons/hi";
+import { AiOutlineCopy } from "react-icons/ai";
 
 // Styles
 import Style from "./TableClient.module.css";
@@ -80,6 +81,9 @@ const TableClientComponent = (
     enableAllowedActions = false,
     allowedActions,
     settingClassName = Style.tooltopOptions,
+    settingClassNameOpened = Style.tooltopOptionsOpened,
+    settingClassNameList = Style.scrollableList,
+    settingClassNameListOpened = Style.scrollableListOpened,
     searchBarClassName,
     toPageInputClassName,
     toPageInputBaseClassName,
@@ -87,6 +91,9 @@ const TableClientComponent = (
     paginationClassName,
     checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
+    settingsIcon = <ImWrench />,
+    copyToClipboardIcon = <AiOutlineCopy />,
+    tooltipClassName = Style.tooltip,
     texts = {
       actionSelect: "Select an action",
       buttonAction: "Apply",
@@ -102,6 +109,8 @@ const TableClientComponent = (
       ofPageLabel: "of",
       buttonPrevious: "Previous",
       buttonNext: "Next",
+      copyToClipboard: "Copy to clipboard",
+      copied: "Copied",
     },
     activeSortIconClassName,
     disableSortIconClassName,
@@ -159,7 +168,7 @@ const TableClientComponent = (
         return (
           <div className={Style.checkboxContainer}>
             <input
-              id={"clientTable"+row.id}
+              id={"clientTable" + row.id}
               className={Style.simpleCheckbox}
               type="checkbox"
               checked={
@@ -178,7 +187,10 @@ const TableClientComponent = (
                 tableRef.current.setSelectedData(tempList);
               }}
             />
-            <label htmlFor={"clientTable"+row.id} className={checkboxClassName}>
+            <label
+              htmlFor={"clientTable" + row.id}
+              className={checkboxClassName}
+            >
               <HiCheck />
             </label>
           </div>
@@ -317,25 +329,29 @@ const TableClientComponent = (
 
     //Search
     if (tableSettings.search.field && tableSettings.search.value) {
-      tempData = tempData.filter((item) =>
-        item[tableSettings.search.field.field].toString().includes(
-          tableSettings.search.value
-        )
+      tempData = tempData.filter(
+        (item) =>
+          item[tableSettings.search.field.field] &&
+          item[tableSettings.search.field.field]
+            .toString()
+            .includes(tableSettings.search.value)
       );
     }
 
     //Sorting
     if (tableSettings.sortingSettings) {
-      tempData = sortingInClientTable(tempData)
+      tempData = sortingInClientTable(tempData);
     }
-    
+
     //Pagination
     const start =
       (tableSettings.pagination.page - 1) * tableSettings.pagination.pageSize;
     const end = start + tableSettings.pagination.pageSize;
 
-    if ( tempData.slice(start, end) && 
-      tempData.slice(start, end)
+    if (
+      tempData.slice(start, end) &&
+      tempData
+        .slice(start, end)
         .map((value) => value.id)
         .every((item) =>
           tableSettings.selectedData.map((value) => value.id).includes(item)
@@ -348,30 +364,46 @@ const TableClientComponent = (
 
     //Set the final data for table
     updateObjectState("filteredData", null, tempData, setDataLists);
-    updateObjectState("inPageData", null, tempData.slice(start, end), setDataLists);
+    updateObjectState(
+      "inPageData",
+      null,
+      tempData.slice(start, end),
+      setDataLists
+    );
   }, [tableSettings]);
 
   function sortingInClientTable(data) {
     const field = tableSettings.sortingSettings.replace("-", "");
-    if(data[0] && typeof  data[0][field] === "number") {
+    if (data[0] && typeof data[0][field] === "number") {
       tableSettings.sortingSettings.includes("-")
-      ?(data = data.sort((a, b) => b[field] - a[field]))
-      : (data = data.sort((a, b) => a[field] - b[field]));
-    } else if (data[0] && typeof  data[0][field] === "string") {
+        ? (data = data.sort((a, b) => b[field] - a[field]))
+        : (data = data.sort((a, b) => a[field] - b[field]));
+    } else if (data[0] && typeof data[0][field] === "string") {
       tableSettings.sortingSettings.includes("-")
-      ? (data = data.sort((a, b) => b[field].localeCompare(a[field])))
-      : (data = data.sort((a, b) => a[field].localeCompare(b[field])));
+        ? (data = data.sort((a, b) => b[field].localeCompare(a[field])))
+        : (data = data.sort((a, b) => a[field].localeCompare(b[field])));
     }
-    return data
+    return data;
   }
 
-  function copyToClipboard(value) {
-    const textarea = document.createElement("textarea");
-    textarea.value = value;
-    document.body.appendChild(textarea);
-    textarea.select();
+  function copyToClipboard(str) {
+    const el = document.createElement("textarea");
+    el.value = str;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    const selected =
+      document.getSelection().rangeCount > 0
+        ? document.getSelection().getRangeAt(0)
+        : false;
+    el.select();
     document.execCommand("copy");
-    document.body.removeChild(textarea);
+    document.body.removeChild(el);
+    if (selected) {
+      document.getSelection().removeAllRanges();
+      document.getSelection().addRange(selected);
+    }
   }
   return (
     <ComputedStyles>
@@ -400,43 +432,59 @@ const TableClientComponent = (
                 className={Style.iconContainer}
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                <ImWrench
-                  className={showDropdown ? Style.arrowOpened : Style.arrow}
-                />
+                {settingsIcon}
               </span>
-              <ConditionalComponent condition={showDropdown}>
-                <div className={settingClassName}>
-                  <div className={Style.options}>
-                    <h4 className={Style.heading}>{texts.settingTitle}</h4>
-                    <div className={Style.scrollableList}>
-                      {columns.map((item, index) => (
-                        <div key={index} className={Style.singleOption}>
-                          <label className={Style.checkboxInput}>
-                            <input
-                              type="checkbox"
-                              checked={hiddenColumns.includes(item.field)}
-                              onChange={(e) => {
-                                hiddenColumns.includes(item.field)
-                                  ? setHiddenColumns((oldState) =>
-                                      oldState.filter(
-                                        (field) => field !== item.field
-                                      )
+              <div
+                className={
+                  !showDropdown ? settingClassName : settingClassNameOpened
+                }
+                style={
+                  showDropdown
+                    ? { transition: "all 0.3s ease 0s" }
+                    : { transition: "all 0.3s ease 0s" }
+                }
+              >
+                <div className={Style.options}>
+                  <h4 className={Style.heading}>{texts.settingTitle}</h4>
+                  <div
+                    className={
+                      showDropdown
+                        ? settingClassNameListOpened
+                        : settingClassNameList
+                    }
+                    style={
+                      showDropdown
+                        ? { transition: "all 0.3s ease" }
+                        : { transition: "all 0.3s ease" }
+                    }
+                  >
+                    {columns.map((item, index) => (
+                      <div key={index} className={Style.singleOption}>
+                        <label className={Style.checkboxInput}>
+                          <input
+                            type="checkbox"
+                            checked={hiddenColumns.includes(item.field)}
+                            onChange={(e) => {
+                              hiddenColumns.includes(item.field)
+                                ? setHiddenColumns((oldState) =>
+                                    oldState.filter(
+                                      (field) => field !== item.field
                                     )
-                                  : setHiddenColumns((oldState) => [
-                                      ...oldState,
-                                      item.field,
-                                    ]);
-                              }}
-                            />
-                            <i></i>
-                          </label>
-                          <div className={Style.optionText}>{item.Header}</div>
-                        </div>
-                      ))}
-                    </div>
+                                  )
+                                : setHiddenColumns((oldState) => [
+                                    ...oldState,
+                                    item.field,
+                                  ]);
+                            }}
+                          />
+                          <i></i>
+                        </label>
+                        <div className={Style.optionText}>{item.Header}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </ConditionalComponent>
+              </div>
             </div>
 
             <ConditionalComponent
@@ -659,10 +707,22 @@ const TableClientComponent = (
                                 {cell.render("Cell")}
                                 {cell.column.copyable && (
                                   <div
+                                    title={texts.copyToClipboard}
                                     className={Style.copyFeature}
-                                    onClick={() => copyToClipboard(cell.value)}
+                                    onClick={(e) => {
+                                      copyToClipboard(cell.value);
+                                      const target =
+                                        e.currentTarget.children[1];
+                                      target.style.opacity = "1";
+                                      setTimeout(() => {
+                                        target.style.opacity = "0";
+                                      }, 1000);
+                                    }}
                                   >
-                                    Copy
+                                    {copyToClipboardIcon}
+                                    <div className={tooltipClassName}>
+                                      {texts.copied}
+                                    </div>
                                   </div>
                                 )}
                               </div>

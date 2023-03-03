@@ -16,11 +16,9 @@ import PaginationBar from "./PaginationBar/PaginationBar";
 
 // Libraries
 import { useTable } from "react-table";
-import useQuery from "@hybris-software/use-query";
-import styled from "styled-components";
 
 //Addons
-import { createUrl, updateObjectState, CommonStyles } from "./tableAddons";
+import { updateObjectState, CommonStyles } from "./tableAddons";
 
 //Icon
 import { ImWrench } from "react-icons/im";
@@ -29,7 +27,7 @@ import { HiCheck } from "react-icons/hi";
 import { AiOutlineCopy } from "react-icons/ai";
 
 // Styles
-import Style from "./Table.module.css";
+import Style from "./TableClient.module.css";
 import ActionBar from "./ActionBar/ActionBar";
 
 /**
@@ -40,7 +38,6 @@ import ActionBar from "./ActionBar/ActionBar";
  * @param {Number} props.rowHeight - Height of the rows
  * @param {Number} props.height - Height of the table
  * @param {Object} props.Styles - Object with custom styles
- * @param {String} props.endPoint - Endpoint to fetch the data
  * @param {String} props.emptyDataMessage - Message to show when there is no data
  * @param {Object} props.extraFilters - Object with extra filters to add to the query
  * @param {Number} props.defaultPageSize - Default page size
@@ -61,26 +58,15 @@ import ActionBar from "./ActionBar/ActionBar";
  * @param {String} props.paginationButtonBaseClassName - Base class name for the pagination buttons
  */
 
-const StripedTable = styled(CommonStyles)`
-  table {
-    tbody {
-      tr {
-        &:nth-child(odd) {
-          background-color: #bfcae41f;
-        }
-      }
-    }
-  }
-`;
-const TableComponent = (
+const TableClientComponent = (
   {
     pageSizes = [5, 10, 25, 50, 100],
     columns,
+    rawData = [],
     headerHeight = 50,
     rowHeight = 65,
     height,
     Styles,
-    endPoint,
     emptyDataMessage = "No data available",
     extraFilters = {},
     defaultPageSize = 5,
@@ -91,7 +77,7 @@ const TableComponent = (
     defaultSearchField = "",
     inputSearchBaseClassName = Style.inputSearchBaseClass,
     enableSelectableRows = true,
-    selectableRowsColor = "#bfcae4",
+    selectabledRowsClassName = Style.selectableRowsClass,
     enableAllowedActions = false,
     allowedActions,
     settingClassName = Style.tooltopOptions,
@@ -108,8 +94,6 @@ const TableComponent = (
     settingsIcon = <ImWrench />,
     copyToClipboardIcon = <AiOutlineCopy />,
     tooltipClassName = Style.tooltip,
-    enableStripedTable = false,
-    tableStripedRowColor = "#bfcae41f",
     texts = {
       actionSelect: "Select an action",
       buttonAction: "Apply",
@@ -132,16 +116,12 @@ const TableComponent = (
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => {},
-    onUnauthorized = () => {},
-    onError = () => {},
     onSearch = () => {},
     onSearchFieldChange = () => {},
     onPageChange = () => {},
     onPageSizeChange = () => {},
     onSelectionChange = () => {},
     onSortChange = () => {},
-    loader = <Loader />,
   },
   ref
 ) => {
@@ -156,7 +136,6 @@ const TableComponent = (
       field: defaultSearchField,
       value: "",
     },
-    endPoint: endPoint,
     selectedData: [],
   };
 
@@ -165,35 +144,19 @@ const TableComponent = (
   const tableRef = ref || defaultRef;
 
   // States
-  const [url, setUrl] = useState(null);
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
-  
+  const [dataLists, setDataLists] = useState({});
+
   // Draggable
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+
+  // To select all
   const [selectAllRows, setSelectAllRows] = useState(false);
 
-  // Icons
-  const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
-  const ComputedDownSortIcon = sortingDownIcon
-    ? sortingDownIcon
-    : IconDownComponent;
-
-  // Classes
-  const computedSortingClassName = sortingClassName
-    ? sortingClassName
-    : Style.sortingClassName;
-  const computedDisableSortIconClassName = disableSortIconClassName
-    ? disableSortIconClassName
-    : Style.sortingIconDisabled;
-  const computedActiveSortIconClassName = activeSortIconClassName
-    ? activeSortIconClassName
-    : Style.sortingIconActive;
-
-  // Columns
   const selectColumn = useMemo(
     () => ({
       Header: " ",
@@ -205,7 +168,7 @@ const TableComponent = (
         return (
           <div className={Style.checkboxContainer}>
             <input
-              id={row.id}
+              id={"clientTable" + row.id}
               className={Style.simpleCheckbox}
               type="checkbox"
               checked={
@@ -216,6 +179,7 @@ const TableComponent = (
               onChange={(e) => {
                 let tempList = [...tableSettings.selectedData];
                 if (e.target.checked) {
+                  // tempList.push(row);
                   tempList = [...tempList, row];
                 } else {
                   tempList = tempList.filter((item) => item.id !== row.id);
@@ -223,7 +187,10 @@ const TableComponent = (
                 tableRef.current.setSelectedData(tempList);
               }}
             />
-            <label htmlFor={row.id} className={checkboxClassName}>
+            <label
+              htmlFor={"clientTable" + row.id}
+              className={checkboxClassName}
+            >
               <HiCheck />
             </label>
           </div>
@@ -234,6 +201,21 @@ const TableComponent = (
     [tableSettings, tableRef]
   );
 
+  const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
+  const ComputedDownSortIcon = sortingDownIcon
+    ? sortingDownIcon
+    : IconDownComponent;
+
+  const computedSortingClassName = sortingClassName
+    ? sortingClassName
+    : Style.sortingClassName;
+  const computedDisableSortIconClassName = disableSortIconClassName
+    ? disableSortIconClassName
+    : Style.sortingIconDisabled;
+  const computedActiveSortIconClassName = activeSortIconClassName
+    ? activeSortIconClassName
+    : Style.sortingIconActive;
+
   const computedColumns = useMemo(() => {
     return [
       ...(enableSelectableRows ? [selectColumn] : []),
@@ -241,70 +223,27 @@ const TableComponent = (
         .filter((item) => !hiddenColumns.includes(item.field))
         .map((column) => ({
           ...column,
-          searchField: column.searchField || column.field,
+          searchField: column.field,
         })),
     ];
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
 
-<<<<<<< HEAD
-  // Customized settings
-  const ComputedStyles = Styles ? Styles : CommonStyles;
-=======
   //Customized settings
-
-  const ComputedStyles = Styles
-    ? Styles
-    : enableStripedTable
-    ? StripedTable
-    : CommonStyles;
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
-
-  // Query
-  const tableAPI = useQuery({
-    url: url,
-    method: "GET",
-    executeImmediately: false,
-    onSuccess: (response) => {
-      onSuccess();
-      if (
-        response?.data.results
-          .map((value) => value.id)
-          .every((tempItem) =>
-            tableSettings.selectedData
-              .map((value) => value.id)
-              .includes(tempItem)
-          )
-      ) {
-        setSelectAllRows(true);
-      } else {
-        setSelectAllRows(false);
-      }
-    },
-    onUnauthorized: (response) => {
-      onUnauthorized();
-    },
-    onError: () => {
-      onError();
-    },
-  });
-
-  // Table Context for Events
+  const ComputedStyles = Styles ? Styles : CommonStyles;
   const tableContext = useMemo(
     () => ({
       tableSettings: tableSettings,
       extraFilters: extraFilters,
-      tableData: tableAPI?.response,
+      data: dataLists?.inPageData,
     }),
-    [tableSettings, extraFilters, tableAPI?.response]
+    [tableSettings, extraFilters, dataLists]
   );
-
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns: computedColumns,
-      data: tableAPI?.response?.data.results || [],
+      data: dataLists?.inPageData || [],
     });
 
-  // Methods
   useImperativeHandle(
     tableRef,
     () => {
@@ -331,6 +270,7 @@ const TableComponent = (
             setTableSettings
           );
           updateObjectState("pagination", "page", 1, setTableSettings);
+          onPageSizeChange(tableContext);
         },
         setSearchValue(value) {
           updateObjectState("search", "value", value, setTableSettings);
@@ -352,36 +292,15 @@ const TableComponent = (
   );
 
   const sortHandler = (column) => {
-    const columnName = column.orderField || column.field;
+    const columnName = column.field;
     const computedSorting = tableSettings.sortingSettings.includes("-")
       ? columnName
       : "-" + columnName;
     tableRef.current.setSortingSettings(computedSorting);
   };
 
-  // Use Effects
-  useEffect(() => {
-    setUrl(createUrl(tableSettings, extraFilters));
-  }, [tableSettings, extraFilters]);
-
-  useEffect(() => {
-    if (url) tableAPI.executeQuery();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
-
   useEffect(() => {
     onSelectionChange(tableContext);
-    if (
-      tableAPI?.response?.data.results
-        .map((value) => value.id)
-        .every((item) =>
-          tableSettings.selectedData.map((value) => value.id).includes(item)
-        )
-    ) {
-      setSelectAllRows(true);
-    } else {
-      setSelectAllRows(false);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableSettings.selectedData]);
 
@@ -405,6 +324,68 @@ const TableComponent = (
     onSearch(tableContext);
   }, [tableSettings.search.value]);
 
+  useEffect(() => {
+    let tempData = rawData;
+
+    //Search
+    if (tableSettings.search.field && tableSettings.search.value) {
+      tempData = tempData.filter(
+        (item) =>
+          item[tableSettings.search.field.field] &&
+          item[tableSettings.search.field.field]
+            .toString()
+            .includes(tableSettings.search.value)
+      );
+    }
+
+    //Sorting
+    if (tableSettings.sortingSettings) {
+      tempData = sortingInClientTable(tempData);
+    }
+
+    //Pagination
+    const start =
+      (tableSettings.pagination.page - 1) * tableSettings.pagination.pageSize;
+    const end = start + tableSettings.pagination.pageSize;
+
+    if (
+      tempData.slice(start, end) &&
+      tempData
+        .slice(start, end)
+        .map((value) => value.id)
+        .every((item) =>
+          tableSettings.selectedData.map((value) => value.id).includes(item)
+        )
+    ) {
+      setSelectAllRows(true);
+    } else {
+      setSelectAllRows(false);
+    }
+
+    //Set the final data for table
+    updateObjectState("filteredData", null, tempData, setDataLists);
+    updateObjectState(
+      "inPageData",
+      null,
+      tempData.slice(start, end),
+      setDataLists
+    );
+  }, [tableSettings]);
+
+  function sortingInClientTable(data) {
+    const field = tableSettings.sortingSettings.replace("-", "");
+    if (data[0] && typeof data[0][field] === "number") {
+      tableSettings.sortingSettings.includes("-")
+        ? (data = data.sort((a, b) => b[field] - a[field]))
+        : (data = data.sort((a, b) => a[field] - b[field]));
+    } else if (data[0] && typeof data[0][field] === "string") {
+      tableSettings.sortingSettings.includes("-")
+        ? (data = data.sort((a, b) => b[field].localeCompare(a[field])))
+        : (data = data.sort((a, b) => a[field].localeCompare(b[field])));
+    }
+    return data;
+  }
+
   function copyToClipboard(str) {
     const el = document.createElement("textarea");
     el.value = str;
@@ -424,7 +405,6 @@ const TableComponent = (
       document.getSelection().addRange(selected);
     }
   }
-
   return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
@@ -454,39 +434,6 @@ const TableComponent = (
               >
                 {settingsIcon}
               </span>
-<<<<<<< HEAD
-              <ConditionalComponent condition={showDropdown}>
-                <div className={settingClassName}>
-                  <div className={Style.options}>
-                    <h4 className={Style.heading}>{texts.settingTitle}</h4>
-                    <div className={Style.scrollableList}>
-                      {columns.map((item, index) => (
-                        <div key={index} className={Style.singleOption}>
-                          <label className={Style.checkboxInput}>
-                            <input
-                              type="checkbox"
-                              checked={hiddenColumns.includes(item.field)}
-                              onChange={(e) => {
-                                hiddenColumns.includes(item.field)
-                                  ? setHiddenColumns((oldState) =>
-                                      oldState.filter(
-                                        (field) => field !== item.field
-                                      )
-                                    )
-                                  : setHiddenColumns((oldState) => [
-                                      ...oldState,
-                                      item.field,
-                                    ]);
-                              }}
-                            />
-                            <i></i>
-                          </label>
-                          <div className={Style.optionText}>{item.Header}</div>
-                        </div>
-                      ))}
-                    </div>
-=======
-
               <div
                 className={
                   !showDropdown ? settingClassName : settingClassNameOpened
@@ -535,11 +482,11 @@ const TableComponent = (
                         <div className={Style.optionText}>{item.Header}</div>
                       </div>
                     ))}
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
                   </div>
                 </div>
               </div>
             </div>
+
             <ConditionalComponent
               condition={tableSettings.selectedData.length > 0}
             >
@@ -570,6 +517,7 @@ const TableComponent = (
               </div>
             </ConditionalComponent>
           </div>
+
           <div
             style={
               !height
@@ -611,57 +559,9 @@ const TableComponent = (
               }
             }}
           >
-            {tableAPI?.response?.data.results ? (
+            {dataLists?.inPageData?.length > 0 ? (
               <table {...getTableProps()}>
                 <thead>
-<<<<<<< HEAD
-                  {headerGroups.map((headerGroup) => (
-                    <tr
-                      {...headerGroup.getHeaderGroupProps()}
-                      style={{ height: `${headerHeight}px` }}
-                    >
-                      {headerGroup.headers.map((column) => (
-                        <th
-                          {...column.getHeaderProps()}
-                          style={{ position: "relative" }}
-                        >
-                          {!column?.noAction && (
-                            <HeaderActionList
-                              texts={texts}
-                              column={column}
-                              tableRef={tableRef}
-                              setHiddenColumns={setHiddenColumns}
-                            />
-                          )}
-                          <div className={Style.headerSection}>
-                            <div className={Style.clampedText}>
-                              {column.render("Header")}
-                              <ConditionalComponent
-                                condition={column.field === "select"}
-                              >
-                                <div className={Style.checkboxContainer}>
-                                  <input
-                                    id="allSelect"
-                                    type="checkbox"
-                                    className={Style.simpleCheckbox}
-                                    checked={selectAllRows}
-                                    onChange={(e) => {
-                                      const temp = [
-                                        ...tableSettings.selectedData,
-                                        ...tableAPI?.response?.data.results.filter(
-                                          (item) =>
-                                            !tableSettings.selectedData
-                                              .map((value) => value.id)
-                                              .includes(item.id)
-                                        ),
-                                      ];
-                                      if (e.target.checked) {
-                                        setSelectAllRows(true);
-                                        tableRef.current.setSelectedData(temp);
-                                      } else {
-                                        const temp =
-                                          tableSettings.selectedData.filter(
-=======
                   {headerGroups.map((headerGroup) => {
                     return (
                       <tr
@@ -689,15 +589,14 @@ const TableComponent = (
                                 >
                                   <div className={Style.checkboxContainer}>
                                     <input
-                                      id="allSelect"
+                                      id="allSelectInClientTable"
                                       type="checkbox"
                                       className={Style.simpleCheckbox}
                                       checked={selectAllRows}
                                       onChange={(e) => {
                                         const temp = [
                                           ...tableSettings.selectedData,
-                                          ...tableAPI?.response?.data.results.filter(
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
+                                          ...dataLists?.inPageData.filter(
                                             (item) =>
                                               !tableSettings.selectedData
                                                 .map((value) => value.id)
@@ -713,7 +612,7 @@ const TableComponent = (
                                           const temp =
                                             tableSettings.selectedData.filter(
                                               (item) =>
-                                                !tableAPI?.response?.data.results
+                                                !dataLists?.inPageData
                                                   .map((value) => value.id)
                                                   .includes(item.id)
                                             );
@@ -725,7 +624,7 @@ const TableComponent = (
                                       }}
                                     />
                                     <label
-                                      htmlFor="allSelect"
+                                      htmlFor="allSelectInClientTable"
                                       className={checkboxClassName}
                                     >
                                       <HiCheck />
@@ -745,40 +644,8 @@ const TableComponent = (
                                           "-"
                                         ) &&
                                           tableSettings.sortingSettings ===
-                                            column.orderField) ||
+                                            column.field) ||
                                         tableSettings.sortingSettings ===
-<<<<<<< HEAD
-                                          column.orderField) ||
-                                      tableSettings.sortingSettings ===
-                                        column.field
-                                    }
-                                    activeClassName={
-                                      computedActiveSortIconClassName
-                                    }
-                                    disabledClassName={
-                                      computedDisableSortIconClassName
-                                    }
-                                  ></ComputedUpSortIcon>
-                                  <ComputedDownSortIcon
-                                    condition={
-                                      (tableSettings?.sortingSettings?.includes(
-                                        "-"
-                                      ) &&
-                                        tableSettings.sortingSettings ===
-                                          "-" + column.orderField) ||
-                                      tableSettings.sortingSettings ===
-                                        "-" + column.field
-                                    }
-                                    activeClassName={
-                                      computedActiveSortIconClassName
-                                    }
-                                    disabledClassName={
-                                      computedDisableSortIconClassName
-                                    }
-                                  ></ComputedDownSortIcon>
-                                </div>
-                              </ConditionalComponent>
-=======
                                           column.field
                                       }
                                       activeClassName={
@@ -794,7 +661,7 @@ const TableComponent = (
                                           "-"
                                         ) &&
                                           tableSettings.sortingSettings ===
-                                            "-" + column.orderField) ||
+                                            "-" + column.field) ||
                                         tableSettings.sortingSettings ===
                                           "-" + column.field
                                       }
@@ -808,7 +675,6 @@ const TableComponent = (
                                   </div>
                                 </ConditionalComponent>
                               </div>
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
                             </div>
                           </th>
                         ))}
@@ -822,14 +688,14 @@ const TableComponent = (
                     return (
                       <tr
                         {...row.getRowProps()}
-                        style={{
-                          height: `${rowHeight}px`,
-                          backgroundColor: tableSettings.selectedData
+                        className={
+                          tableSettings.selectedData
                             .map((row) => row.id)
                             .includes(row.original.id)
-                            ? selectableRowsColor
-                            : undefined,
-                        }}
+                            ? selectabledRowsClassName
+                            : undefined
+                        }
+                        style={{ height: `${rowHeight}px` }}
                       >
                         {row.cells.map((cell, i) => {
                           return (
@@ -868,63 +734,13 @@ const TableComponent = (
                   })}
                 </tbody>
               </table>
-            ) : tableAPI.isLoading ? (
-              loader
             ) : (
               <div className={Style.noResults}>{emptyDataMessage}</div>
             )}
           </div>
-<<<<<<< HEAD
-          <div className={paginationClassName}>
-            <div className={Style.leftPagination}>
-              <ConditionalComponent condition={enablePageSizeSelect}>
-                <Select
-                  items={pageSizes}
-                  placeholder={texts.columnsSelect}
-                  labelKey="Header"
-                  value={tableSettings?.pagination?.pageSize}
-                  setValue={(value) => {
-                    tableRef.current.setPageSize(value);
-                  }}
-                />
-              </ConditionalComponent>
-              <div className={Style.recordPaginationInfo}>
-                <span>{texts.pageLabel}</span>
-                <InputField
-                  baseClassName={toPageInputBaseClassName}
-                  showError={false}
-                  className={toPageInputClassName}
-                  value={tableSettings.pagination.page}
-                  onChange={(e) => tableRef.current.toPage(e.target.value)}
-                />
-                <span>
-                  {texts.ofPageLabel} {"100"}
-                </span>
-              </div>
-            </div>
-            <div className={Style.inputChangePage}>
-              <Button
-                disabled={
-                  tableAPI?.response?.data?.links?.previous ? false : true
-                }
-                className={paginationButtonClassName}
-                onClick={() => tableRef.current.previousPage()}
-              >
-                {texts.buttonPrevious}
-              </Button>
-              <Button
-                disabled={tableAPI?.response?.data?.links?.next ? false : true}
-                className={paginationButtonClassName}
-                onClick={() => tableRef.current.nextPage()}
-              >
-                {texts.buttonNext}
-              </Button>
-            </div>
-          </div>
-=======
           <PaginationBar
             tableRef={tableRef}
-            tableAPI={tableAPI}
+            data={dataLists?.filteredData}
             tableSettings={tableSettings}
             texts={texts}
             paginationClassName={paginationClassName}
@@ -934,14 +750,13 @@ const TableComponent = (
             toPageInputClassName={toPageInputClassName}
             paginationButtonClassName={paginationButtonClassName}
           />
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
         </div>
       </div>
     </ComputedStyles>
   );
 };
 
-const Table = forwardRef(TableComponent);
+const TableClient = forwardRef(TableClientComponent);
 
 const IconUpComponent = ({ condition, activeClassName, disabledClassName }) => {
   return (
@@ -1001,7 +816,7 @@ const IconDownComponent = ({
   );
 };
 
-TableComponent.propTypes = {
+TableClientComponent.propTypes = {
   pageSizes: PropTypes.arrayOf(PropTypes.number),
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   height: PropTypes.string,
@@ -1027,4 +842,4 @@ TableComponent.propTypes = {
   onSortChange: PropTypes.func,
 };
 
-export default Table;
+export default TableClient;

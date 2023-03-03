@@ -216,9 +216,10 @@
 .sortingIconActive path {
   fill: black;
 }
-/* .selectableRowsClass {
+.selectableRowsClass {
   background-color: #bfcae41f;
-} */
+  /* background-color: rgb(150, 219, 242) !important; */
+}
 .tdCell{
   position: relative;
 }

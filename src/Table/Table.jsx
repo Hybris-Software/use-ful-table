@@ -246,18 +246,12 @@ const TableComponent = (
     ];
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
 
-<<<<<<< HEAD
-  // Customized settings
-  const ComputedStyles = Styles ? Styles : CommonStyles;
-=======
   //Customized settings
-
   const ComputedStyles = Styles
     ? Styles
     : enableStripedTable
     ? StripedTable
     : CommonStyles;
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
 
   // Query
   const tableAPI = useQuery({

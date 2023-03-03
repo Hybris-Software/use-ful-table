@@ -108,15 +108,15 @@ const TableComponent = (
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
-    onSuccess = () => { },
-    onUnauthorized = () => { },
-    onError = () => { },
-    onSearch = () => { },
-    onSearchFieldChange = () => { },
-    onPageChange = () => { },
-    onPageSizeChange = () => { },
-    onSelectionChange = () => { },
-    onSortChange = () => { },
+    onSuccess = () => {},
+    onUnauthorized = () => {},
+    onError = () => {},
+    onSearch = () => {},
+    onSearchFieldChange = () => {},
+    onPageChange = () => {},
+    onPageSizeChange = () => {},
+    onSelectionChange = () => {},
+    onSortChange = () => {},
     loader = <Loader />,
   },
   ref
@@ -139,8 +139,6 @@ const TableComponent = (
   // Refs
   const defaultRef = useRef(null);
   const tableRef = ref || defaultRef;
-
-  // For debounce mechanisms
   const timeoutId = useRef(null);
 
   // States
@@ -149,13 +147,29 @@ const TableComponent = (
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [selectedAction, setSelectedAction] = useState("");
-  // Draggable
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  // To select all
   const [selectAllRows, setSelectAllRows] = useState(false);
 
+  // Icons
+  const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
+  const ComputedDownSortIcon = sortingDownIcon
+    ? sortingDownIcon
+    : IconDownComponent;
+
+  // Classes
+  const computedSortingClassName = sortingClassName
+    ? sortingClassName
+    : Style.sortingClassName;
+  const computedDisableSortIconClassName = disableSortIconClassName
+    ? disableSortIconClassName
+    : Style.sortingIconDisabled;
+  const computedActiveSortIconClassName = activeSortIconClassName
+    ? activeSortIconClassName
+    : Style.sortingIconActive;
+
+  // Columns
   const selectColumn = useMemo(
     () => ({
       Header: " ",
@@ -178,7 +192,6 @@ const TableComponent = (
               onChange={(e) => {
                 let tempList = [...tableSettings.selectedData];
                 if (e.target.checked) {
-                  // tempList.push(row);
                   tempList = [...tempList, row];
                 } else {
                   tempList = tempList.filter((item) => item.id !== row.id);
@@ -197,21 +210,6 @@ const TableComponent = (
     [tableSettings, tableRef]
   );
 
-  const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
-  const ComputedDownSortIcon = sortingDownIcon
-    ? sortingDownIcon
-    : IconDownComponent;
-
-  const computedSortingClassName = sortingClassName
-    ? sortingClassName
-    : Style.sortingClassName;
-  const computedDisableSortIconClassName = disableSortIconClassName
-    ? disableSortIconClassName
-    : Style.sortingIconDisabled;
-  const computedActiveSortIconClassName = activeSortIconClassName
-    ? activeSortIconClassName
-    : Style.sortingIconActive;
-
   const computedColumns = useMemo(() => {
     return [
       ...(enableSelectableRows ? [selectColumn] : []),
@@ -224,9 +222,10 @@ const TableComponent = (
     ];
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
 
-  //Customized settings
+  // Customized settings
   const ComputedStyles = Styles ? Styles : CommonStyles;
 
+  // Query
   const tableAPI = useQuery({
     url: url,
     method: "GET",
@@ -255,6 +254,7 @@ const TableComponent = (
     },
   });
 
+  // Table Context for Events
   const tableContext = useMemo(
     () => ({
       tableSettings: tableSettings,
@@ -270,6 +270,7 @@ const TableComponent = (
       data: tableAPI?.response?.data.results || [],
     });
 
+  // Methods
   useImperativeHandle(
     tableRef,
     () => {
@@ -326,6 +327,7 @@ const TableComponent = (
     tableRef.current.setSortingSettings(computedSorting);
   };
 
+  // Use Effects
   useEffect(() => {
     setUrl(createUrl(tableSettings, extraFilters));
   }, [tableSettings, extraFilters]);
@@ -443,14 +445,14 @@ const TableComponent = (
                               onChange={(e) => {
                                 hiddenColumns.includes(item.field)
                                   ? setHiddenColumns((oldState) =>
-                                    oldState.filter(
-                                      (field) => field !== item.field
+                                      oldState.filter(
+                                        (field) => field !== item.field
+                                      )
                                     )
-                                  )
                                   : setHiddenColumns((oldState) => [
-                                    ...oldState,
-                                    item.field,
-                                  ]);
+                                      ...oldState,
+                                      item.field,
+                                    ]);
                               }}
                             />
                             <i></i>
@@ -463,7 +465,6 @@ const TableComponent = (
                 </div>
               </ConditionalComponent>
             </div>
-
             <ConditionalComponent
               condition={tableSettings.selectedData.length > 0}
             >
@@ -477,15 +478,15 @@ const TableComponent = (
               </div>
             </ConditionalComponent>
           </div>
-
           <div
             style={
               !height
                 ? {
-                  minHeight: `${rowHeight * tableSettings.pagination.pageSize +
-                    headerHeight
+                    minHeight: `${
+                      rowHeight * tableSettings.pagination.pageSize +
+                      headerHeight
                     }px`,
-                }
+                  }
                 : { minHeight: `${height}px` }
             }
             className={Style.tableContent}
@@ -527,7 +528,10 @@ const TableComponent = (
                       style={{ height: `${headerHeight}px` }}
                     >
                       {headerGroup.headers.map((column) => (
-                        <th {...column.getHeaderProps()} style={{ position: "relative" }}>
+                        <th
+                          {...column.getHeaderProps()}
+                          style={{ position: "relative" }}
+                        >
                           {!column?.noAction && (
                             <HeaderActionList
                               texts={texts}
@@ -595,9 +599,9 @@ const TableComponent = (
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                        column.orderField) ||
+                                          column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                      column.field
+                                        column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -612,9 +616,9 @@ const TableComponent = (
                                         "-"
                                       ) &&
                                         tableSettings.sortingSettings ===
-                                        "-" + column.orderField) ||
+                                          "-" + column.orderField) ||
                                       tableSettings.sortingSettings ===
-                                      "-" + column.field
+                                        "-" + column.field
                                     }
                                     activeClassName={
                                       computedActiveSortIconClassName
@@ -667,7 +671,6 @@ const TableComponent = (
               <div className={Style.noResults}>{emptyDataMessage}</div>
             )}
           </div>
-
           <div className={paginationClassName}>
             <div className={Style.leftPagination}>
               <ConditionalComponent condition={enablePageSizeSelect}>

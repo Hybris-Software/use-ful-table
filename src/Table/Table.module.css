@@ -39,11 +39,11 @@
   max-width: 50vw;
   white-space: nowrap;
   opacity: 0;
-  visibility: "hidden";
+  visibility: hidden;
 }
 .tooltopOptionsOpened {
   opacity: 1;
-  visibility: "visible";
+  visibility: visible;
 }
 
 .options {

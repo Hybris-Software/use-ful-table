@@ -448,38 +448,6 @@ const TableComponent = (
               >
                 {settingsIcon}
               </span>
-<<<<<<< HEAD
-              <ConditionalComponent condition={showDropdown}>
-                <div className={settingClassName}>
-                  <div className={Style.options}>
-                    <h4 className={Style.heading}>{texts.settingTitle}</h4>
-                    <div className={Style.scrollableList}>
-                      {columns.map((item, index) => (
-                        <div key={index} className={Style.singleOption}>
-                          <label className={Style.checkboxInput}>
-                            <input
-                              type="checkbox"
-                              checked={hiddenColumns.includes(item.field)}
-                              onChange={(e) => {
-                                hiddenColumns.includes(item.field)
-                                  ? setHiddenColumns((oldState) =>
-                                      oldState.filter(
-                                        (field) => field !== item.field
-                                      )
-                                    )
-                                  : setHiddenColumns((oldState) => [
-                                      ...oldState,
-                                      item.field,
-                                    ]);
-                              }}
-                            />
-                            <i></i>
-                          </label>
-                          <div className={Style.optionText}>{item.Header}</div>
-                        </div>
-                      ))}
-                    </div>
-=======
 
               <div
                 className={
@@ -529,7 +497,6 @@ const TableComponent = (
                         <div className={Style.optionText}>{item.Header}</div>
                       </div>
                     ))}
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
                   </div>
                 </div>
               </div>
@@ -608,54 +575,6 @@ const TableComponent = (
             {tableAPI?.response?.data.results ? (
               <table {...getTableProps()}>
                 <thead>
-<<<<<<< HEAD
-                  {headerGroups.map((headerGroup) => (
-                    <tr
-                      {...headerGroup.getHeaderGroupProps()}
-                      style={{ height: `${headerHeight}px` }}
-                    >
-                      {headerGroup.headers.map((column) => (
-                        <th
-                          {...column.getHeaderProps()}
-                          style={{ position: "relative" }}
-                        >
-                          {!column?.noAction && (
-                            <HeaderActionList
-                              texts={texts}
-                              column={column}
-                              tableRef={tableRef}
-                              setHiddenColumns={setHiddenColumns}
-                            />
-                          )}
-                          <div className={Style.headerSection}>
-                            <div className={Style.clampedText}>
-                              {column.render("Header")}
-                              <ConditionalComponent
-                                condition={column.field === "select"}
-                              >
-                                <div className={Style.checkboxContainer}>
-                                  <input
-                                    id="allSelect"
-                                    type="checkbox"
-                                    className={Style.simpleCheckbox}
-                                    checked={selectAllRows}
-                                    onChange={(e) => {
-                                      const temp = [
-                                        ...tableSettings.selectedData,
-                                        ...tableAPI?.response?.data.results.filter(
-                                          (item) =>
-                                            !tableSettings.selectedData
-                                              .map((value) => value.id)
-                                              .includes(item.id)
-                                        ),
-                                      ];
-                                      if (e.target.checked) {
-                                        setSelectAllRows(true);
-                                        tableRef.current.setSelectedData(temp);
-                                      } else {
-                                        const temp =
-                                          tableSettings.selectedData.filter(
-=======
                   {headerGroups.map((headerGroup) => {
                     return (
                       <tr
@@ -691,7 +610,6 @@ const TableComponent = (
                                         const temp = [
                                           ...tableSettings.selectedData,
                                           ...tableAPI?.response?.data.results.filter(
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
                                             (item) =>
                                               !tableSettings.selectedData
                                                 .map((value) => value.id)
@@ -741,38 +659,6 @@ const TableComponent = (
                                           tableSettings.sortingSettings ===
                                             column.orderField) ||
                                         tableSettings.sortingSettings ===
-<<<<<<< HEAD
-                                          column.orderField) ||
-                                      tableSettings.sortingSettings ===
-                                        column.field
-                                    }
-                                    activeClassName={
-                                      computedActiveSortIconClassName
-                                    }
-                                    disabledClassName={
-                                      computedDisableSortIconClassName
-                                    }
-                                  ></ComputedUpSortIcon>
-                                  <ComputedDownSortIcon
-                                    condition={
-                                      (tableSettings?.sortingSettings?.includes(
-                                        "-"
-                                      ) &&
-                                        tableSettings.sortingSettings ===
-                                          "-" + column.orderField) ||
-                                      tableSettings.sortingSettings ===
-                                        "-" + column.field
-                                    }
-                                    activeClassName={
-                                      computedActiveSortIconClassName
-                                    }
-                                    disabledClassName={
-                                      computedDisableSortIconClassName
-                                    }
-                                  ></ComputedDownSortIcon>
-                                </div>
-                              </ConditionalComponent>
-=======
                                           column.field
                                       }
                                       activeClassName={
@@ -802,7 +688,6 @@ const TableComponent = (
                                   </div>
                                 </ConditionalComponent>
                               </div>
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
                             </div>
                           </th>
                         ))}
@@ -868,54 +753,6 @@ const TableComponent = (
               <div className={Style.noResults}>{emptyDataMessage}</div>
             )}
           </div>
-<<<<<<< HEAD
-          <div className={paginationClassName}>
-            <div className={Style.leftPagination}>
-              <ConditionalComponent condition={enablePageSizeSelect}>
-                <Select
-                  items={pageSizes}
-                  placeholder={texts.columnsSelect}
-                  labelKey="Header"
-                  value={tableSettings?.pagination?.pageSize}
-                  setValue={(value) => {
-                    tableRef.current.setPageSize(value);
-                  }}
-                />
-              </ConditionalComponent>
-              <div className={Style.recordPaginationInfo}>
-                <span>{texts.pageLabel}</span>
-                <InputField
-                  baseClassName={toPageInputBaseClassName}
-                  showError={false}
-                  className={toPageInputClassName}
-                  value={tableSettings.pagination.page}
-                  onChange={(e) => tableRef.current.toPage(e.target.value)}
-                />
-                <span>
-                  {texts.ofPageLabel} {"100"}
-                </span>
-              </div>
-            </div>
-            <div className={Style.inputChangePage}>
-              <Button
-                disabled={
-                  tableAPI?.response?.data?.links?.previous ? false : true
-                }
-                className={paginationButtonClassName}
-                onClick={() => tableRef.current.previousPage()}
-              >
-                {texts.buttonPrevious}
-              </Button>
-              <Button
-                disabled={tableAPI?.response?.data?.links?.next ? false : true}
-                className={paginationButtonClassName}
-                onClick={() => tableRef.current.nextPage()}
-              >
-                {texts.buttonNext}
-              </Button>
-            </div>
-          </div>
-=======
           <PaginationBar
             tableRef={tableRef}
             tableAPI={tableAPI}
@@ -928,7 +765,6 @@ const TableComponent = (
             toPageInputClassName={toPageInputClassName}
             paginationButtonClassName={paginationButtonClassName}
           />
->>>>>>> 0553f45d50c21dff32f75996eb421d4c5629cc7d
         </div>
       </div>
     </ComputedStyles>

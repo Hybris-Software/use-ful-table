@@ -84,9 +84,68 @@ const CommonStyles = styled.div`
     }
   }
 `;
+
+const StripedTable = styled.div`
+  padding: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  border-radius: 5px;
+  
+  table {
+    width: 100%;
+    border-spacing: 0;
+
+    thead {
+      tr {
+        color: #757575;
+        font-weight: 600;
+        font-size: 14px;
+        
+        th {
+          min-width: 200px;
+          max-width: 800px;
+          text-align: center;
+          padding: 0 30px;
+          border-left: 1px solid #f3f3f3;
+          :first-child {
+            min-width: 60px;
+          }
+          :last-child {
+            border-right: 1px solid #f3f3f3;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        height: 65px;
+        font-weight: 500;
+        font-size: 14px;
+        color: #757575;
+        &:nth-child(odd) {
+          background-color: #bfcae41f;
+        }
+        td {
+          min-width: 200px;
+          max-width: 800px;
+          text-align: center;
+          border-top: 1px solid #f3f3f3;
+          padding: 0 30px;
+          border-left: 1px solid #f3f3f3;
+          :first-child {
+            min-width: 60px;
+          }
+          :last-child {
+            border-right: 1px solid #f3f3f3;
+          }
+        }
+      }
+    }
+  }
+`;
 const sortType = {
   UP: "asc",
   DOWN: "desc",
 };
 
-export { createUrl, updateObjectState, CommonStyles, sortType };
+export { createUrl, updateObjectState, CommonStyles, sortType, StripedTable };

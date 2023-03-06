@@ -17,10 +17,9 @@ import PaginationBar from "./PaginationBar/PaginationBar";
 // Libraries
 import { useTable } from "react-table";
 import useQuery from "@hybris-software/use-query";
-import styled from "styled-components";
 
 //Addons
-import { createUrl, updateObjectState, CommonStyles } from "./tableAddons";
+import { createUrl, updateObjectState, CommonStyles, StripedTable } from "./tableAddons";
 
 //Icon
 import { ImWrench } from "react-icons/im";
@@ -61,17 +60,6 @@ import ActionBar from "./ActionBar/ActionBar";
  * @param {String} props.paginationButtonBaseClassName - Base class name for the pagination buttons
  */
 
-const StripedTable = styled(CommonStyles)`
-  table {
-    tbody {
-      tr {
-        &:nth-child(odd) {
-          background-color: #bfcae41f;
-        }
-      }
-    }
-  }
-`;
 const TableComponent = (
   {
     pageSizes = [5, 10, 25, 50, 100],
@@ -109,7 +97,6 @@ const TableComponent = (
     copyToClipboardIcon = <AiOutlineCopy />,
     tooltipClassName = Style.tooltip,
     enableStripedTable = false,
-    tableStripedRowColor = "#bfcae41f",
     texts = {
       actionSelect: "Select an action",
       buttonAction: "Apply",

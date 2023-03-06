@@ -18,7 +18,7 @@ import PaginationBar from "./PaginationBar/PaginationBar";
 import { useTable } from "react-table";
 
 //Addons
-import { updateObjectState, CommonStyles } from "./tableAddons";
+import { updateObjectState, CommonStyles, StripedTable } from "./tableAddons";
 
 //Icon
 import { ImWrench } from "react-icons/im";
@@ -94,6 +94,7 @@ const TableClientComponent = (
     settingsIcon = <ImWrench />,
     copyToClipboardIcon = <AiOutlineCopy />,
     tooltipClassName = Style.tooltip,
+    enableStripedTable = false,
     texts = {
       actionSelect: "Select an action",
       buttonAction: "Apply",
@@ -229,8 +230,11 @@ const TableClientComponent = (
   }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
 
   //Customized settings
-  const ComputedStyles = Styles ? Styles : CommonStyles;
-  const tableContext = useMemo(
+  const ComputedStyles = Styles
+    ? Styles
+    : enableStripedTable
+    ? StripedTable
+    : CommonStyles;  const tableContext = useMemo(
     () => ({
       tableSettings: tableSettings,
       extraFilters: extraFilters,

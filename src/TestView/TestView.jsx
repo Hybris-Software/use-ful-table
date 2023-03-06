@@ -264,7 +264,7 @@ const TestView = () => {
       <TableClient
         rowHeight="70"
         defaultPageSize={3}
-        pageSizes={[1, 2, 3, 5, 10]}
+        pageSizes={[1, 2, 3, 5, 10, 100]}
         allowedActions={allowedActions}
         enableAllowedActions={true}
         searchFieldSelectClassName={Style.test}
@@ -277,6 +277,7 @@ const TestView = () => {
         rawData={[...rawData]}
         extraFilters={extraFilters}
         onPageSizeChange={(e) => console.log(e)}
+        enableStripedTable = {true}
       />
     </div>
   );

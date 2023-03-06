@@ -572,7 +572,7 @@ const TableComponent = (
               }
             }}
           >
-            {tableAPI?.response?.data.results ? (
+            {tableAPI?.response?.data?.results?.length > 0 ? (
               <table {...getTableProps()}>
                 <thead>
                   {headerGroups.map((headerGroup) => {

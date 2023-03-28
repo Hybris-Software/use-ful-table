@@ -134,6 +134,7 @@ const TableComponent = (
     onPageSizeChange = () => {},
     onSelectionChange = () => {},
     onSortChange = () => {},
+    onTableRefresh = () => {},
     loader = <Loader />,
   },
   ref
@@ -340,6 +341,7 @@ const TableComponent = (
         },
         refreshTable() {
           tableAPI.executeQuery();
+          onTableRefresh(tableContext);
         },
       };
     },

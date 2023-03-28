@@ -1,3 +1,4 @@
+import { Button } from "@hybris-software/ui-kit";
 import React, { useRef } from "react";
 import Table from "../Table/Table";
 import TableClient from "../TableClient/TableClient";
@@ -279,8 +280,13 @@ const TestView = () => {
     }
     return false
   }
+
+  function onTableRefresh(tableContext) {
+    tableContext.tableSettings.selectedData = []
+  }
   return (
     <div style={{ padding: 20 }}>
+      <Button onClick={()=> ref.current.refreshTable()}>Refresh Table </Button>
       <Table
         rowHeight="70"
         pageSizes={[1, 2, 3, 5, 10]}
@@ -296,6 +302,7 @@ const TestView = () => {
         endPoint={endPoint}
         extraFilters={extraFilters}
         onPageSizeChange={(e) => console.log(e)}
+        onTableRefresh={(e) => onTableRefresh(e)}
         enableStripedTable = {true}
         conditionToHideSelectRow= {checkBoxDisabled}
       />

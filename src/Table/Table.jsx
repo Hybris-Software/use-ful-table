@@ -19,7 +19,12 @@ import { useTable } from "react-table";
 import useQuery from "@hybris-software/use-query";
 
 //Addons
-import { createUrl, updateObjectState, CommonStyles, StripedTable } from "./tableAddons";
+import {
+  createUrl,
+  updateObjectState,
+  CommonStyles,
+  StripedTable,
+} from "./tableAddons";
 
 //Icon
 import { ImWrench } from "react-icons/im";
@@ -119,6 +124,7 @@ const TableComponent = (
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
+    conditionToHideSelectRow = () => {},
     onSuccess = () => {},
     onUnauthorized = () => {},
     onError = () => {},
@@ -156,7 +162,8 @@ const TableComponent = (
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
-  
+  const [notSelectableRow, setNotSelectableRow] = useState([]);
+
   // Draggable
   const [isDown, setIsDown] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -189,9 +196,12 @@ const TableComponent = (
       sortable: false,
       noAction: true,
       accessor: (row) => {
+        const condition = conditionToHideSelectRow(row);
+        if (condition && !notSelectableRow.map(item=> item.id).includes(row.id))  setNotSelectableRow((prev) => [...prev, row]);
         return (
           <div className={Style.checkboxContainer}>
             <input
+              disabled={condition ? condition : false}
               id={row.id}
               className={Style.simpleCheckbox}
               type="checkbox"
@@ -250,6 +260,7 @@ const TableComponent = (
       if (
         response?.data.results
           .map((value) => value.id)
+          .filter(item => !notSelectableRow.map((value) => value.id).includes(item))
           .every((tempItem) =>
             tableSettings.selectedData
               .map((value) => value.id)
@@ -327,6 +338,9 @@ const TableComponent = (
         setSelectedData(value) {
           updateObjectState("selectedData", null, value, setTableSettings);
         },
+        refreshTable() {
+          tableAPI.executeQuery();
+        },
       };
     },
     [tableSettings, tableContext]
@@ -355,6 +369,7 @@ const TableComponent = (
     if (
       tableAPI?.response?.data.results
         .map((value) => value.id)
+        .filter(item => !notSelectableRow.map((value) => value.id).includes(item))
         .every((item) =>
           tableSettings.selectedData.map((value) => value.id).includes(item)
         )
@@ -600,6 +615,9 @@ const TableComponent = (
                                             (item) =>
                                               !tableSettings.selectedData
                                                 .map((value) => value.id)
+                                                .includes(item.id) &&
+                                              !notSelectableRow
+                                                .map((value) => value.id)
                                                 .includes(item.id)
                                           ),
                                         ];
@@ -614,7 +632,10 @@ const TableComponent = (
                                               (item) =>
                                                 !tableAPI?.response?.data.results
                                                   .map((value) => value.id)
-                                                  .includes(item.id)
+                                                  .includes(item.id) &&
+                                                  !notSelectableRow
+                                                    .map((value) => value.id)
+                                                    .includes(item.id)
                                             );
                                           setSelectAllRows(false);
                                           tableRef.current.setSelectedData(

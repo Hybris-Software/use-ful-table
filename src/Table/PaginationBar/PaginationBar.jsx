@@ -22,7 +22,7 @@ function PaginationBar({
   paginationButtonClassName = Style.paginationButtonClass,
 }) {
   const [pageTo, setPageTo] = useState(tableSettings.pagination.page);
-
+  const totalPages = Math.ceil(tableAPI?.response?.data.count / tableSettings.pagination.pageSize) || '';
   useEffect(() => {
     if(pageTo) {
       tableRef.current.toPage(pageTo)
@@ -57,7 +57,7 @@ function PaginationBar({
             onChange={(e) => {setPageTo(e.target.value)} }
           />
           <span>
-            {texts.ofPageLabel} {tableAPI?.response?.data.totalPages}
+            {texts.ofPageLabel} {totalPages}
           </span>
         </div>
       </div>

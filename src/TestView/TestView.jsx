@@ -8,70 +8,86 @@ import Style from "./TestView.module.css";
 const TestView = () => {
 
 
-  const columns = [
-    {
-      Header: "#",
-      field: "id",
-      copyable: true,
-      accessor: (row) => {
-        return row.id;
-      },
+  const columns = [{
+    Header: "Member ID",
+    field: "id",
+    searchable: false,
+    accessor: (row) => {
+      return row.id;
     },
-    {
-      Header: "User",
-      field: "user",
-      sortable: false,
-      searchField: "user__username",
-      accessor: (row) => {
-        return row.user.username;
-      },
+  },
+  {
+    Header: "Is Active",
+    field: "isActive",
+    orderField: "is_active",
+    searchable: false,
+    sortable: true,
+    accessor: (row) => {
+      return <div>{row.isActive ? "Active" : "Not Active"}</div>;
     },
-    {
-      Header: "Date",
-      field: "createdAt",
-      searchable: false,
-      copyable: true,
-      accessor: (row) => {
-        return row.createdAt;
-      },
+  },
+  {
+    Header: "Referral Code",
+    field: "referralCode",
+    searchable: false,
+    orderField: "referral_code",
+    accessor: (row) => {
+      return row.referralCode;
     },
-    {
-      Header: "Subject",
-      field: "subject",
-      orderField: "subject",
-      accessor: (row) => {
-        return row.subject;
-      },
+  },
+  {
+    Header: "User Name",
+    field: "username",
+    sortable: true,
+    accessor: (row) => {
+      return row.username;
     },
-    {
-      Header: "Title",
-      field: "title",
-      orderField: "title",
-      searchable: false,
-      accessor: (row) => {
-        return row.title;
-      },
+  },
+  {
+    Header: "First Name",
+    field: "firstName",
+    orderField: "first_name",
+    searchField: "first_name",
+    sortable: true,
+    accessor: (row) => {
+      return row.firstName;
     },
-    {
-      Header: "Status fweuyg uiegfiu gwifug wei",
-      field: "status",
-      orderField: "status",
-      searchable: false,
-      copyable: true,
-      accessor: (row) => {
-        return row.status;
-      },
+  },
+  {
+    Header: "Last Name",
+    field: "lastName",
+    orderField: "last_name",
+    searchField: "last_name",
+    sortable: true,
+    accessor: (row) => {
+      return row.lastName;
     },
-    {
-      Header: "Priority",
-      field: "priority",
-      orderField: "priority",
-      searchable: false,
-      accessor: (row) => {
-        return row.priority;
-      },
+  },
+  {
+    Header: "Birth Date",
+    field: "birthDate",
+    orderField: "birth_date",
+    searchable: false,
+    accessor: (row) => {
+      return new Date(row.birthDate)
+        .toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+        .replaceAll(" ", "-");
     },
-  ];
+  },
+  {
+    Header: "Email",
+    field: "email",
+    orderField: "email",
+    sortable: true,
+    accessor: (row) => {
+      return row.email;
+    },
+  },
+];
 
   const clientTableColumns = [
     {
@@ -154,7 +170,7 @@ const TestView = () => {
     },
   ];
 
-  const endPoint = "administration/tickets/";
+  const endPoint = "administration/users/";
   const ref = useRef(null);
   const refForClientTable = useRef(null);
   const extraFilters = {
@@ -240,7 +256,12 @@ const TestView = () => {
       status: "OPEN",
     },
   ];
-
+  function checkBoxDisabled(row) {
+    if (row.termsAccepted) {
+      return true;
+    }
+    return false
+  }
   return (
     <div style={{ padding: 20 }}>
       <Table
@@ -259,6 +280,7 @@ const TestView = () => {
         extraFilters={extraFilters}
         onPageSizeChange={(e) => console.log(e)}
         enableStripedTable = {true}
+        conditionToHideSelectRow= {checkBoxDisabled}
       />
 
       <TableClient

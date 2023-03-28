@@ -312,6 +312,12 @@
 .checkboxContainer input[type="checkbox"]:checked ~ .labelClass svg {
   display: block;
 }
+.checkboxContainer input[type="checkbox"][disabled] ~ .labelClass {
+  opacity: 0.5; 
+  cursor: not-allowed;
+  background-color: transparent;
+  border: transparent;
+}
 
 /** Loader */
 .ldsRing {

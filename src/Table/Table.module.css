@@ -284,9 +284,7 @@
 .simpleCheckbox {
   display: none;
 }
-.simpleCheckbox {
-  display: none;
-}
+
 .checkboxContainer .labelClass {
   display: block;
   border-radius: 3px;

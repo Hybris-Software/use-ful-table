@@ -27,6 +27,16 @@ const TestView = () => {
     },
   },
   {
+    Header: "Terms Accepted",
+    field: "termsAccepted",
+    orderField: "terms_accepted",
+    searchable: false,
+    sortable: true,
+    accessor: (row) => {
+      return <div>{row.termsAccepted ? "termsAccepted" : "Terms Not Accepted"}</div>;
+    },
+  },
+  {
     Header: "Referral Code",
     field: "referralCode",
     searchable: false,
@@ -262,6 +272,13 @@ const TestView = () => {
     }
     return false
   }
+
+  function checkBoxDisabledInClientTable(row) {
+    if (row.status === "OPEN") {
+      return true;
+    }
+    return false
+  }
   return (
     <div style={{ padding: 20 }}>
       <Table
@@ -285,7 +302,7 @@ const TestView = () => {
 
       <TableClient
         rowHeight="70"
-        defaultPageSize={3}
+        defaultPageSize={10}
         pageSizes={[1, 2, 3, 5, 10, 100]}
         allowedActions={allowedActions}
         enableAllowedActions={true}
@@ -300,6 +317,7 @@ const TestView = () => {
         extraFilters={extraFilters}
         onPageSizeChange={(e) => console.log(e)}
         enableStripedTable = {true}
+        conditionToHideSelectRow= {checkBoxDisabledInClientTable}
       />
     </div>
   );

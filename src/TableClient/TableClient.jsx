@@ -117,6 +117,7 @@ const TableClientComponent = (
     disableSortIconClassName,
     sortingUpIcon,
     sortingDownIcon,
+    conditionToHideSelectRow = () => {},
     onSearch = () => {},
     onSearchFieldChange = () => {},
     onPageChange = () => {},
@@ -149,6 +150,7 @@ const TableClientComponent = (
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [dataLists, setDataLists] = useState({});
+  const [notSelectableRow, setNotSelectableRow] = useState([]);
 
   // Draggable
   const [isDown, setIsDown] = useState(false);
@@ -166,10 +168,17 @@ const TableClientComponent = (
       sortable: false,
       noAction: true,
       accessor: (row) => {
+        const condition = conditionToHideSelectRow(row);
+        if (
+          condition &&
+          !notSelectableRow.map((item) => item.id).includes(row.id)
+        )
+          setNotSelectableRow((prev) => [...prev, row]);
         return (
           <div className={Style.checkboxContainer}>
             <input
               id={"clientTable" + row.id}
+              disabled={condition ? condition : false}
               className={Style.simpleCheckbox}
               type="checkbox"
               checked={
@@ -234,7 +243,8 @@ const TableClientComponent = (
     ? Styles
     : enableStripedTable
     ? StripedTable
-    : CommonStyles;  const tableContext = useMemo(
+    : CommonStyles;
+  const tableContext = useMemo(
     () => ({
       tableSettings: tableSettings,
       extraFilters: extraFilters,
@@ -357,6 +367,9 @@ const TableClientComponent = (
       tempData
         .slice(start, end)
         .map((value) => value.id)
+        .filter(
+          (item) => !notSelectableRow.map((value) => value.id).includes(item)
+        )
         .every((item) =>
           tableSettings.selectedData.map((value) => value.id).includes(item)
         )
@@ -604,6 +617,9 @@ const TableClientComponent = (
                                             (item) =>
                                               !tableSettings.selectedData
                                                 .map((value) => value.id)
+                                                .includes(item.id) &&
+                                              !notSelectableRow
+                                                .map((value) => value.id)
                                                 .includes(item.id)
                                           ),
                                         ];
@@ -617,6 +633,9 @@ const TableClientComponent = (
                                             tableSettings.selectedData.filter(
                                               (item) =>
                                                 !dataLists?.inPageData
+                                                  .map((value) => value.id)
+                                                  .includes(item.id) &&
+                                                !notSelectableRow
                                                   .map((value) => value.id)
                                                   .includes(item.id)
                                             );

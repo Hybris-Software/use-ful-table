@@ -373,6 +373,14 @@ const TableClientComponent = (
         .every((item) =>
           tableSettings.selectedData.map((value) => value.id).includes(item)
         )
+        &&
+          !(tempData.slice(start, end)
+            .map((value) => value.id)
+            .every((tempItem) =>
+                 notSelectableRow
+                .map((value) => value.id)
+                .includes(tempItem)
+            ))
     ) {
       setSelectAllRows(true);
     } else {

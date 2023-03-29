@@ -198,7 +198,11 @@ const TableComponent = (
       noAction: true,
       accessor: (row) => {
         const condition = conditionToHideSelectRow(row);
-        if (condition && !notSelectableRow.map(item=> item.id).includes(row.id))  setNotSelectableRow((prev) => [...prev, row]);
+        if (
+          condition &&
+          !notSelectableRow.map((item) => item.id).includes(row.id)
+        )
+          setNotSelectableRow((prev) => [...prev, row]);
         return (
           <div className={Style.checkboxContainer}>
             <input
@@ -261,12 +265,21 @@ const TableComponent = (
       if (
         response?.data.results
           .map((value) => value.id)
-          .filter(item => !notSelectableRow.map((value) => value.id).includes(item))
+          .filter(
+            (item) => !notSelectableRow.map((value) => value.id).includes(item)
+          )
           .every((tempItem) =>
             tableSettings.selectedData
               .map((value) => value.id)
               .includes(tempItem)
-          )
+          )  &&
+          !(response?.data.results
+            .map((value) => value.id)
+            .every((tempItem) =>
+                 notSelectableRow
+                .map((value) => value.id)
+                .includes(tempItem)
+            ))
       ) {
         setSelectAllRows(true);
       } else {
@@ -371,10 +384,20 @@ const TableComponent = (
     if (
       tableAPI?.response?.data.results
         .map((value) => value.id)
-        .filter(item => !notSelectableRow.map((value) => value.id).includes(item))
+        .filter(
+          (item) => !notSelectableRow.map((value) => value.id).includes(item)
+        )
         .every((item) =>
           tableSettings.selectedData.map((value) => value.id).includes(item)
         )
+        &&
+        !(tableAPI?.response?.data.results
+          .map((value) => value.id)
+          .every((tempItem) =>
+               notSelectableRow
+              .map((value) => value.id)
+              .includes(tempItem)
+          ))
     ) {
       setSelectAllRows(true);
     } else {
@@ -637,7 +660,7 @@ const TableComponent = (
                                                   .includes(item.id) &&
                                                   !notSelectableRow
                                                     .map((value) => value.id)
-                                                    .includes(item.id)
+                                                  .includes(item.id) 
                                             );
                                           setSelectAllRows(false);
                                           tableRef.current.setSelectedData(

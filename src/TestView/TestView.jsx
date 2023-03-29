@@ -286,7 +286,7 @@ const TestView = () => {
   }
   return (
     <div style={{ padding: 20 }}>
-      <Button onClick={()=> ref.current.refreshTable()}>Refresh Table </Button>
+      <Button onClick={()=> console.log(ref.current.getData())}>Refresh Table </Button>
       <Table
         rowHeight="70"
         pageSizes={[1, 2, 3, 5, 10]}

@@ -11,7 +11,6 @@ import PropTypes from "prop-types";
 //Components
 import HeaderActionList from "./HeaderActionList/HeaderActionList";
 import ConditionalComponent from "./ConditionalComponent/ConditionalComponent";
-import Loader from "./Loader/Loader";
 import PaginationBar from "./PaginationBar/PaginationBar";
 
 // Libraries
@@ -38,7 +37,7 @@ import ActionBar from "./ActionBar/ActionBar";
  * @param {Number} props.rowHeight - Height of the rows
  * @param {Number} props.height - Height of the table
  * @param {Object} props.Styles - Object with custom styles
- * @param {String} props.emptyDataMessage - Message to show when there is no data
+ * @param {String} props.emptyDataMessageComponent - Component to show Message when there is no data
  * @param {Object} props.extraFilters - Object with extra filters to add to the query
  * @param {Number} props.defaultPageSize - Default page size
  * @param {Boolean} props.enablePageSizeSelect - Enable page size select
@@ -67,7 +66,8 @@ const TableClientComponent = (
     rowHeight = 65,
     height,
     Styles,
-    emptyDataMessage = "No data available",
+    emptyDataMessageComponent = <EmptyDataMessageComponent />,
+    emptyDataClassName = Style.noResults,
     extraFilters = {},
     defaultPageSize = 5,
     enablePageSizeSelect = true,
@@ -95,6 +95,12 @@ const TableClientComponent = (
     copyToClipboardIcon = <AiOutlineCopy />,
     tooltipClassName = Style.tooltip,
     enableStripedTable = false,
+    enableSittings = true,
+    sittingsClassName = Style.select,
+    enableRowsSelectedBadge = true,
+    rowsSelectedBadgeClassName = Style.rowsSelected,
+    enableSearchBadges = true,
+    searchBadgesClassName = Style.rowsSelected,
     texts = {
       actionSelect: "Select an action",
       buttonAction: "Apply",
@@ -372,15 +378,13 @@ const TableClientComponent = (
         )
         .every((item) =>
           tableSettings.selectedData.map((value) => value.id).includes(item)
+        ) &&
+      !tempData
+        .slice(start, end)
+        .map((value) => value.id)
+        .every((tempItem) =>
+          notSelectableRow.map((value) => value.id).includes(tempItem)
         )
-        &&
-          !(tempData.slice(start, end)
-            .map((value) => value.id)
-            .every((tempItem) =>
-                 notSelectableRow
-                .map((value) => value.id)
-                .includes(tempItem)
-            ))
     ) {
       setSelectAllRows(true);
     } else {
@@ -448,101 +452,115 @@ const TableClientComponent = (
             inputSearchBaseClassName={inputSearchBaseClassName}
             searchBarClassName={searchBarClassName}
           />
-          <div className={Style.selectContainer}>
-            <div
-              className={Style.select}
-              onMouseLeave={() => setShowDropdown(false)}
-            >
-              <span
-                className={Style.iconContainer}
-                onClick={() => setShowDropdown(!showDropdown)}
-              >
-                {settingsIcon}
-              </span>
-              <div
-                className={
-                  !showDropdown ? settingClassName : settingClassNameOpened
-                }
-                style={
-                  showDropdown
-                    ? { transition: "all 0.3s ease 0s" }
-                    : { transition: "all 0.3s ease 0s" }
-                }
-              >
-                <div className={Style.options}>
-                  <h4 className={Style.heading}>{texts.settingTitle}</h4>
+          <ConditionalComponent
+            condition={
+              enableSittings || enableRowsSelectedBadge || enableSearchBadges
+            }
+          >
+            <div className={Style.selectContainer}>
+              <ConditionalComponent condition={enableSittings}>
+                <div
+                  className={Style.select}
+                  onMouseLeave={() => setShowDropdown(false)}
+                >
+                  <span
+                    className={Style.iconContainer}
+                    onClick={() => setShowDropdown(!showDropdown)}
+                  >
+                    {settingsIcon}
+                  </span>
                   <div
                     className={
-                      showDropdown
-                        ? settingClassNameListOpened
-                        : settingClassNameList
+                      !showDropdown ? settingClassName : settingClassNameOpened
                     }
                     style={
                       showDropdown
-                        ? { transition: "all 0.3s ease" }
-                        : { transition: "all 0.3s ease" }
+                        ? { transition: "all 0.3s ease 0s" }
+                        : { transition: "all 0.3s ease 0s" }
                     }
                   >
-                    {columns.map((item, index) => (
-                      <div key={index} className={Style.singleOption}>
-                        <label className={Style.checkboxInput}>
-                          <input
-                            type="checkbox"
-                            checked={hiddenColumns.includes(item.field)}
-                            onChange={(e) => {
-                              hiddenColumns.includes(item.field)
-                                ? setHiddenColumns((oldState) =>
-                                    oldState.filter(
-                                      (field) => field !== item.field
-                                    )
-                                  )
-                                : setHiddenColumns((oldState) => [
-                                    ...oldState,
-                                    item.field,
-                                  ]);
-                            }}
-                          />
-                          <i></i>
-                        </label>
-                        <div className={Style.optionText}>{item.Header}</div>
+                    <div className={Style.options}>
+                      <h4 className={Style.heading}>{texts.settingTitle}</h4>
+                      <div
+                        className={
+                          showDropdown
+                            ? settingClassNameListOpened
+                            : settingClassNameList
+                        }
+                        style={
+                          showDropdown
+                            ? { transition: "all 0.3s ease" }
+                            : { transition: "all 0.3s ease" }
+                        }
+                      >
+                        {columns.map((item, index) => (
+                          <div key={index} className={Style.singleOption}>
+                            <label className={Style.checkboxInput}>
+                              <input
+                                type="checkbox"
+                                checked={hiddenColumns.includes(item.field)}
+                                onChange={(e) => {
+                                  hiddenColumns.includes(item.field)
+                                    ? setHiddenColumns((oldState) =>
+                                        oldState.filter(
+                                          (field) => field !== item.field
+                                        )
+                                      )
+                                    : setHiddenColumns((oldState) => [
+                                        ...oldState,
+                                        item.field,
+                                      ]);
+                                }}
+                              />
+                              <i></i>
+                            </label>
+                            <div className={Style.optionText}>
+                              {item.Header}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </ConditionalComponent>
+
+              <ConditionalComponent
+                condition={
+                  tableSettings.selectedData.length > 0 &&
+                  enableRowsSelectedBadge
+                }
+              >
+                <div className={Style.rowsSelected}>
+                  {tableSettings.selectedData.length} {texts.rowsSelected}
+                  <GrFormClose
+                    onClick={() => {
+                      tableRef.current.setSelectedData([]);
+                    }}
+                  />
+                </div>
+              </ConditionalComponent>
+
+              <ConditionalComponent
+                condition={
+                  tableSettings.search.field &&
+                  tableSettings.search.value &&
+                  enableSearchBadges
+                }
+              >
+                <div className={Style.rowsSelected}>
+                  {tableSettings.search.field.Header}:{" "}
+                  {tableSettings.search.value}
+                  <GrFormClose
+                    onClick={() => {
+                      tableRef.current.setSearchField(defaultSearchField);
+                      tableRef.current.setSearchValue("");
+                    }}
+                  />
+                </div>
+              </ConditionalComponent>
             </div>
-
-            <ConditionalComponent
-              condition={tableSettings.selectedData.length > 0}
-            >
-              <div className={Style.rowsSelected}>
-                {tableSettings.selectedData.length} {texts.rowsSelected}
-                <GrFormClose
-                  onClick={() => {
-                    tableRef.current.setSelectedData([]);
-                  }}
-                />
-              </div>
-            </ConditionalComponent>
-
-            <ConditionalComponent
-              condition={
-                tableSettings.search.field && tableSettings.search.value
-              }
-            >
-              <div className={Style.rowsSelected}>
-                {tableSettings.search.field.Header}:{" "}
-                {tableSettings.search.value}
-                <GrFormClose
-                  onClick={() => {
-                    tableRef.current.setSearchField(defaultSearchField);
-                    tableRef.current.setSearchValue("");
-                  }}
-                />
-              </div>
-            </ConditionalComponent>
-          </div>
-
+          </ConditionalComponent>
           <div
             style={
               !height
@@ -766,7 +784,9 @@ const TableClientComponent = (
                 </tbody>
               </table>
             ) : (
-              <div className={Style.noResults}>{emptyDataMessage}</div>
+              <div className={emptyDataClassName}>
+                {emptyDataMessageComponent}
+              </div>
             )}
           </div>
           <PaginationBar
@@ -844,6 +864,14 @@ const IconDownComponent = ({
         />
       </svg>
     </span>
+  );
+};
+
+const EmptyDataMessageComponent = () => {
+  return (
+    <>
+      <p>No data available</p>
+    </>
   );
 };
 

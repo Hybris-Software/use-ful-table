@@ -324,12 +324,9 @@ const TestView = () => {
         extraFilters={extraFilters}
         onPageSizeChange={(e) => console.log(e)}
         enableStripedTable = {true}
-        conditionToHideSelectRow= {checkBoxDisabledInClientTable}
-      />
+        conditionToHideSelectRow= {checkBoxDisabledInClientTable}/>
     </div>
   );
 };
-
-
 
 export default TestView;

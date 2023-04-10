@@ -28,11 +28,11 @@ function ActionBar({
 
   useEffect(() => {
     clearTimeout(timeoutId.current);
-    if (tableRef.current) {
-      timeoutId.current = setTimeout(() => {
+    timeoutId.current = setTimeout(() => {
+      if (tableRef.current) {
         tableRef.current.setSearchValue(searchValue);
-      }, 1000);
-    }
+      }
+    }, 1000);
   }, [searchValue]);
 
   useEffect(() => {

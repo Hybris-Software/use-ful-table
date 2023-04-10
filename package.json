@@ -1,6 +1,6 @@
 {
   "name": "@hybris-software/use-table",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -26,7 +26,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "rm -rf dist && NODE_ENV=production babel ./index.js -d dist && NODE_ENV=production babel ./src -d dist/src",
+    "build": "rm -rf dist && NODE_ENV=production babel ./index.js -d dist && NODE_ENV=production babel ./src -d dist/src --copy-files",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -14,5 +14,6 @@
       }
     ],
     "@babel/preset-react"
-  ]
+  ],
+  "ignore": ["src/index.js"]
 }

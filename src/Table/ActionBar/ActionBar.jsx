@@ -29,7 +29,9 @@ function ActionBar({
   useEffect(() => {
     clearTimeout(timeoutId.current);
     timeoutId.current = setTimeout(() => {
-      tableRef.current.setSearchValue(searchValue);
+      if (tableRef.current) {
+        tableRef.current.setSearchValue(searchValue);
+      }
     }, 1000);
   }, [searchValue]);
 

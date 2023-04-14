@@ -103,8 +103,8 @@ const TableComponent = (
     copyToClipboardIcon = <AiOutlineCopy />,
     tooltipClassName = Style.tooltip,
     enableStripedTable = false,
-    enableSittings = true,
-    sittingsClassName = Style.select,
+    enableSettings = true,
+    settingsClassName = Style.select,
     enableRowsSelectedBadge = true,
     rowsSelectedBadgeClassName = Style.rowsSelected,
     enableSearchBadges = true,
@@ -468,13 +468,13 @@ const TableComponent = (
           />
           <ConditionalComponent
             condition={
-              enableSittings || enableRowsSelectedBadge || enableSearchBadges
+              enableSettings || enableRowsSelectedBadge || enableSearchBadges
             }
           >
             <div className={Style.selectContainer}>
-              <ConditionalComponent condition={enableSittings}>
+              <ConditionalComponent condition={enableSettings}>
                 <div
-                  className={sittingsClassName}
+                  className={settingsClassName}
                   onMouseLeave={() => setShowDropdown(false)}
                 >
                   <span

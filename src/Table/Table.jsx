@@ -35,6 +35,7 @@ import { AiOutlineCopy } from "react-icons/ai";
 // Styles
 import Style from "./Table.module.css";
 import ActionBar from "./ActionBar/ActionBar";
+import { Button } from "@hybris-software/ui-kit";
 
 /**
  * @param {Object} props
@@ -376,6 +377,10 @@ const TableComponent = (
 
   // Use Effects
   useEffect(() => {
+    updateObjectState("pagination", "page", 1, setTableSettings);
+  }, [extraFilters]);
+
+  useEffect(() => {
     setUrl(createUrl(tableSettings, extraFilters));
   }, [tableSettings, extraFilters]);
 
@@ -446,9 +451,7 @@ const TableComponent = (
       document.getSelection().removeAllRanges();
       document.getSelection().addRange(selected);
     }
-  }
-
-  return (
+  }  return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
         <div style={{ position: "relative" }}>
@@ -616,8 +619,7 @@ const TableComponent = (
                 const walk = (x - startX) * 1;
                 e.currentTarget.scrollLeft = scrollLeft - walk;
               }
-            }}
-          >
+            }}          >
             {tableAPI?.response?.data?.results?.length > 0 ? (
               <table {...getTableProps()}>
                 <thead>

@@ -1,5 +1,5 @@
-import { Button } from "@hybris-software/ui-kit";
-import React, { useRef } from "react";
+import { Button, Select } from "@hybris-software/ui-kit";
+import React, { useRef, useState } from "react";
 import Table from "../Table/Table";
 import TableClient from "../TableClient/TableClient";
 
@@ -7,98 +7,104 @@ import TableClient from "../TableClient/TableClient";
 import Style from "./TestView.module.css";
 
 const TestView = () => {
+  const [extraFilters, setExtraFilters] = useState({});
+  const [currentFilter, setCurrentFilter] = useState({});
 
-
-  const columns = [{
-    Header: "Member ID",
-    field: "id",
-    searchable: false,
-    accessor: (row) => {
-      return row.id;
+  const columns = [
+    {
+      Header: "Member ID",
+      field: "id",
+      searchable: false,
+      accessor: (row) => {
+        return row.id;
+      },
     },
-  },
-  {
-    Header: "Is Active",
-    field: "isActive",
-    orderField: "is_active",
-    searchable: false,
-    sortable: true,
-    accessor: (row) => {
-      return <div>{row.isActive ? "Active" : "Not Active"}</div>;
+    {
+      Header: "Is Active",
+      field: "isActive",
+      orderField: "is_active",
+      searchable: false,
+      sortable: true,
+      accessor: (row) => {
+        return <div>{row.isActive ? "Active" : "Not Active"}</div>;
+      },
     },
-  },
-  {
-    Header: "Terms Accepted",
-    field: "termsAccepted",
-    orderField: "terms_accepted",
-    searchable: false,
-    sortable: true,
-    accessor: (row) => {
-      return <div>{row.termsAccepted ? "termsAccepted" : "Terms Not Accepted"}</div>;
+    {
+      Header: "Terms Accepted",
+      field: "termsAccepted",
+      orderField: "terms_accepted",
+      searchable: false,
+      sortable: true,
+      accessor: (row) => {
+        return (
+          <div>
+            {row.termsAccepted ? "termsAccepted" : "Terms Not Accepted"}
+          </div>
+        );
+      },
     },
-  },
-  {
-    Header: "Referral Code",
-    field: "referralCode",
-    searchable: false,
-    orderField: "referral_code",
-    accessor: (row) => {
-      return row.referralCode;
+    {
+      Header: "Referral Code",
+      field: "referralCode",
+      searchable: false,
+      orderField: "referral_code",
+      accessor: (row) => {
+        return row.referralCode;
+      },
     },
-  },
-  {
-    Header: "User Name",
-    field: "username",
-    sortable: true,
-    accessor: (row) => {
-      return row.username;
+    {
+      Header: "User Name",
+      field: "username",
+      sortable: true,
+      accessor: (row) => {
+        return row.username;
+      },
     },
-  },
-  {
-    Header: "First Name",
-    field: "firstName",
-    orderField: "first_name",
-    searchField: "first_name",
-    sortable: true,
-    accessor: (row) => {
-      return row.firstName;
+    {
+      Header: "First Name",
+      field: "firstName",
+      orderField: "first_name",
+      searchField: "first_name",
+      sortable: true,
+      accessor: (row) => {
+        return row.firstName;
+      },
     },
-  },
-  {
-    Header: "Last Name",
-    field: "lastName",
-    orderField: "last_name",
-    searchField: "last_name",
-    sortable: true,
-    accessor: (row) => {
-      return row.lastName;
+    {
+      Header: "Last Name",
+      field: "lastName",
+      orderField: "last_name",
+      searchField: "last_name",
+      sortable: true,
+      accessor: (row) => {
+        return row.lastName;
+      },
     },
-  },
-  {
-    Header: "Birth Date",
-    field: "birthDate",
-    orderField: "birth_date",
-    searchable: false,
-    accessor: (row) => {
-      return new Date(row.birthDate)
-        .toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        })
-        .replaceAll(" ", "-");
+    {
+      Header: "Birth Date",
+      field: "birthDate",
+      orderField: "birth_date",
+      searchable: false,
+      accessor: (row) => {
+        return new Date(row.birthDate)
+          .toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })
+          .replaceAll(" ", "-");
+      },
     },
-  },
-  {
-    Header: "Email",
-    field: "email",
-    orderField: "email",
-    sortable: true,
-    accessor: (row) => {
-      return row.email;
+    {
+      Header: "Email",
+      field: "email",
+      orderField: "email",
+      sortable: true,
+      accessor: (row) => {
+        return row.email;
+      },
     },
-  },
-];
+  ];
 
   const clientTableColumns = [
     {
@@ -184,10 +190,6 @@ const TestView = () => {
   const endPoint = "administration/users/";
   const ref = useRef(null);
   const refForClientTable = useRef(null);
-  const extraFilters = {
-    test: "test",
-    test2: "test2",
-  };
 
   //For Client Table
   const rawData = [
@@ -271,22 +273,60 @@ const TestView = () => {
     if (row.termsAccepted) {
       return true;
     }
-    return false
+    return false;
   }
 
   function checkBoxDisabledInClientTable(row) {
     if (row.status === "OPEN") {
       return true;
     }
-    return false
+    return false;
   }
 
   function onTableRefresh(tableContext) {
-    tableContext.tableSettings.selectedData = []
+    tableContext.tableSettings.selectedData = [];
   }
   return (
     <div style={{ padding: 20 }}>
-      <Button onClick={()=> console.log(ref.current.getData())}>test button</Button>
+      <Button
+        onClick={() => {
+          let tempExtraFilter = {};
+          Object.entries(currentFilter).forEach((entry) => {
+            const [key, item] = entry;
+            if (item) tempExtraFilter[key] = item.value;
+          });
+          setExtraFilters(tempExtraFilter)
+        }}
+      >
+        test button
+      </Button>
+      <div>
+        <h4 className={Style.selectLabel}>Terms Accepted</h4>
+        <Select
+          placeholder="Terms Accepted"
+          value={currentFilter.terms_accepted}
+          items={[
+            {
+              label: "All",
+              value: "",
+            },
+            {
+              label: "Yes",
+              value: true,
+            },
+            {
+              label: "No",
+              value: false,
+            },
+          ]}
+          setValue={(value) => {
+            setCurrentFilter({
+              ...currentFilter,
+              terms_accepted: value,
+            });
+          }}
+        />
+      </div>
       <Table
         rowHeight="70"
         pageSizes={[1, 2, 3, 5, 10]}
@@ -300,11 +340,11 @@ const TestView = () => {
         ref={ref}
         columns={[...columns]}
         endPoint={endPoint}
-        extraFilters={extraFilters}
         onPageSizeChange={(e) => console.log(e)}
         onTableRefresh={(e) => onTableRefresh(e)}
-        enableStripedTable = {true}
-        conditionToHideSelectRow= {checkBoxDisabled}
+        enableStripedTable={true}
+        conditionToHideSelectRow={checkBoxDisabled}
+        extraFilters={extraFilters}
       />
 
       <TableClient
@@ -321,10 +361,10 @@ const TestView = () => {
         ref={refForClientTable}
         columns={[...clientTableColumns]}
         rawData={[...rawData]}
-        extraFilters={extraFilters}
         onPageSizeChange={(e) => console.log(e)}
-        enableStripedTable = {true}
-        conditionToHideSelectRow= {checkBoxDisabledInClientTable}/>
+        enableStripedTable={true}
+        conditionToHideSelectRow={checkBoxDisabledInClientTable}
+      />
     </div>
   );
 };

@@ -11,7 +11,8 @@ import Theme from "./Theme.module.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const apiClient = generateApiClient({
   // baseUrl: "https://api-poliant.testing-room.com/api/v1/",
-  baseUrl: "https://api-upbyt.testing-room.com/api/v1/",
+  // baseUrl: "https://api-upbyt.testing-room.com/api/v1/",
+  baseUrl: "https://api-zenit.testing-room.com/api/v1/",
   // baseUrl: "http://localhost:8000/api/v1/",
   authorizationHeader: "Authorization",
   authorizationPrefix: "Token ",

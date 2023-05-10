@@ -20,7 +20,26 @@ const TestView = () => {
       },
     },
     {
-      Header: "Is Active",
+      Header: "Username",
+      field: "username",
+      orderField: "username",
+      sortable: true,
+      accessor: (row) => {
+        return row.username;
+      },
+    },
+    
+    {
+      Header: "Email",
+      field: "email",
+      orderField: "email",
+      sortable: true,
+      accessor: (row) => {
+        return row.email;
+      },
+    },
+    {
+      Header: "Account status",
       field: "isActive",
       orderField: "is_active",
       searchable: false,
@@ -30,78 +49,27 @@ const TestView = () => {
       },
     },
     {
-      Header: "Terms Accepted",
-      field: "termsAccepted",
-      orderField: "terms_accepted",
-      searchable: false,
-      sortable: true,
-      accessor: (row) => {
-        return (
-          <div>
-            {row.termsAccepted ? "termsAccepted" : "Terms Not Accepted"}
-          </div>
-        );
-      },
-    },
-    {
-      Header: "Referral Code",
-      field: "referralCode",
-      searchable: false,
-      orderField: "referral_code",
-      accessor: (row) => {
-        return row.referralCode;
-      },
-    },
-    {
-      Header: "User Name",
-      field: "username",
-      sortable: true,
-      accessor: (row) => {
-        return row.username;
-      },
-    },
-    {
-      Header: "First Name",
-      field: "firstName",
-      orderField: "first_name",
-      searchField: "first_name",
-      sortable: true,
-      accessor: (row) => {
-        return row.firstName;
-      },
-    },
-    {
-      Header: "Last Name",
-      field: "lastName",
-      orderField: "last_name",
-      searchField: "last_name",
-      sortable: true,
-      accessor: (row) => {
-        return row.lastName;
-      },
-    },
-    {
-      Header: "Birth Date",
-      field: "birthDate",
-      orderField: "birth_date",
+      Header: "Kyc Status",
+      field: "kycApproved",
+      orderField: "kyc_approved",
       searchable: false,
       accessor: (row) => {
-        return new Date(row.birthDate)
+        return <div>{row.kycApproved ? "Approved" : "Not Approved"}</div>;
+      },
+    },
+    {
+      Header: "Date Added",
+      field: "dateJoined",
+      orderField: "date_joined",
+      searchable: false,
+      accessor: (row) => {
+        return new Date(row.dateJoined)
           .toLocaleDateString("en-GB", {
             day: "numeric",
             month: "short",
             year: "numeric",
           })
           .replaceAll(" ", "-");
-      },
-    },
-    {
-      Header: "Email",
-      field: "email",
-      orderField: "email",
-      sortable: true,
-      accessor: (row) => {
-        return row.email;
       },
     },
   ];
@@ -290,12 +258,13 @@ const TestView = () => {
     <div style={{ padding: 20 }}>
       <Button
         onClick={() => {
-          let tempExtraFilter = {};
-          Object.entries(currentFilter).forEach((entry) => {
-            const [key, item] = entry;
-            if (item) tempExtraFilter[key] = item.value;
-          });
-          setExtraFilters(tempExtraFilter)
+          console.log(ref.current.scrollLeft)
+          // let tempExtraFilter = {};
+          // Object.entries(currentFilter).forEach((entry) => {
+          //   const [key, item] = entry;
+          //   if (item) tempExtraFilter[key] = item.value;
+          // });
+          // setExtraFilters(tempExtraFilter)
         }}
       >
         test button

@@ -35,7 +35,6 @@ import { AiOutlineCopy } from "react-icons/ai";
 // Styles
 import Style from "./Table.module.css";
 import ActionBar from "./ActionBar/ActionBar";
-import { Button } from "@hybris-software/ui-kit";
 
 /**
  * @param {Object} props
@@ -165,6 +164,8 @@ const TableComponent = (
   // Refs
   const defaultRef = useRef(null);
   const tableRef = ref || defaultRef;
+  const xScrollRef = useRef(null);
+  const scrollingTableRef = useRef(null);
 
   // States
   const [url, setUrl] = useState(null);
@@ -172,6 +173,7 @@ const TableComponent = (
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [notSelectableRow, setNotSelectableRow] = useState([]);
+  const [scrollingPosition, setScrollingPosition] = useState(20);
 
   // Draggable
   const [isDown, setIsDown] = useState(false);
@@ -290,7 +292,7 @@ const TableComponent = (
         setSelectAllRows(true);
       } else {
         setSelectAllRows(false);
-      }
+      }      
     },
     onUnauthorized: (response) => {
       onUnauthorized();
@@ -381,11 +383,14 @@ const TableComponent = (
   }, [extraFilters]);
 
   useEffect(() => {
+    setScrollingPosition(xScrollRef.current.scrollLeft);
     setUrl(createUrl(tableSettings, extraFilters));
   }, [tableSettings, extraFilters]);
 
   useEffect(() => {
-    if (url) tableAPI.executeQuery();
+    if (url) {
+      tableAPI.executeQuery();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
@@ -433,6 +438,10 @@ const TableComponent = (
     onSearch(tableContext);
   }, [tableSettings.search.value]);
 
+  useEffect(() => {
+    xScrollRef.current.scrollLeft = scrollingPosition;
+  }, [scrollingTableRef.current]);
+
   function copyToClipboard(str) {
     const el = document.createElement("textarea");
     el.value = str;
@@ -451,7 +460,8 @@ const TableComponent = (
       document.getSelection().removeAllRanges();
       document.getSelection().addRange(selected);
     }
-  }  return (
+  }
+  return (
     <ComputedStyles>
       <div className={Style.tableContainer}>
         <div style={{ position: "relative" }}>
@@ -571,7 +581,7 @@ const TableComponent = (
                     onClick={() => {
                       if (tableRef.current) {
                         tableRef.current.setSearchField(defaultSearchField);
-                        tableRef.current.setSearchValue('');
+                        tableRef.current.setSearchValue("");
                       }
                     }}
                   />
@@ -581,6 +591,7 @@ const TableComponent = (
           </ConditionalComponent>
 
           <div
+            ref={xScrollRef}
             style={
               !height
                 ? {
@@ -619,9 +630,10 @@ const TableComponent = (
                 const walk = (x - startX) * 1;
                 e.currentTarget.scrollLeft = scrollLeft - walk;
               }
-            }}          >
+            }}
+          >
             {tableAPI?.response?.data?.results?.length > 0 ? (
-              <table {...getTableProps()}>
+              <table ref={scrollingTableRef} {...getTableProps()}>
                 <thead>
                   {headerGroups.map((headerGroup) => {
                     return (

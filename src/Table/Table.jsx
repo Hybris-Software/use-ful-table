@@ -55,7 +55,6 @@ import ActionBar from "./ActionBar/ActionBar";
  * @param {String} props.defaultSearchField - Default search field
  * @param {String} props.inputSearchBaseClassName - Base class name for the search input
  * @param {Boolean} props.enableSelectableRows - Enable selectable rows
- * @param {String} props.selectabledRowsClassName - Class name for the selectable rows
  * @param {Boolean} props.enableAllowedActions - Enable allowed actions
  * @param {Array} props.allowedActions - Array of objects with the allowed actions
  * @param {String} props.searchBarClassName - Class name for the search bar
@@ -295,10 +294,10 @@ const TableComponent = (
       }      
     },
     onUnauthorized: (response) => {
-      onUnauthorized();
+      onUnauthorized(response);
     },
-    onError: () => {
-      onError();
+    onError: (response) => {
+      onError(response);
     },
   });
 

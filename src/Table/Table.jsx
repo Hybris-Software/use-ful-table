@@ -172,7 +172,7 @@ const TableComponent = (
   const [showDropdown, setShowDropdown] = useState(false);
   const [hiddenColumns, setHiddenColumns] = useState([]);
   const [notSelectableRow, setNotSelectableRow] = useState([]);
-  const [scrollingPosition, setScrollingPosition] = useState(20);
+  const [scrollingPosition, setScrollingPosition] = useState(0);
 
   // Draggable
   const [isDown, setIsDown] = useState(false);
@@ -291,7 +291,7 @@ const TableComponent = (
         setSelectAllRows(true);
       } else {
         setSelectAllRows(false);
-      }      
+      }
     },
     onUnauthorized: (response) => {
       onUnauthorized(response);
@@ -438,7 +438,9 @@ const TableComponent = (
   }, [tableSettings.search.value]);
 
   useEffect(() => {
-    xScrollRef.current.scrollLeft = scrollingPosition;
+    if (scrollingTableRef.current) {
+      xScrollRef.current.scrollLeft = scrollingPosition;
+    }
   }, [scrollingTableRef.current]);
 
   function copyToClipboard(str) {

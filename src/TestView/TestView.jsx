@@ -12,9 +12,21 @@ const TestView = () => {
 
   const columns = [
     {
-      Header: "Member ID",
+      Header: "Export ID",
       field: "id",
-      searchable: false,
+      orderField: "id",
+      copyable: true,
+      sortable: true,
+      accessor: (row) => {
+        return row.id;
+      },
+    },
+    {
+      Header: "User ID",
+      field: "user",
+      orderField: "user",
+      copyable: true,
+      sortable: true,
       accessor: (row) => {
         return row.id;
       },
@@ -28,48 +40,67 @@ const TestView = () => {
         return row.username;
       },
     },
-    
     {
-      Header: "Email",
-      field: "email",
-      orderField: "email",
+      Header: "1",
+      field: "id",
+      orderField: "id",
+      copyable: true,
       sortable: true,
       accessor: (row) => {
-        return row.email;
+        return row.id;
       },
     },
     {
-      Header: "Account status",
-      field: "isActive",
-      orderField: "is_active",
-      searchable: false,
+      Header: "2",
+      field: "user",
+      orderField: "user",
+      copyable: true,
       sortable: true,
       accessor: (row) => {
-        return <div>{row.isActive ? "Active" : "Not Active"}</div>;
+        return row.id;
       },
     },
     {
-      Header: "Kyc Status",
-      field: "kycApproved",
-      orderField: "kyc_approved",
-      searchable: false,
+      Header: "3",
+      field: "username",
+      orderField: "username",
+      sortable: true,
       accessor: (row) => {
-        return <div>{row.kycApproved ? "Approved" : "Not Approved"}</div>;
+        return row.username;
+      },
+    },
+    {
+      Header: "Status",
+      field: "status",
+      orderField: "status",
+      sortable: true,
+      accessor: (row) => {
+        return row.status;
+      },
+    },
+    {
+      Header: "File",
+      field: "file",
+      orderField: "file",
+      sortable: true,
+      accessor: (row) => {
+        return (
+          <>
+            {row.file && (
+              <a href={row.file} target="blank" download={"export-file"}>
+              </a>
+            )}
+          </>
+        );
       },
     },
     {
       Header: "Date Added",
-      field: "dateJoined",
-      orderField: "date_joined",
+      field: "createdAt",
+      orderField: "created_at",
       searchable: false,
       accessor: (row) => {
-        return new Date(row.dateJoined)
-          .toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })
-          .replaceAll(" ", "-");
+        // return <DateFormatter date={row.createdAt} />;
       },
     },
   ];
@@ -155,7 +186,8 @@ const TestView = () => {
     },
   ];
 
-  const endPoint = "administration/users/";
+  // const endPoint = "administration/users/";
+  const endPoint = "exports/";
   const ref = useRef(null);
   const refForClientTable = useRef(null);
 

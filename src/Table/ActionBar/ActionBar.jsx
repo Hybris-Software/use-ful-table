@@ -24,23 +24,50 @@ function ActionBar({
   searchBarClassName = Style.searchBarClass,
 }) {
   const [selectedAction, setSelectedAction] = useState("");
-  const [searchValue, setSearchValue] = useState(tableSettings.search.value);
-  const [searchField, setSearchField] = useState(tableSettings.search.field);
+
+  const [searchValue, setSearchValue] = useState("");
+
+  const [currentSearch, setCurrentSearch] = useState({
+    value: tableSettings.search.value,
+    field: tableSettings.search.field,
+  });
 
   useEffect(() => {
     clearTimeout(timeoutId.current);
     timeoutId.current = setTimeout(() => {
       if (tableRef.current) {
-        tableRef.current.setSearchValue(searchValue);
+        updateObjectState("value", null, searchValue, setCurrentSearch);
       }
     }, 1000);
   }, [searchValue]);
 
   useEffect(() => {
-    if (searchValue) {
-      updateObjectState("search", "field", searchField, setTableSettings);
+    if (currentSearch.value && currentSearch.field) {
+      setTableSettings((prev) => {
+        return {
+          ...prev,
+          search: {
+            field: currentSearch.field,
+            value: currentSearch.value,
+          },
+        };
+      });
+    } else if (currentSearch.field) {
+      setTableSettings((prev) => {
+        if (prev?.search?.value) {
+          return {
+            ...prev,
+            search: {
+              field: currentSearch.field,
+              value: "",
+            },
+          };
+        } else {
+          return prev;
+        }
+      });
     }
-  }, [searchField]);
+  }, [currentSearch]);
 
   useEffect(() => {
     setSearchValue(tableSettings.search.value);
@@ -79,15 +106,9 @@ function ActionBar({
             items={computedColumns.filter((item) => item.searchable !== false)}
             placeholder={texts.columnsSelect}
             labelKey="Header"
-            value={searchField}
+            value={currentSearch.field}
             setValue={(value) => {
-              // updateObjectState(
-              //   "search",
-              //   "field",
-              //   value,
-              //   setTableSettings
-              // );
-              setSearchField(value);
+              updateObjectState("field", null, value, setCurrentSearch);
             }}
           />
         </ConditionalComponent>

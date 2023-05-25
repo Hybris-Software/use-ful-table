@@ -31,6 +31,7 @@ import { ImWrench } from "react-icons/im";
 import { GrFormClose } from "react-icons/gr";
 import { HiCheck } from "react-icons/hi";
 import { AiOutlineCopy } from "react-icons/ai";
+import { BiX } from "react-icons/bi";
 
 // Styles
 import Style from "./Table.module.css";
@@ -108,6 +109,7 @@ const TableComponent = (
     rowsSelectedBadgeClassName = Style.rowsSelected,
     enableSearchBadges = true,
     searchBadgesClassName = Style.rowsSelected,
+    searchBadgeExitIcon = "",
     texts = {
       actionSelect: "Select an action",
       buttonAction: "Apply",
@@ -378,7 +380,9 @@ const TableComponent = (
 
   // Use Effects
   useEffect(() => {
-    updateObjectState("pagination", "page", 1, setTableSettings);
+    if (Object.keys(extraFilters).length !== 0) {
+      updateObjectState("pagination", "page", 1, setTableSettings);
+    }
   }, [extraFilters]);
 
   useEffect(() => {
@@ -578,7 +582,8 @@ const TableComponent = (
                 <div className={searchBadgesClassName}>
                   {tableSettings.search.field.Header}:{" "}
                   {tableSettings.search.value}
-                  <GrFormClose
+                  <BiX
+                    className={searchBadgeExitIcon}
                     onClick={() => {
                       if (tableRef.current) {
                         tableRef.current.setSearchField(defaultSearchField);

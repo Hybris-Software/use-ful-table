@@ -345,7 +345,6 @@ const TestView = () => {
         onTableRefresh={(e) => onTableRefresh(e)}
         enableStripedTable={true}
         conditionToHideSelectRow={checkBoxDisabled}
-        extraFilters={extraFilters}
       />
 
       <TableClient

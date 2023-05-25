@@ -3,13 +3,24 @@ import styled from "styled-components";
 function createUrl(tableSettings, extraFilters) {
   let parametersObject = {
     ...{
-      page: tableSettings.pagination.page,
-      limit: tableSettings.pagination.pageSize,
-      ordering: tableSettings.sortingSettings,
-      [tableSettings.search.field.searchField + "__icontains"]: tableSettings.search.value
+      page: tableSettings?.pagination.page,
+      limit: tableSettings?.pagination.pageSize,
     },
     ...extraFilters,
   };
+  if(tableSettings?.sortingSettings) {
+    parametersObject = {
+      ...parametersObject,
+      ordering: tableSettings?.sortingSettings,
+    }
+  }
+  if(tableSettings?.search.field.searchField && tableSettings?.search.value) {
+    parametersObject = {
+      ...parametersObject,
+      [tableSettings?.search.field.searchField + "__icontains"]: tableSettings?.search.value
+    }
+  }
+
   parametersObject = Object.fromEntries(
     Object.entries(parametersObject).filter(([_, v]) => v != null)
   );

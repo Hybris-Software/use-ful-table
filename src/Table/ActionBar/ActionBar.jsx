@@ -50,6 +50,10 @@ function ActionBar({
             field: currentSearch.field,
             value: currentSearch.value,
           },
+          pagination: {
+            page: 1,
+            pageSize: prev.pagination.pageSize,
+          }
         };
       });
     } else if (currentSearch.field) {

@@ -61,12 +61,14 @@ function PaginationBar({
               setPageTo(e.target.value);
             }}
           />
-          <span>
-            {texts.ofPageLabel} <strong>{totalPages}</strong>
-          </span>
+          {totalPages && (
+            <span>
+              {texts.ofPageLabel} <strong>{totalPages}</strong>
+            </span>
+          )}
           {tableAPI?.response?.data?.count && (
             <span>
-              - Total <strong>{tableAPI?.response?.data?.count}</strong> record
+              | Total <strong>{tableAPI?.response?.data?.count}</strong> records
             </span>
           )}
         </div>

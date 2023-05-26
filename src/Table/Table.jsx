@@ -435,10 +435,16 @@ const TableComponent = (
 
   useEffect(() => {
     onSearchFieldChange(tableContext);
+    if (tableSettings.search.field){
+      updateObjectState("pagination", "page", 1, setTableSettings);
+    }
   }, [tableSettings.search.field]);
 
   useEffect(() => {
     onSearch(tableContext);
+    if (tableSettings.search.value){
+      updateObjectState("pagination", "page", 1, setTableSettings);
+    }
   }, [tableSettings.search.value]);
 
   useEffect(() => {

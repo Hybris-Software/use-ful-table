@@ -22,15 +22,18 @@ function PaginationBar({
   paginationButtonClassName = Style.paginationButtonClass,
 }) {
   const [pageTo, setPageTo] = useState(tableSettings.pagination.page);
-  const totalPages = Math.ceil(tableAPI?.response?.data.count / tableSettings.pagination.pageSize) || '';
+  const totalPages =
+    Math.ceil(
+      tableAPI?.response?.data.count / tableSettings.pagination.pageSize
+    ) || "";
   useEffect(() => {
-    if(pageTo) {
-      tableRef.current.toPage(pageTo)
+    if (pageTo) {
+      tableRef.current.toPage(pageTo);
     }
   }, [pageTo]);
 
   useEffect(() => {
-      setPageTo(tableSettings.pagination.page)
+    setPageTo(tableSettings.pagination.page);
   }, [tableSettings.pagination.page, tableSettings.pagination.pageSize]);
 
   return (
@@ -54,11 +57,18 @@ function PaginationBar({
             showError={false}
             className={toPageInputClassName}
             value={pageTo}
-            onChange={(e) => {setPageTo(e.target.value)} }
+            onChange={(e) => {
+              setPageTo(e.target.value);
+            }}
           />
           <span>
-            {texts.ofPageLabel} {totalPages}
+            {texts.ofPageLabel} <strong>{totalPages}</strong>
           </span>
+          {tableAPI?.response?.data?.count && (
+            <span>
+              - Total <strong>{tableAPI?.response?.data?.count}</strong> record
+            </span>
+          )}
         </div>
       </div>
       <div className={Style.inputChangePage}>

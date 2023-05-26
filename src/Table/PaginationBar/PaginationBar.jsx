@@ -68,7 +68,7 @@ function PaginationBar({
           )}
           {tableAPI?.response?.data?.count && (
             <span>
-              | Total <strong>{tableAPI?.response?.data?.count}</strong> records
+              | <strong>{tableAPI?.response?.data?.count}</strong> records
             </span>
           )}
         </div>

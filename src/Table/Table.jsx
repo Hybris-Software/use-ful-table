@@ -586,8 +586,8 @@ const TableComponent = (
                     className={searchBadgeExitIcon}
                     onClick={() => {
                       if (tableRef.current) {
-                        tableRef.current.setSearchField(defaultSearchField);
-                        tableRef.current.setSearchValue("");
+                        tableRef?.current?.setSearchField(defaultSearchField);
+                        tableRef?.current?.setSearchValue("");
                       }
                     }}
                   />

@@ -553,8 +553,8 @@ const TableClientComponent = (
                   {tableSettings.search.value}
                   <GrFormClose
                     onClick={() => {
-                      tableRef.current.setSearchField(defaultSearchField);
-                      tableRef.current.setSearchValue("");
+                      tableRef?.current?.setSearchField(defaultSearchField);
+                      tableRef?.current?.setSearchValue("");
                     }}
                   />
                 </div>

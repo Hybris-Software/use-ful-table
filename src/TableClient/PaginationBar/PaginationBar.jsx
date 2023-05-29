@@ -61,20 +61,24 @@ function PaginationBar({
           <span>
             {texts.ofPageLabel} {Math.ceil(totalPages)}
           </span>
+          <span>
+            | <strong>{data?.length}</strong> records
+          </span>
+          
         </div>
       </div>
       <div className={Style.inputChangePage}>
         <Button
           disabled={tableSettings.pagination.page === 1}
           className={paginationButtonClassName}
-          onClick={() => tableRef.current.previousPage()}
+          onClick={() => tableRef?.current?.previousPage()}
         >
           {texts.buttonPrevious}
         </Button>
         <Button
           disabled={tableSettings.pagination.page === Math.ceil(totalPages)}
           className={paginationButtonClassName}
-          onClick={() => tableRef.current.nextPage()}
+          onClick={() => tableRef?.current?.nextPage()}
         >
           {texts.buttonNext}
         </Button>

@@ -27,19 +27,8 @@ function ActionBar({
   const [searchValue, setSearchValue] = useState(tableSettings.search.value);
 
   useEffect(() => {
-    clearTimeout(timeoutId.current);
-    timeoutId.current = setTimeout(() => {
-      tableRef?.current?.setSearchValue(searchValue);
-    }, 1000);
-  }, [searchValue]);
-
-  useEffect(() => {
     setSearchValue(tableSettings.search.value);
   }, [tableSettings.search.value]);
-
-
-  // For debounce mechanisms
-  const timeoutId = useRef(null);
 
   return (
     <div className={Style.filterRow}>
@@ -92,7 +81,7 @@ function ActionBar({
           className={searchBarClassName}
           value={searchValue}
           onChange={(e) => {
-            setSearchValue(e.target.value);
+            tableRef?.current?.setSearchValue(e.target.value);
           }}
         />
       </ConditionalComponent>

@@ -353,8 +353,8 @@ const TableClientComponent = (
         (item) =>
           item[tableSettings.search.field.field] &&
           item[tableSettings.search.field.field]
-            .toString()
-            .includes(tableSettings.search.value)
+            .toString().toLowerCase()
+            .includes(tableSettings.search.value.toLowerCase())
       );
     }
 

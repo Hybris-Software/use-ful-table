@@ -8,11 +8,13 @@
 .leftPagination {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 20px;
 }
 .recordPaginationInfo {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   column-gap: 8px;
 }
 .toPageInputClass {

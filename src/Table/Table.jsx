@@ -28,6 +28,7 @@ import {
 
 //Icon
 import { ImWrench } from "react-icons/im";
+import { ImSpinner11 } from "react-icons/im";
 import { GrFormClose } from "react-icons/gr";
 import { HiCheck } from "react-icons/hi";
 import { AiOutlineCopy } from "react-icons/ai";
@@ -36,6 +37,7 @@ import { BiX } from "react-icons/bi";
 // Styles
 import Style from "./Table.module.css";
 import ActionBar from "./ActionBar/ActionBar";
+import { Button } from "@hybris-software/ui-kit";
 
 /**
  * @param {Object} props
@@ -100,11 +102,14 @@ const TableComponent = (
     checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
     settingsIcon = <ImWrench />,
+    refreshBtnIcon = <ImSpinner11 />,
     copyToClipboardIcon = <AiOutlineCopy />,
     tooltipClassName = Style.tooltip,
     enableStripedTable = false,
     enableSettings = true,
+    enableRefreshBtn = false,
     settingsClassName = Style.select,
+    refreshBtnClassName = Style.refreshBtn,
     enableRowsSelectedBadge = true,
     rowsSelectedBadgeClassName = Style.rowsSelected,
     enableSearchBadges = true,
@@ -172,7 +177,7 @@ const TableComponent = (
   const [url, setUrl] = useState(null);
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [hiddenColumns, setHiddenColumns] = useState([]);
+  const [hiddenColumns, setHiddenColumns] = useState(columns.filter(item => item?.initialHide).map(item => item.field));
   const [notSelectableRow, setNotSelectableRow] = useState([]);
   const [scrollingPosition, setScrollingPosition] = useState(0);
 
@@ -486,7 +491,7 @@ const TableComponent = (
           />
           <ConditionalComponent
             condition={
-              enableSettings || enableRowsSelectedBadge || enableSearchBadges
+              enableSettings|| enableRefreshBtn || enableRowsSelectedBadge || enableSearchBadges
             }
           >
             <div className={Style.selectContainer}>
@@ -556,6 +561,20 @@ const TableComponent = (
                   </div>
                 </div>
               </ConditionalComponent>
+              <ConditionalComponent condition={enableRefreshBtn}>
+                <Button
+                  buttonClassName={refreshBtnClassName}
+                  disabledClassName={Style.refreshBtnDisableClassName}
+                  disabled = {tableAPI.isLoading}
+                  onClick={() => tableRef?.current?.refreshTable()}
+                >
+                  <span
+                    className={Style.iconContainer}
+                  >
+                    {refreshBtnIcon}
+                  </span>
+                </Button>
+              </ConditionalComponent>
               <ConditionalComponent
                 condition={
                   tableSettings.selectedData.length > 0 &&
@@ -566,7 +585,7 @@ const TableComponent = (
                   {tableSettings.selectedData.length} {texts.rowsSelected}
                   <GrFormClose
                     onClick={() => {
-                      tableRef.current.setSelectedData([]);
+                      tableRef?.current?.setSelectedData([]);
                     }}
                   />
                 </div>

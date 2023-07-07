@@ -27,41 +27,13 @@ const TestView = () => {
       orderField: "user",
       copyable: true,
       sortable: true,
+      initialHide: true,
       accessor: (row) => {
         return row.id;
       },
     },
     {
       Header: "Username",
-      field: "username",
-      orderField: "username",
-      sortable: true,
-      accessor: (row) => {
-        return row.username;
-      },
-    },
-    {
-      Header: "1",
-      field: "id",
-      orderField: "id",
-      copyable: true,
-      sortable: true,
-      accessor: (row) => {
-        return row.id;
-      },
-    },
-    {
-      Header: "2",
-      field: "user",
-      orderField: "user",
-      copyable: true,
-      sortable: true,
-      accessor: (row) => {
-        return row.id;
-      },
-    },
-    {
-      Header: "3",
       field: "username",
       orderField: "username",
       sortable: true,
@@ -83,6 +55,7 @@ const TestView = () => {
       field: "file",
       orderField: "file",
       sortable: true,
+      initialHide: true,
       accessor: (row) => {
         return (
           <>
@@ -345,6 +318,7 @@ const TestView = () => {
         onTableRefresh={(e) => onTableRefresh(e)}
         enableStripedTable={true}
         conditionToHideSelectRow={checkBoxDisabled}
+        enableRefreshBtn = {true}
       />
 
       <TableClient

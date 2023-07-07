@@ -22,6 +22,17 @@
   background-color: #f3f3f3;
 }
 
+.refreshBtn {
+  position: relative;
+  font-size: 12px;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  min-height: 30px;
+}
+.refreshBtnDisableClassName{
+  opacity: .4;
+}
+
 .iconContainer {
   display: flex;
   padding: 7px 20px;

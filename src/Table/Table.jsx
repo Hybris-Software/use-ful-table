@@ -177,7 +177,7 @@ const TableComponent = (
   const [url, setUrl] = useState(null);
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [hiddenColumns, setHiddenColumns] = useState(columns.filter(item => item?.initialHide).map(item => item.field));
+  const [hiddenColumns, setHiddenColumns] = useState(columns.filter(item => item?.defaultHidden).map(item => item.field));
   const [notSelectableRow, setNotSelectableRow] = useState([]);
   const [scrollingPosition, setScrollingPosition] = useState(0);
 

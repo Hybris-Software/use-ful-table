@@ -27,7 +27,6 @@ const TestView = () => {
       orderField: "user",
       copyable: true,
       sortable: true,
-      initialHide: true,
       accessor: (row) => {
         return row.id;
       },
@@ -46,6 +45,8 @@ const TestView = () => {
       field: "status",
       orderField: "status",
       sortable: true,
+      defaultHidden: true,
+
       accessor: (row) => {
         return row.status;
       },
@@ -55,7 +56,6 @@ const TestView = () => {
       field: "file",
       orderField: "file",
       sortable: true,
-      initialHide: true,
       accessor: (row) => {
         return (
           <>

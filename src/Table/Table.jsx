@@ -98,6 +98,7 @@ const TableComponent = (
     toPageInputClassName,
     toPageInputBaseClassName,
     paginationButtonClassName,
+    paginationRecordsClassName,
     paginationClassName,
     checkboxClassName = Style.labelClass,
     sortingClassName = Style.sortingClass,
@@ -112,7 +113,9 @@ const TableComponent = (
     refreshBtnClassName = Style.refreshBtn,
     enableRowsSelectedBadge = true,
     rowsSelectedBadgeClassName = Style.rowsSelected,
+    hiddenColumnsBadgeClassName = Style.rowsSelected,
     enableSearchBadges = true,
+    enableHiddenColumnBadge = true,
     searchBadgesClassName = Style.rowsSelected,
     searchBadgeExitIcon = "",
     texts = {
@@ -575,6 +578,18 @@ const TableComponent = (
                   </span>
                 </Button>
               </ConditionalComponent>
+
+              <ConditionalComponent
+                condition={
+                  enableHiddenColumnBadge
+                }
+              >
+                <div className={hiddenColumnsBadgeClassName}>
+                  <span>Hidden columns:&nbsp;</span>
+                  <span>{hiddenColumns.length}</span> 
+                </div>
+              </ConditionalComponent>
+
               <ConditionalComponent
                 condition={
                   tableSettings.selectedData.length > 0 &&
@@ -857,6 +872,7 @@ const TableComponent = (
             toPageInputBaseClassName={toPageInputBaseClassName}
             toPageInputClassName={toPageInputClassName}
             paginationButtonClassName={paginationButtonClassName}
+            paginationRecordsClassName={paginationRecordsClassName}
           />
         </div>
       </div>

@@ -20,6 +20,7 @@ function PaginationBar({
   toPageInputBaseClassName = Style.toPageInputBaseClass,
   toPageInputClassName = Style.toPageInputClass,
   paginationButtonClassName = Style.paginationButtonClass,
+  paginationRecordsClassName = Style.paginationRecordsClassName
 }) {
   const [pageTo, setPageTo] = useState(tableSettings.pagination.page);
   const totalPages =
@@ -62,13 +63,13 @@ function PaginationBar({
             }}
           />
           {totalPages && (
-            <span>
-              {texts.ofPageLabel} <strong>{totalPages}</strong>
+            <span className={paginationRecordsClassName}>
+              {texts.ofPageLabel} <span>{totalPages}</span>
             </span>
           )}
           {tableAPI?.response?.data?.count && (
-            <span>
-              | <strong>{tableAPI?.response?.data?.count}</strong> records
+            <span className={paginationRecordsClassName}>
+              | <span>{tableAPI?.response?.data?.count}</span> records
             </span>
           )}
         </div>

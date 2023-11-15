@@ -60,8 +60,7 @@ const TestView = () => {
         return (
           <>
             {row.file && (
-              <a href={row.file} target="blank" download={"export-file"}>
-              </a>
+              <a href={row.file} target="blank" download={"export-file"}></a>
             )}
           </>
         );
@@ -160,8 +159,9 @@ const TestView = () => {
   ];
 
   // const endPoint = "administration/users/";
-  const endPoint = "exports/";
+  const endPoint = "users/";
   const ref = useRef(null);
+  const refTest = useRef(null);
   const refForClientTable = useRef(null);
 
   //For Client Table
@@ -242,6 +242,7 @@ const TestView = () => {
       status: "OPEN",
     },
   ];
+
   function checkBoxDisabled(row) {
     if (row.termsAccepted) {
       return true;
@@ -263,7 +264,8 @@ const TestView = () => {
     <div style={{ padding: 20 }}>
       <Button
         onClick={() => {
-          console.log(ref.current.scrollLeft)
+          console.log(ref.current.getData().tableSettings.selectedData);
+          // console.log(ref.current.scrollLeft)
           // let tempExtraFilter = {};
           // Object.entries(currentFilter).forEach((entry) => {
           //   const [key, item] = entry;
@@ -303,6 +305,7 @@ const TestView = () => {
       </div>
       <Table
         rowHeight="70"
+        tableKey="testTable"
         pageSizes={[1, 2, 3, 5, 10]}
         allowedActions={allowedActions}
         enableAllowedActions={true}
@@ -314,11 +317,32 @@ const TestView = () => {
         ref={ref}
         columns={[...columns]}
         endPoint={endPoint}
-        onPageSizeChange={(e) => console.log(e)}
+        // onPageSizeChange={(e) => console.log(e)}
         onTableRefresh={(e) => onTableRefresh(e)}
         enableStripedTable={true}
-        conditionToHideSelectRow={checkBoxDisabled}
-        enableRefreshBtn = {true}
+        // conditionToHideSelectRow={checkBoxDisabled}
+        // enableRefreshBtn = {true}
+      />
+
+      <Table
+        rowHeight="70"
+        tableKey="testTable--2"
+        pageSizes={[1, 2, 3, 5, 10]}
+        allowedActions={allowedActions}
+        enableAllowedActions={true}
+        searchFieldSelectClassName={Style.test}
+        searchFieldSelectClassNameOpened={Style.testOpened}
+        searchFieldSelectClassNameOptions={Style.testOptions}
+        pageSizeSelectClassName={Style.testPage}
+        pageSizeSelectClassNameOpened={Style.testOpenedPage}
+        ref={refTest}
+        columns={[...columns]}
+        endPoint={endPoint}
+        // onPageSizeChange={(e) => console.log(e)}
+        onTableRefresh={(e) => onTableRefresh(e)}
+        enableStripedTable={true}
+        // conditionToHideSelectRow={checkBoxDisabled}
+        // enableRefreshBtn = {true}
       />
 
       <TableClient

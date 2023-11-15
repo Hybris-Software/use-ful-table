@@ -41,6 +41,25 @@ function updateObjectState(key, nestedKey, value, setObjectState) {
   });
 }
 
+function storeInLocalStorage(tableKey, tableSettingKey, tableSettingValue ){
+  if (tableKey) {
+    let localStorageTableSettings = JSON.parse(
+      localStorage.getItem("tableSettings")
+    );
+    localStorageTableSettings = {
+      ...localStorageTableSettings,
+      [tableKey]: {
+        ...localStorageTableSettings?.[tableKey],
+        [tableSettingKey]: tableSettingValue,
+      },
+    };
+    localStorage.setItem(
+      "tableSettings",
+      JSON.stringify(localStorageTableSettings)
+    );
+  }
+}
+
 const CommonStyles = styled.div`
   padding: 1rem;
   box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
@@ -160,4 +179,4 @@ const sortType = {
   DOWN: "desc",
 };
 
-export { createUrl, updateObjectState, CommonStyles, StripedTable, sortType };
+export { createUrl, updateObjectState, storeInLocalStorage, CommonStyles, StripedTable, sortType };

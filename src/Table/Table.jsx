@@ -24,6 +24,7 @@ import {
   updateObjectState,
   CommonStyles,
   StripedTable,
+  storeInLocalStorage,
 } from "./tableAddons";
 
 //Icon
@@ -41,6 +42,7 @@ import { Button } from "@hybris-software/ui-kit";
 
 /**
  * @param {Object} props
+ * @param {String} props.tableKey - A unique identifier for the table
  * @param {Array} props.pageSizes - Array of numbers that will be used as options for the page size select
  * @param {Array} props.columns - Array of objects that will be used as columns for the table
  * @param {Number} props.headerHeight - Height of the header
@@ -69,6 +71,7 @@ import { Button } from "@hybris-software/ui-kit";
 
 const TableComponent = (
   {
+    tableKey,
     pageSizes = [5, 10, 25, 50, 100],
     columns,
     headerHeight = 50,
@@ -156,10 +159,32 @@ const TableComponent = (
   ref
 ) => {
   // Constants
+
+  const localStorageTableSettings = JSON.parse(
+    localStorage.getItem("tableSettings")
+  );
+
+  const calculatedDefaultPage =
+    tableKey &&
+    localStorageTableSettings?.[tableKey] &&
+    localStorageTableSettings?.[tableKey]?.pageSize &&
+    pageSizes.includes(localStorageTableSettings?.[tableKey]?.pageSize)
+      ? localStorageTableSettings?.[tableKey]?.pageSize
+      : defaultPageSize;
+
+  const calculatedHiddenColumn =
+    tableKey &&
+    localStorageTableSettings?.[tableKey] &&
+    localStorageTableSettings?.[tableKey]?.hiddenColumns
+      ? localStorageTableSettings?.[tableKey]?.hiddenColumns.filter((item) =>
+          columns.map((item) => item.field).includes(item)
+        )
+      : columns.filter((item) => item?.defaultHidden).map((item) => item.field);
+
   const initialSettings = {
     pagination: {
       page: 1,
-      pageSize: defaultPageSize,
+      pageSize: calculatedDefaultPage,
     },
     sortingSettings: "",
     search: {
@@ -180,7 +205,7 @@ const TableComponent = (
   const [url, setUrl] = useState(null);
   const [tableSettings, setTableSettings] = useState(initialSettings);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [hiddenColumns, setHiddenColumns] = useState(columns.filter(item => item?.defaultHidden).map(item => item.field));
+  const [hiddenColumns, setHiddenColumns] = useState(calculatedHiddenColumn);
   const [notSelectableRow, setNotSelectableRow] = useState([]);
   const [scrollingPosition, setScrollingPosition] = useState(0);
 
@@ -435,6 +460,11 @@ const TableComponent = (
 
   useEffect(() => {
     onPageSizeChange(tableContext);
+    storeInLocalStorage(
+      tableKey,
+      "pageSize",
+      tableSettings.pagination.pageSize
+    );
   }, [tableSettings.pagination.pageSize]);
 
   useEffect(() => {
@@ -454,6 +484,10 @@ const TableComponent = (
       xScrollRef.current.scrollLeft = scrollingPosition;
     }
   }, [scrollingTableRef.current]);
+
+  useEffect(() => {
+    storeInLocalStorage(tableKey, "hiddenColumns", hiddenColumns);
+  }, [hiddenColumns]);
 
   function copyToClipboard(str) {
     const el = document.createElement("textarea");
@@ -494,7 +528,10 @@ const TableComponent = (
           />
           <ConditionalComponent
             condition={
-              enableSettings|| enableRefreshBtn || enableRowsSelectedBadge || enableSearchBadges
+              enableSettings ||
+              enableRefreshBtn ||
+              enableRowsSelectedBadge ||
+              enableSearchBadges
             }
           >
             <div className={Style.selectContainer}>
@@ -568,25 +605,17 @@ const TableComponent = (
                 <Button
                   buttonClassName={refreshBtnClassName}
                   disabledClassName={Style.refreshBtnDisableClassName}
-                  disabled = {tableAPI.isLoading}
+                  disabled={tableAPI.isLoading}
                   onClick={() => tableRef?.current?.refreshTable()}
                 >
-                  <span
-                    className={Style.iconContainer}
-                  >
-                    {refreshBtnIcon}
-                  </span>
+                  <span className={Style.iconContainer}>{refreshBtnIcon}</span>
                 </Button>
               </ConditionalComponent>
 
-              <ConditionalComponent
-                condition={
-                  enableHiddenColumnBadge
-                }
-              >
+              <ConditionalComponent condition={enableHiddenColumnBadge}>
                 <div className={hiddenColumnsBadgeClassName}>
                   <span>Hidden columns:&nbsp;</span>
-                  <span>{hiddenColumns.length}</span> 
+                  <span>{hiddenColumns.length}</span>
                 </div>
               </ConditionalComponent>
 

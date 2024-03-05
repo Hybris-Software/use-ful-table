@@ -1,7 +1,6 @@
 {
   "name": "@hybris-software/use-table",
   "version": "0.1.39",
-  "private": false,
   "main": "dist/index.js",
   "module": "dist/index.js",
   "dependencies": {
@@ -52,5 +51,6 @@
   "devDependencies": {
     "prettier": "^3.2.5",
     "react-router-dom": "^6.8.0"
-  }
+  },
+  "packageManager": "yarn@4.1.0"
 }

@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TestView from './TestView/TestView';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import TestView from "./TestView/TestView"
+import "./App.css"
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
         <Route path="/" element={<TestView />}></Route>
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App

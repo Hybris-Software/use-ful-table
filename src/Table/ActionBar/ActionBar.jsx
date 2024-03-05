@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react"
 
 //Components
-import ConditionalComponent from "../ConditionalComponent/ConditionalComponent";
+import ConditionalComponent from "../ConditionalComponent/ConditionalComponent"
 
 //Libraries
-import { InputField, Select, Button } from "@hybris-software/ui-kit";
+import { InputField, Select, Button } from "@hybris-software/ui-kit"
 
 // Styles
-import Style from "./ActionBar.module.css";
+import Style from "./ActionBar.module.css"
 
 function ActionBar({
   tableRef,
@@ -23,23 +23,23 @@ function ActionBar({
   inputSearchBaseClassName = Style.inputSearchBaseClass,
   searchBarClassName = Style.searchBarClass,
 }) {
-  const [selectedAction, setSelectedAction] = useState("");
+  const [selectedAction, setSelectedAction] = useState("")
 
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState("")
 
   const [currentSearch, setCurrentSearch] = useState({
     value: tableSettings.search.value,
     field: tableSettings.search.field,
-  });
+  })
 
   useEffect(() => {
-    clearTimeout(timeoutId.current);
+    clearTimeout(timeoutId.current)
     timeoutId.current = setTimeout(() => {
       if (tableRef.current) {
-        updateObjectState("value", null, searchValue, setCurrentSearch);
+        updateObjectState("value", null, searchValue, setCurrentSearch)
       }
-    }, 1000);
-  }, [searchValue]);
+    }, 1000)
+  }, [searchValue])
 
   useEffect(() => {
     if (currentSearch.value && currentSearch.field) {
@@ -53,9 +53,9 @@ function ActionBar({
           pagination: {
             page: 1,
             pageSize: prev.pagination.pageSize,
-          }
-        };
-      });
+          },
+        }
+      })
     } else if (currentSearch.field) {
       setTableSettings((prev) => {
         if (prev?.search?.value) {
@@ -65,20 +65,20 @@ function ActionBar({
               field: currentSearch.field,
               value: "",
             },
-          };
+          }
         } else {
-          return prev;
+          return prev
         }
-      });
+      })
     }
-  }, [currentSearch]);
+  }, [currentSearch])
 
   useEffect(() => {
-    setSearchValue(tableSettings.search.value);
-  }, [tableSettings.search.value]);
+    setSearchValue(tableSettings.search.value)
+  }, [tableSettings.search.value])
 
   // For debounce mechanisms
-  const timeoutId = useRef(null);
+  const timeoutId = useRef(null)
 
   return (
     <div className={Style.filterRow}>
@@ -89,7 +89,7 @@ function ActionBar({
               placeholder={texts.actionSelect}
               items={allowedActions}
               setValue={(value) => {
-                setSelectedAction(value);
+                setSelectedAction(value)
               }}
               value={selectedAction}
             />
@@ -112,7 +112,7 @@ function ActionBar({
             labelKey="Header"
             value={currentSearch.field}
             setValue={(value) => {
-              updateObjectState("field", null, value, setCurrentSearch);
+              updateObjectState("field", null, value, setCurrentSearch)
             }}
           />
         </ConditionalComponent>
@@ -124,13 +124,13 @@ function ActionBar({
             className={searchBarClassName}
             value={searchValue}
             onChange={(e) => {
-              setSearchValue(e.target.value);
+              setSearchValue(e.target.value)
             }}
           />
         </ConditionalComponent>
       </div>
     </div>
-  );
+  )
 }
 
-export default ActionBar;
+export default ActionBar

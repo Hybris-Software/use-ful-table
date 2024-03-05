@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react"
 
 const ConditionalComponent = ({ condition, children }) => {
-  return <>{condition && children}</>;
-};
+  return <>{condition && children}</>
+}
 
-export default ConditionalComponent;
+export default ConditionalComponent

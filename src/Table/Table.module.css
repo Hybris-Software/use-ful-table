@@ -30,8 +30,8 @@
   border-radius: 3px;
   min-height: 30px;
 }
-.refreshBtnDisableClassName{
-  opacity: .4;
+.refreshBtnDisableClassName {
+  opacity: 0.4;
 }
 
 .iconContainer {
@@ -75,7 +75,7 @@
 }
 
 .scrollableList,
-.scrollableListOpened{
+.scrollableListOpened {
   max-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -83,7 +83,7 @@
   -ms-overflow-style: none;
   scrollbar-color: transparent transparent; /* Only Firefox */
 }
-.scrollableListOpened{
+.scrollableListOpened {
   max-height: 200px;
 }
 
@@ -93,7 +93,7 @@
   background: transparent; /* Chrome/Safari/Webkit */
 }
 
-.singleOption{
+.singleOption {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -105,7 +105,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 
 .rowsSelected {
   min-height: 30px;
@@ -197,7 +196,7 @@
 .tableContent.active {
   cursor: grabbing;
   cursor: -webkit-grabbing;
-  -webkit-touch-callout: none; 
+  -webkit-touch-callout: none;
 }
 .headerSection {
   position: relative;
@@ -225,7 +224,7 @@
 /* .selectableRowsClass {
   background-color: #bfcae41f;
 } */
-.tdCell{
+.tdCell {
   position: relative;
 }
 .clampedCell {
@@ -234,7 +233,7 @@
   text-overflow: ellipsis;
   text-align: center;
 }
-.copyFeature{
+.copyFeature {
   font-size: 16px;
   position: absolute;
   z-index: 1;
@@ -244,11 +243,11 @@
   right: 5px;
   display: flex;
 }
-.copyFeature:hover{
+.copyFeature:hover {
   cursor: pointer;
-  color: #757575;;
+  color: #757575;
 }
-.tooltip{
+.tooltip {
   position: absolute;
   bottom: 20px;
   left: 50%;
@@ -320,7 +319,7 @@
 }
 
 .checkboxContainer input[type="checkbox"][disabled] ~ .labelClass {
-  opacity: 0.5; 
+  opacity: 0.5;
   cursor: not-allowed;
   background-color: transparent;
   border: transparent;

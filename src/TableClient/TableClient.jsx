@@ -5,29 +5,29 @@ import React, {
   useImperativeHandle,
   useRef,
   useMemo,
-} from "react";
-import PropTypes from "prop-types";
+} from "react"
+import PropTypes from "prop-types"
 
 //Components
-import HeaderActionList from "./HeaderActionList/HeaderActionList";
-import ConditionalComponent from "./ConditionalComponent/ConditionalComponent";
-import PaginationBar from "./PaginationBar/PaginationBar";
+import HeaderActionList from "./HeaderActionList/HeaderActionList"
+import ConditionalComponent from "./ConditionalComponent/ConditionalComponent"
+import PaginationBar from "./PaginationBar/PaginationBar"
 
 // Libraries
-import { useTable } from "react-table";
+import { useTable } from "react-table"
 
 //Addons
-import { updateObjectState, CommonStyles, StripedTable } from "./tableAddons";
+import { updateObjectState, CommonStyles, StripedTable } from "./tableAddons"
 
 //Icon
-import { ImWrench } from "react-icons/im";
-import { GrFormClose } from "react-icons/gr";
-import { HiCheck } from "react-icons/hi";
-import { AiOutlineCopy } from "react-icons/ai";
+import { ImWrench } from "react-icons/im"
+import { GrFormClose } from "react-icons/gr"
+import { HiCheck } from "react-icons/hi"
+import { AiOutlineCopy } from "react-icons/ai"
 
 // Styles
-import Style from "./TableClient.module.css";
-import ActionBar from "./ActionBar/ActionBar";
+import Style from "./TableClient.module.css"
+import ActionBar from "./ActionBar/ActionBar"
 
 /**
  * @param {Object} props
@@ -145,26 +145,26 @@ const TableClientComponent = (
       value: "",
     },
     selectedData: [],
-  };
+  }
 
   // Refs
-  const defaultRef = useRef(null);
-  const tableRef = ref || defaultRef;
+  const defaultRef = useRef(null)
+  const tableRef = ref || defaultRef
 
   // States
-  const [tableSettings, setTableSettings] = useState(initialSettings);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [hiddenColumns, setHiddenColumns] = useState([]);
-  const [dataLists, setDataLists] = useState({});
-  const [notSelectableRow, setNotSelectableRow] = useState([]);
+  const [tableSettings, setTableSettings] = useState(initialSettings)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [hiddenColumns, setHiddenColumns] = useState([])
+  const [dataLists, setDataLists] = useState({})
+  const [notSelectableRow, setNotSelectableRow] = useState([])
 
   // Draggable
-  const [isDown, setIsDown] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [isDown, setIsDown] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
 
   // To select all
-  const [selectAllRows, setSelectAllRows] = useState(false);
+  const [selectAllRows, setSelectAllRows] = useState(false)
 
   const selectColumn = useMemo(
     () => ({
@@ -174,12 +174,12 @@ const TableClientComponent = (
       sortable: false,
       noAction: true,
       accessor: (row) => {
-        const condition = conditionToHideSelectRow(row);
+        const condition = conditionToHideSelectRow(row)
         if (
           condition &&
           !notSelectableRow.map((item) => item.id).includes(row.id)
         )
-          setNotSelectableRow((prev) => [...prev, row]);
+          setNotSelectableRow((prev) => [...prev, row])
         return (
           <div className={Style.checkboxContainer}>
             <input
@@ -193,14 +193,14 @@ const TableClientComponent = (
                 ) !== undefined
               }
               onChange={(e) => {
-                let tempList = [...tableSettings.selectedData];
+                let tempList = [...tableSettings.selectedData]
                 if (e.target.checked) {
                   // tempList.push(row);
-                  tempList = [...tempList, row];
+                  tempList = [...tempList, row]
                 } else {
-                  tempList = tempList.filter((item) => item.id !== row.id);
+                  tempList = tempList.filter((item) => item.id !== row.id)
                 }
-                tableRef.current.setSelectedData(tempList);
+                tableRef.current.setSelectedData(tempList)
               }}
             />
             <label
@@ -210,27 +210,27 @@ const TableClientComponent = (
               <HiCheck />
             </label>
           </div>
-        );
+        )
       },
     }),
     // eslint-disable-next-line
     [tableSettings, tableRef]
-  );
+  )
 
-  const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
+  const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent
   const ComputedDownSortIcon = sortingDownIcon
     ? sortingDownIcon
-    : IconDownComponent;
+    : IconDownComponent
 
   const computedSortingClassName = sortingClassName
     ? sortingClassName
-    : Style.sortingClassName;
+    : Style.sortingClassName
   const computedDisableSortIconClassName = disableSortIconClassName
     ? disableSortIconClassName
-    : Style.sortingIconDisabled;
+    : Style.sortingIconDisabled
   const computedActiveSortIconClassName = activeSortIconClassName
     ? activeSortIconClassName
-    : Style.sortingIconActive;
+    : Style.sortingIconActive
 
   const computedColumns = useMemo(() => {
     return [
@@ -241,15 +241,15 @@ const TableClientComponent = (
           ...column,
           searchField: column.field,
         })),
-    ];
-  }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
+    ]
+  }, [columns, selectColumn, enableSelectableRows, hiddenColumns])
 
   //Customized settings
   const ComputedStyles = Styles
     ? Styles
     : enableStripedTable
-    ? StripedTable
-    : CommonStyles;
+      ? StripedTable
+      : CommonStyles
   const tableContext = useMemo(
     () => ({
       tableSettings: tableSettings,
@@ -257,30 +257,30 @@ const TableClientComponent = (
       data: dataLists?.inPageData,
     }),
     [tableSettings, extraFilters, dataLists]
-  );
+  )
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns: computedColumns,
       data: dataLists?.inPageData || [],
-    });
+    })
 
   useImperativeHandle(
     tableRef,
     () => {
       return {
         getData() {
-          return tableContext;
+          return tableContext
         },
         nextPage() {
-          const value = +tableSettings.pagination.page + 1;
-          updateObjectState("pagination", "page", value, setTableSettings);
+          const value = +tableSettings.pagination.page + 1
+          updateObjectState("pagination", "page", value, setTableSettings)
         },
         previousPage() {
-          const value = tableSettings.pagination.page - 1;
-          updateObjectState("pagination", "page", value, setTableSettings);
+          const value = tableSettings.pagination.page - 1
+          updateObjectState("pagination", "page", value, setTableSettings)
         },
         toPage(page) {
-          updateObjectState("pagination", "page", page, setTableSettings);
+          updateObjectState("pagination", "page", page, setTableSettings)
         },
         setPageSize(pageSize) {
           updateObjectState(
@@ -288,64 +288,64 @@ const TableClientComponent = (
             "pageSize",
             pageSize,
             setTableSettings
-          );
-          updateObjectState("pagination", "page", 1, setTableSettings);
-          onPageSizeChange(tableContext);
+          )
+          updateObjectState("pagination", "page", 1, setTableSettings)
+          onPageSizeChange(tableContext)
         },
         setSearchValue(value) {
-          updateObjectState("search", "value", value, setTableSettings);
-          updateObjectState("pagination", "page", 1, setTableSettings);
+          updateObjectState("search", "value", value, setTableSettings)
+          updateObjectState("pagination", "page", 1, setTableSettings)
         },
         setSearchField(value) {
-          updateObjectState("search", "field", value, setTableSettings);
-          updateObjectState("pagination", "page", 1, setTableSettings);
+          updateObjectState("search", "field", value, setTableSettings)
+          updateObjectState("pagination", "page", 1, setTableSettings)
         },
         setSortingSettings(value) {
-          updateObjectState("sortingSettings", null, value, setTableSettings);
+          updateObjectState("sortingSettings", null, value, setTableSettings)
         },
         setSelectedData(value) {
-          updateObjectState("selectedData", null, value, setTableSettings);
+          updateObjectState("selectedData", null, value, setTableSettings)
         },
-      };
+      }
     },
     [tableSettings, tableContext]
-  );
+  )
 
   const sortHandler = (column) => {
-    const columnName = column.field;
+    const columnName = column.field
     const computedSorting = tableSettings.sortingSettings.includes("-")
       ? columnName
-      : "-" + columnName;
-    tableRef.current.setSortingSettings(computedSorting);
-  };
+      : "-" + columnName
+    tableRef.current.setSortingSettings(computedSorting)
+  }
 
   useEffect(() => {
-    onSelectionChange(tableContext);
+    onSelectionChange(tableContext)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableSettings.selectedData]);
+  }, [tableSettings.selectedData])
 
   useEffect(() => {
-    onPageChange(tableContext);
-  }, [tableSettings.pagination.page]);
+    onPageChange(tableContext)
+  }, [tableSettings.pagination.page])
 
   useEffect(() => {
-    onPageSizeChange(tableContext);
-  }, [tableSettings.pagination.pageSize]);
+    onPageSizeChange(tableContext)
+  }, [tableSettings.pagination.pageSize])
 
   useEffect(() => {
-    onSortChange(tableContext);
-  }, [tableSettings.sortingSettings]);
+    onSortChange(tableContext)
+  }, [tableSettings.sortingSettings])
 
   useEffect(() => {
-    onSearchFieldChange(tableContext);
-  }, [tableSettings.search.field]);
+    onSearchFieldChange(tableContext)
+  }, [tableSettings.search.field])
 
   useEffect(() => {
-    onSearch(tableContext);
-  }, [tableSettings.search.value]);
+    onSearch(tableContext)
+  }, [tableSettings.search.value])
 
   useEffect(() => {
-    let tempData = rawData;
+    let tempData = rawData
 
     //Search
     if (tableSettings.search.field && tableSettings.search.value) {
@@ -353,20 +353,21 @@ const TableClientComponent = (
         (item) =>
           item[tableSettings.search.field.field] &&
           item[tableSettings.search.field.field]
-            .toString().toLowerCase()
+            .toString()
+            .toLowerCase()
             .includes(tableSettings.search.value.toLowerCase())
-      );
+      )
     }
 
     //Sorting
     if (tableSettings.sortingSettings) {
-      tempData = sortingInClientTable(tempData);
+      tempData = sortingInClientTable(tempData)
     }
 
     //Pagination
     const start =
-      (tableSettings.pagination.page - 1) * tableSettings.pagination.pageSize;
-    const end = start + tableSettings.pagination.pageSize;
+      (tableSettings.pagination.page - 1) * tableSettings.pagination.pageSize
+    const end = start + tableSettings.pagination.pageSize
 
     if (
       tempData.slice(start, end) &&
@@ -386,52 +387,52 @@ const TableClientComponent = (
           notSelectableRow.map((value) => value.id).includes(tempItem)
         )
     ) {
-      setSelectAllRows(true);
+      setSelectAllRows(true)
     } else {
-      setSelectAllRows(false);
+      setSelectAllRows(false)
     }
 
     //Set the final data for table
-    updateObjectState("filteredData", null, tempData, setDataLists);
+    updateObjectState("filteredData", null, tempData, setDataLists)
     updateObjectState(
       "inPageData",
       null,
       tempData.slice(start, end),
       setDataLists
-    );
-  }, [tableSettings]);
+    )
+  }, [tableSettings])
 
   function sortingInClientTable(data) {
-    const field = tableSettings.sortingSettings.replace("-", "");
+    const field = tableSettings.sortingSettings.replace("-", "")
     if (data[0] && typeof data[0][field] === "number") {
       tableSettings.sortingSettings.includes("-")
         ? (data = data.sort((a, b) => b[field] - a[field]))
-        : (data = data.sort((a, b) => a[field] - b[field]));
+        : (data = data.sort((a, b) => a[field] - b[field]))
     } else if (data[0] && typeof data[0][field] === "string") {
       tableSettings.sortingSettings.includes("-")
         ? (data = data.sort((a, b) => b[field].localeCompare(a[field])))
-        : (data = data.sort((a, b) => a[field].localeCompare(b[field])));
+        : (data = data.sort((a, b) => a[field].localeCompare(b[field])))
     }
-    return data;
+    return data
   }
 
   function copyToClipboard(str) {
-    const el = document.createElement("textarea");
-    el.value = str;
-    el.setAttribute("readonly", "");
-    el.style.position = "absolute";
-    el.style.left = "-9999px";
-    document.body.appendChild(el);
+    const el = document.createElement("textarea")
+    el.value = str
+    el.setAttribute("readonly", "")
+    el.style.position = "absolute"
+    el.style.left = "-9999px"
+    document.body.appendChild(el)
     const selected =
       document.getSelection().rangeCount > 0
         ? document.getSelection().getRangeAt(0)
-        : false;
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
+        : false
+    el.select()
+    document.execCommand("copy")
+    document.body.removeChild(el)
     if (selected) {
-      document.getSelection().removeAllRanges();
-      document.getSelection().addRange(selected);
+      document.getSelection().removeAllRanges()
+      document.getSelection().addRange(selected)
     }
   }
   return (
@@ -509,7 +510,7 @@ const TableClientComponent = (
                                     : setHiddenColumns((oldState) => [
                                         ...oldState,
                                         item.field,
-                                      ]);
+                                      ])
                                 }}
                               />
                               <i></i>
@@ -535,7 +536,7 @@ const TableClientComponent = (
                   {tableSettings.selectedData.length} {texts.rowsSelected}
                   <GrFormClose
                     onClick={() => {
-                      tableRef.current.setSelectedData([]);
+                      tableRef.current.setSelectedData([])
                     }}
                   />
                 </div>
@@ -553,8 +554,8 @@ const TableClientComponent = (
                   {tableSettings.search.value}
                   <GrFormClose
                     onClick={() => {
-                      tableRef?.current?.setSearchField(defaultSearchField);
-                      tableRef?.current?.setSearchValue("");
+                      tableRef?.current?.setSearchField(defaultSearchField)
+                      tableRef?.current?.setSearchValue("")
                     }}
                   />
                 </div>
@@ -575,30 +576,30 @@ const TableClientComponent = (
             className={Style.tableContent}
             onMouseDown={(e) => {
               if (dragWithMouse) {
-                setIsDown(true);
-                e.currentTarget.classList.add(Style.active);
-                setStartX(e.pageX - e.currentTarget.offsetLeft);
-                setScrollLeft(e.currentTarget.scrollLeft);
+                setIsDown(true)
+                e.currentTarget.classList.add(Style.active)
+                setStartX(e.pageX - e.currentTarget.offsetLeft)
+                setScrollLeft(e.currentTarget.scrollLeft)
               }
             }}
             onMouseLeave={(e) => {
               if (dragWithMouse) {
-                setIsDown(false);
-                e.currentTarget.classList.remove(Style.active);
+                setIsDown(false)
+                e.currentTarget.classList.remove(Style.active)
               }
             }}
             onMouseUp={(e) => {
               if (dragWithMouse) {
-                setIsDown(false);
-                e.currentTarget.classList.remove(Style.active);
+                setIsDown(false)
+                e.currentTarget.classList.remove(Style.active)
               }
             }}
             onMouseMove={(e) => {
               if (dragWithMouse) {
-                if (!isDown) return;
-                const x = e.pageX - e.currentTarget.offsetLeft;
-                const walk = (x - startX) * 1;
-                e.currentTarget.scrollLeft = scrollLeft - walk;
+                if (!isDown) return
+                const x = e.pageX - e.currentTarget.offsetLeft
+                const walk = (x - startX) * 1
+                e.currentTarget.scrollLeft = scrollLeft - walk
               }
             }}
           >
@@ -648,12 +649,10 @@ const TableClientComponent = (
                                                 .map((value) => value.id)
                                                 .includes(item.id)
                                           ),
-                                        ];
+                                        ]
                                         if (e.target.checked) {
-                                          setSelectAllRows(true);
-                                          tableRef.current.setSelectedData(
-                                            temp
-                                          );
+                                          setSelectAllRows(true)
+                                          tableRef.current.setSelectedData(temp)
                                         } else {
                                           const temp =
                                             tableSettings.selectedData.filter(
@@ -664,11 +663,9 @@ const TableClientComponent = (
                                                 !notSelectableRow
                                                   .map((value) => value.id)
                                                   .includes(item.id)
-                                            );
-                                          setSelectAllRows(false);
-                                          tableRef.current.setSelectedData(
-                                            temp
-                                          );
+                                            )
+                                          setSelectAllRows(false)
+                                          tableRef.current.setSelectedData(temp)
                                         }
                                       }}
                                     />
@@ -728,12 +725,12 @@ const TableClientComponent = (
                           </th>
                         ))}
                       </tr>
-                    );
+                    )
                   })}
                 </thead>
                 <tbody {...getTableBodyProps()}>
                   {rows.map((row, i) => {
-                    prepareRow(row);
+                    prepareRow(row)
                     return (
                       <tr
                         {...row.getRowProps()}
@@ -759,13 +756,12 @@ const TableClientComponent = (
                                     title={texts.copyToClipboard}
                                     className={Style.copyFeature}
                                     onClick={(e) => {
-                                      copyToClipboard(cell.value);
-                                      const target =
-                                        e.currentTarget.children[1];
-                                      target.style.opacity = "1";
+                                      copyToClipboard(cell.value)
+                                      const target = e.currentTarget.children[1]
+                                      target.style.opacity = "1"
                                       setTimeout(() => {
-                                        target.style.opacity = "0";
-                                      }, 1000);
+                                        target.style.opacity = "0"
+                                      }, 1000)
                                     }}
                                   >
                                     {copyToClipboardIcon}
@@ -776,10 +772,10 @@ const TableClientComponent = (
                                 )}
                               </div>
                             </td>
-                          );
+                          )
                         })}
                       </tr>
-                    );
+                    )
                   })}
                 </tbody>
               </table>
@@ -804,10 +800,10 @@ const TableClientComponent = (
         </div>
       </div>
     </ComputedStyles>
-  );
-};
+  )
+}
 
-const TableClient = forwardRef(TableClientComponent);
+const TableClient = forwardRef(TableClientComponent)
 
 const IconUpComponent = ({ condition, activeClassName, disabledClassName }) => {
   return (
@@ -833,8 +829,8 @@ const IconUpComponent = ({ condition, activeClassName, disabledClassName }) => {
         />
       </svg>
     </span>
-  );
-};
+  )
+}
 
 const IconDownComponent = ({
   condition,
@@ -864,16 +860,16 @@ const IconDownComponent = ({
         />
       </svg>
     </span>
-  );
-};
+  )
+}
 
 const EmptyDataMessageComponent = () => {
   return (
     <>
       <p>No data available</p>
     </>
-  );
-};
+  )
+}
 
 TableClientComponent.propTypes = {
   pageSizes: PropTypes.arrayOf(PropTypes.number),
@@ -899,6 +895,6 @@ TableClientComponent.propTypes = {
   onPageSizeChange: PropTypes.func,
   onSelectionChange: PropTypes.func,
   onSortChange: PropTypes.func,
-};
+}
 
-export default TableClient;
+export default TableClient

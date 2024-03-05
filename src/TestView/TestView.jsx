@@ -1,14 +1,14 @@
-import { Button, Select } from "@hybris-software/ui-kit";
-import React, { useRef, useState } from "react";
-import Table from "../Table/Table";
-import TableClient from "../TableClient/TableClient";
+import { Button, Select } from "@hybris-software/ui-kit"
+import React, { useRef, useState } from "react"
+import Table from "../Table/Table"
+import TableClient from "../TableClient/TableClient"
 
 // Styles
-import Style from "./TestView.module.css";
+import Style from "./TestView.module.css"
 
 const TestView = () => {
-  const [extraFilters, setExtraFilters] = useState({});
-  const [currentFilter, setCurrentFilter] = useState({});
+  const [extraFilters, setExtraFilters] = useState({})
+  const [currentFilter, setCurrentFilter] = useState({})
 
   const columns = [
     {
@@ -18,7 +18,7 @@ const TestView = () => {
       copyable: true,
       sortable: true,
       accessor: (row) => {
-        return row.id;
+        return row.id
       },
     },
     {
@@ -28,7 +28,7 @@ const TestView = () => {
       copyable: true,
       sortable: true,
       accessor: (row) => {
-        return row.id;
+        return row.id
       },
     },
     {
@@ -37,7 +37,7 @@ const TestView = () => {
       orderField: "username",
       sortable: true,
       accessor: (row) => {
-        return row.username;
+        return row.username
       },
     },
     {
@@ -48,7 +48,7 @@ const TestView = () => {
       defaultHidden: true,
 
       accessor: (row) => {
-        return row.status;
+        return row.status
       },
     },
     {
@@ -63,7 +63,7 @@ const TestView = () => {
               <a href={row.file} target="blank" download={"export-file"}></a>
             )}
           </>
-        );
+        )
       },
     },
     {
@@ -75,7 +75,7 @@ const TestView = () => {
         // return <DateFormatter date={row.createdAt} />;
       },
     },
-  ];
+  ]
 
   const clientTableColumns = [
     {
@@ -83,7 +83,7 @@ const TestView = () => {
       field: "id",
       copyable: true,
       accessor: (row) => {
-        return row.id;
+        return row.id
       },
     },
     {
@@ -91,7 +91,7 @@ const TestView = () => {
       field: "user",
       sortable: false,
       accessor: (row) => {
-        return row.user;
+        return row.user
       },
     },
     {
@@ -100,7 +100,7 @@ const TestView = () => {
       searchable: false,
       copyable: true,
       accessor: (row) => {
-        return row.createdAt;
+        return row.createdAt
       },
     },
     {
@@ -108,7 +108,7 @@ const TestView = () => {
       field: "subject",
       orderField: "subject",
       accessor: (row) => {
-        return row.subject;
+        return row.subject
       },
     },
     {
@@ -116,7 +116,7 @@ const TestView = () => {
       field: "title",
       searchable: false,
       accessor: (row) => {
-        return row.title;
+        return row.title
       },
     },
     {
@@ -125,7 +125,7 @@ const TestView = () => {
       searchable: false,
       copyable: true,
       accessor: (row) => {
-        return row.status;
+        return row.status
       },
     },
     {
@@ -133,10 +133,10 @@ const TestView = () => {
       field: "priority",
       searchable: false,
       accessor: (row) => {
-        return row.priority;
+        return row.priority
       },
     },
-  ];
+  ]
 
   const allowedActions = [
     {
@@ -153,16 +153,16 @@ const TestView = () => {
       label: "Delete",
       value: "delete",
       action: () => {
-        console.log("Delete");
+        console.log("Delete")
       },
     },
-  ];
+  ]
 
   // const endPoint = "administration/users/";
-  const endPoint = "users/";
-  const ref = useRef(null);
-  const refTest = useRef(null);
-  const refForClientTable = useRef(null);
+  const endPoint = "users/"
+  const ref = useRef(null)
+  const refTest = useRef(null)
+  const refForClientTable = useRef(null)
 
   //For Client Table
   const rawData = [
@@ -241,30 +241,30 @@ const TestView = () => {
       priority: "HIGH",
       status: "OPEN",
     },
-  ];
+  ]
 
   function checkBoxDisabled(row) {
     if (row.termsAccepted) {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
 
   function checkBoxDisabledInClientTable(row) {
     if (row.status === "OPEN") {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
 
   function onTableRefresh(tableContext) {
-    tableContext.tableSettings.selectedData = [];
+    tableContext.tableSettings.selectedData = []
   }
   return (
     <div style={{ padding: 20 }}>
       <Button
         onClick={() => {
-          console.log(ref.current.getData().tableSettings.selectedData);
+          console.log(ref.current.getData().tableSettings.selectedData)
           // console.log(ref.current.scrollLeft)
           // let tempExtraFilter = {};
           // Object.entries(currentFilter).forEach((entry) => {
@@ -299,7 +299,7 @@ const TestView = () => {
             setCurrentFilter({
               ...currentFilter,
               terms_accepted: value,
-            });
+            })
           }}
         />
       </div>
@@ -364,7 +364,7 @@ const TestView = () => {
         conditionToHideSelectRow={checkBoxDisabledInClientTable}
       />
     </div>
-  );
-};
+  )
+}
 
-export default TestView;
+export default TestView

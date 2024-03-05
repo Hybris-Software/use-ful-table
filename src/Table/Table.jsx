@@ -5,18 +5,18 @@ import React, {
   useImperativeHandle,
   useRef,
   useMemo,
-} from "react";
-import PropTypes from "prop-types";
+} from "react"
+import PropTypes from "prop-types"
 
 //Components
-import HeaderActionList from "./HeaderActionList/HeaderActionList";
-import ConditionalComponent from "./ConditionalComponent/ConditionalComponent";
-import Loader from "./Loader/Loader";
-import PaginationBar from "./PaginationBar/PaginationBar";
+import HeaderActionList from "./HeaderActionList/HeaderActionList"
+import ConditionalComponent from "./ConditionalComponent/ConditionalComponent"
+import Loader from "./Loader/Loader"
+import PaginationBar from "./PaginationBar/PaginationBar"
 
 // Libraries
-import { useTable } from "react-table";
-import useQuery from "@hybris-software/use-query";
+import { useTable } from "react-table"
+import useQuery from "@hybris-software/use-query"
 
 //Addons
 import {
@@ -25,20 +25,20 @@ import {
   CommonStyles,
   StripedTable,
   storeInLocalStorage,
-} from "./tableAddons";
+} from "./tableAddons"
 
 //Icon
-import { ImWrench } from "react-icons/im";
-import { ImSpinner11 } from "react-icons/im";
-import { GrFormClose } from "react-icons/gr";
-import { HiCheck } from "react-icons/hi";
-import { AiOutlineCopy } from "react-icons/ai";
-import { BiX } from "react-icons/bi";
+import { ImWrench } from "react-icons/im"
+import { ImSpinner11 } from "react-icons/im"
+import { GrFormClose } from "react-icons/gr"
+import { HiCheck } from "react-icons/hi"
+import { AiOutlineCopy } from "react-icons/ai"
+import { BiX } from "react-icons/bi"
 
 // Styles
-import Style from "./Table.module.css";
-import ActionBar from "./ActionBar/ActionBar";
-import { Button } from "@hybris-software/ui-kit";
+import Style from "./Table.module.css"
+import ActionBar from "./ActionBar/ActionBar"
+import { Button } from "@hybris-software/ui-kit"
 
 /**
  * @param {Object} props
@@ -162,7 +162,7 @@ const TableComponent = (
 
   const localStorageTableSettings = JSON.parse(
     localStorage.getItem("tableSettings")
-  );
+  )
 
   const calculatedDefaultPage =
     tableKey &&
@@ -170,7 +170,7 @@ const TableComponent = (
     localStorageTableSettings?.[tableKey]?.pageSize &&
     pageSizes.includes(localStorageTableSettings?.[tableKey]?.pageSize)
       ? localStorageTableSettings?.[tableKey]?.pageSize
-      : defaultPageSize;
+      : defaultPageSize
 
   const calculatedHiddenColumn =
     tableKey &&
@@ -179,7 +179,7 @@ const TableComponent = (
       ? localStorageTableSettings?.[tableKey]?.hiddenColumns.filter((item) =>
           columns.map((item) => item.field).includes(item)
         )
-      : columns.filter((item) => item?.defaultHidden).map((item) => item.field);
+      : columns.filter((item) => item?.defaultHidden).map((item) => item.field)
 
   const initialSettings = {
     pagination: {
@@ -193,44 +193,44 @@ const TableComponent = (
     },
     endPoint: endPoint,
     selectedData: [],
-  };
+  }
 
   // Refs
-  const defaultRef = useRef(null);
-  const tableRef = ref || defaultRef;
-  const xScrollRef = useRef(null);
-  const scrollingTableRef = useRef(null);
+  const defaultRef = useRef(null)
+  const tableRef = ref || defaultRef
+  const xScrollRef = useRef(null)
+  const scrollingTableRef = useRef(null)
 
   // States
-  const [url, setUrl] = useState(null);
-  const [tableSettings, setTableSettings] = useState(initialSettings);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [hiddenColumns, setHiddenColumns] = useState(calculatedHiddenColumn);
-  const [notSelectableRow, setNotSelectableRow] = useState([]);
-  const [scrollingPosition, setScrollingPosition] = useState(0);
+  const [url, setUrl] = useState(null)
+  const [tableSettings, setTableSettings] = useState(initialSettings)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [hiddenColumns, setHiddenColumns] = useState(calculatedHiddenColumn)
+  const [notSelectableRow, setNotSelectableRow] = useState([])
+  const [scrollingPosition, setScrollingPosition] = useState(0)
 
   // Draggable
-  const [isDown, setIsDown] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [selectAllRows, setSelectAllRows] = useState(false);
+  const [isDown, setIsDown] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
+  const [selectAllRows, setSelectAllRows] = useState(false)
 
   // Icons
-  const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent;
+  const ComputedUpSortIcon = sortingUpIcon ? sortingUpIcon : IconUpComponent
   const ComputedDownSortIcon = sortingDownIcon
     ? sortingDownIcon
-    : IconDownComponent;
+    : IconDownComponent
 
   // Classes
   const computedSortingClassName = sortingClassName
     ? sortingClassName
-    : Style.sortingClassName;
+    : Style.sortingClassName
   const computedDisableSortIconClassName = disableSortIconClassName
     ? disableSortIconClassName
-    : Style.sortingIconDisabled;
+    : Style.sortingIconDisabled
   const computedActiveSortIconClassName = activeSortIconClassName
     ? activeSortIconClassName
-    : Style.sortingIconActive;
+    : Style.sortingIconActive
 
   // Columns
   const selectColumn = useMemo(
@@ -241,12 +241,12 @@ const TableComponent = (
       sortable: false,
       noAction: true,
       accessor: (row) => {
-        const condition = conditionToHideSelectRow(row);
+        const condition = conditionToHideSelectRow(row)
         if (
           condition &&
           !notSelectableRow.map((item) => item.id).includes(row.id)
         )
-          setNotSelectableRow((prev) => [...prev, row]);
+          setNotSelectableRow((prev) => [...prev, row])
         return (
           <div className={Style.checkboxContainer}>
             <input
@@ -260,25 +260,25 @@ const TableComponent = (
                 ) !== undefined
               }
               onChange={(e) => {
-                let tempList = [...tableSettings.selectedData];
+                let tempList = [...tableSettings.selectedData]
                 if (e.target.checked) {
-                  tempList = [...tempList, row];
+                  tempList = [...tempList, row]
                 } else {
-                  tempList = tempList.filter((item) => item.id !== row.id);
+                  tempList = tempList.filter((item) => item.id !== row.id)
                 }
-                tableRef.current.setSelectedData(tempList);
+                tableRef.current.setSelectedData(tempList)
               }}
             />
             <label htmlFor={row.id} className={checkboxClassName}>
               <HiCheck />
             </label>
           </div>
-        );
+        )
       },
     }),
     // eslint-disable-next-line
     [tableSettings, tableRef]
-  );
+  )
 
   const computedColumns = useMemo(() => {
     return [
@@ -289,15 +289,15 @@ const TableComponent = (
           ...column,
           searchField: column.searchField || column.field,
         })),
-    ];
-  }, [columns, selectColumn, enableSelectableRows, hiddenColumns]);
+    ]
+  }, [columns, selectColumn, enableSelectableRows, hiddenColumns])
 
   //Customized settings
   const ComputedStyles = Styles
     ? Styles
     : enableStripedTable
-    ? StripedTable
-    : CommonStyles;
+      ? StripedTable
+      : CommonStyles
 
   // Query
   const tableAPI = useQuery({
@@ -305,7 +305,7 @@ const TableComponent = (
     method: "GET",
     executeImmediately: false,
     onSuccess: (response) => {
-      onSuccess();
+      onSuccess()
       if (
         response?.data.results
           .map((value) => value.id)
@@ -323,18 +323,18 @@ const TableComponent = (
             notSelectableRow.map((value) => value.id).includes(tempItem)
           )
       ) {
-        setSelectAllRows(true);
+        setSelectAllRows(true)
       } else {
-        setSelectAllRows(false);
+        setSelectAllRows(false)
       }
     },
     onUnauthorized: (response) => {
-      onUnauthorized(response);
+      onUnauthorized(response)
     },
     onError: (response) => {
-      onError(response);
+      onError(response)
     },
-  });
+  })
 
   // Table Context for Events
   const tableContext = useMemo(
@@ -344,13 +344,13 @@ const TableComponent = (
       tableData: tableAPI?.response,
     }),
     [tableSettings, extraFilters, tableAPI?.response]
-  );
+  )
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns: computedColumns,
       data: tableAPI?.response?.data.results || [],
-    });
+    })
 
   // Methods
   useImperativeHandle(
@@ -358,18 +358,18 @@ const TableComponent = (
     () => {
       return {
         getData() {
-          return tableContext;
+          return tableContext
         },
         nextPage() {
-          const value = +tableSettings.pagination.page + 1;
-          updateObjectState("pagination", "page", value, setTableSettings);
+          const value = +tableSettings.pagination.page + 1
+          updateObjectState("pagination", "page", value, setTableSettings)
         },
         previousPage() {
-          const value = tableSettings.pagination.page - 1;
-          updateObjectState("pagination", "page", value, setTableSettings);
+          const value = tableSettings.pagination.page - 1
+          updateObjectState("pagination", "page", value, setTableSettings)
         },
         toPage(page) {
-          updateObjectState("pagination", "page", page, setTableSettings);
+          updateObjectState("pagination", "page", page, setTableSettings)
         },
         setPageSize(pageSize) {
           updateObjectState(
@@ -377,61 +377,61 @@ const TableComponent = (
             "pageSize",
             pageSize,
             setTableSettings
-          );
-          updateObjectState("pagination", "page", 1, setTableSettings);
+          )
+          updateObjectState("pagination", "page", 1, setTableSettings)
         },
         setSearchValue(value) {
-          updateObjectState("search", "value", value, setTableSettings);
-          updateObjectState("pagination", "page", 1, setTableSettings);
+          updateObjectState("search", "value", value, setTableSettings)
+          updateObjectState("pagination", "page", 1, setTableSettings)
         },
         setSearchField(value) {
-          updateObjectState("search", "field", value, setTableSettings);
-          updateObjectState("pagination", "page", 1, setTableSettings);
+          updateObjectState("search", "field", value, setTableSettings)
+          updateObjectState("pagination", "page", 1, setTableSettings)
         },
         setSortingSettings(value) {
-          updateObjectState("sortingSettings", null, value, setTableSettings);
+          updateObjectState("sortingSettings", null, value, setTableSettings)
         },
         setSelectedData(value) {
-          updateObjectState("selectedData", null, value, setTableSettings);
+          updateObjectState("selectedData", null, value, setTableSettings)
         },
         refreshTable() {
-          tableAPI.executeQuery();
-          onTableRefresh(tableContext);
+          tableAPI.executeQuery()
+          onTableRefresh(tableContext)
         },
-      };
+      }
     },
     [tableSettings, tableContext]
-  );
+  )
 
   const sortHandler = (column) => {
-    const columnName = column.orderField || column.field;
+    const columnName = column.orderField || column.field
     const computedSorting = tableSettings.sortingSettings.includes("-")
       ? columnName
-      : "-" + columnName;
-    tableRef.current.setSortingSettings(computedSorting);
-  };
+      : "-" + columnName
+    tableRef.current.setSortingSettings(computedSorting)
+  }
 
   // Use Effects
   useEffect(() => {
     if (Object.keys(extraFilters).length !== 0) {
-      updateObjectState("pagination", "page", 1, setTableSettings);
+      updateObjectState("pagination", "page", 1, setTableSettings)
     }
-  }, [extraFilters]);
+  }, [extraFilters])
 
   useEffect(() => {
-    setScrollingPosition(xScrollRef.current.scrollLeft);
-    setUrl(createUrl(tableSettings, extraFilters));
-  }, [tableSettings, extraFilters]);
+    setScrollingPosition(xScrollRef.current.scrollLeft)
+    setUrl(createUrl(tableSettings, extraFilters))
+  }, [tableSettings, extraFilters])
 
   useEffect(() => {
     if (url) {
-      tableAPI.executeQuery();
+      tableAPI.executeQuery()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+  }, [url])
 
   useEffect(() => {
-    onSelectionChange(tableContext);
+    onSelectionChange(tableContext)
     if (
       tableAPI?.response?.data.results
         .map((value) => value.id)
@@ -447,65 +447,61 @@ const TableComponent = (
           notSelectableRow.map((value) => value.id).includes(tempItem)
         )
     ) {
-      setSelectAllRows(true);
+      setSelectAllRows(true)
     } else {
-      setSelectAllRows(false);
+      setSelectAllRows(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableSettings.selectedData]);
+  }, [tableSettings.selectedData])
 
   useEffect(() => {
-    onPageChange(tableContext);
-  }, [tableSettings.pagination.page]);
+    onPageChange(tableContext)
+  }, [tableSettings.pagination.page])
 
   useEffect(() => {
-    onPageSizeChange(tableContext);
-    storeInLocalStorage(
-      tableKey,
-      "pageSize",
-      tableSettings.pagination.pageSize
-    );
-  }, [tableSettings.pagination.pageSize]);
+    onPageSizeChange(tableContext)
+    storeInLocalStorage(tableKey, "pageSize", tableSettings.pagination.pageSize)
+  }, [tableSettings.pagination.pageSize])
 
   useEffect(() => {
-    onSortChange(tableContext);
-  }, [tableSettings.sortingSettings]);
+    onSortChange(tableContext)
+  }, [tableSettings.sortingSettings])
 
   useEffect(() => {
-    onSearchFieldChange(tableContext);
-  }, [tableSettings.search.field]);
+    onSearchFieldChange(tableContext)
+  }, [tableSettings.search.field])
 
   useEffect(() => {
-    onSearch(tableContext);
-  }, [tableSettings.search.value]);
+    onSearch(tableContext)
+  }, [tableSettings.search.value])
 
   useEffect(() => {
     if (scrollingTableRef.current) {
-      xScrollRef.current.scrollLeft = scrollingPosition;
+      xScrollRef.current.scrollLeft = scrollingPosition
     }
-  }, [scrollingTableRef.current]);
+  }, [scrollingTableRef.current])
 
   useEffect(() => {
-    storeInLocalStorage(tableKey, "hiddenColumns", hiddenColumns);
-  }, [hiddenColumns]);
+    storeInLocalStorage(tableKey, "hiddenColumns", hiddenColumns)
+  }, [hiddenColumns])
 
   function copyToClipboard(str) {
-    const el = document.createElement("textarea");
-    el.value = str;
-    el.setAttribute("readonly", "");
-    el.style.position = "absolute";
-    el.style.left = "-9999px";
-    document.body.appendChild(el);
+    const el = document.createElement("textarea")
+    el.value = str
+    el.setAttribute("readonly", "")
+    el.style.position = "absolute"
+    el.style.left = "-9999px"
+    document.body.appendChild(el)
     const selected =
       document.getSelection().rangeCount > 0
         ? document.getSelection().getRangeAt(0)
-        : false;
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
+        : false
+    el.select()
+    document.execCommand("copy")
+    document.body.removeChild(el)
     if (selected) {
-      document.getSelection().removeAllRanges();
-      document.getSelection().addRange(selected);
+      document.getSelection().removeAllRanges()
+      document.getSelection().addRange(selected)
     }
   }
   return (
@@ -586,7 +582,7 @@ const TableComponent = (
                                     : setHiddenColumns((oldState) => [
                                         ...oldState,
                                         item.field,
-                                      ]);
+                                      ])
                                 }}
                               />
                               <i></i>
@@ -629,7 +625,7 @@ const TableComponent = (
                   {tableSettings.selectedData.length} {texts.rowsSelected}
                   <GrFormClose
                     onClick={() => {
-                      tableRef?.current?.setSelectedData([]);
+                      tableRef?.current?.setSelectedData([])
                     }}
                   />
                 </div>
@@ -649,8 +645,8 @@ const TableComponent = (
                     className={searchBadgeExitIcon}
                     onClick={() => {
                       if (tableRef.current) {
-                        tableRef?.current?.setSearchField(defaultSearchField);
-                        tableRef?.current?.setSearchValue("");
+                        tableRef?.current?.setSearchField(defaultSearchField)
+                        tableRef?.current?.setSearchValue("")
                       }
                     }}
                   />
@@ -674,30 +670,30 @@ const TableComponent = (
             className={Style.tableContent}
             onMouseDown={(e) => {
               if (dragWithMouse) {
-                setIsDown(true);
-                e.currentTarget.classList.add(Style.active);
-                setStartX(e.pageX - e.currentTarget.offsetLeft);
-                setScrollLeft(e.currentTarget.scrollLeft);
+                setIsDown(true)
+                e.currentTarget.classList.add(Style.active)
+                setStartX(e.pageX - e.currentTarget.offsetLeft)
+                setScrollLeft(e.currentTarget.scrollLeft)
               }
             }}
             onMouseLeave={(e) => {
               if (dragWithMouse) {
-                setIsDown(false);
-                e.currentTarget.classList.remove(Style.active);
+                setIsDown(false)
+                e.currentTarget.classList.remove(Style.active)
               }
             }}
             onMouseUp={(e) => {
               if (dragWithMouse) {
-                setIsDown(false);
-                e.currentTarget.classList.remove(Style.active);
+                setIsDown(false)
+                e.currentTarget.classList.remove(Style.active)
               }
             }}
             onMouseMove={(e) => {
               if (dragWithMouse) {
-                if (!isDown) return;
-                const x = e.pageX - e.currentTarget.offsetLeft;
-                const walk = (x - startX) * 1;
-                e.currentTarget.scrollLeft = scrollLeft - walk;
+                if (!isDown) return
+                const x = e.pageX - e.currentTarget.offsetLeft
+                const walk = (x - startX) * 1
+                e.currentTarget.scrollLeft = scrollLeft - walk
               }
             }}
           >
@@ -747,12 +743,10 @@ const TableComponent = (
                                                 .map((value) => value.id)
                                                 .includes(item.id)
                                           ),
-                                        ];
+                                        ]
                                         if (e.target.checked) {
-                                          setSelectAllRows(true);
-                                          tableRef.current.setSelectedData(
-                                            temp
-                                          );
+                                          setSelectAllRows(true)
+                                          tableRef.current.setSelectedData(temp)
                                         } else {
                                           const temp =
                                             tableSettings.selectedData.filter(
@@ -763,11 +757,9 @@ const TableComponent = (
                                                 !notSelectableRow
                                                   .map((value) => value.id)
                                                   .includes(item.id)
-                                            );
-                                          setSelectAllRows(false);
-                                          tableRef.current.setSelectedData(
-                                            temp
-                                          );
+                                            )
+                                          setSelectAllRows(false)
+                                          tableRef.current.setSelectedData(temp)
                                         }
                                       }}
                                     />
@@ -827,12 +819,12 @@ const TableComponent = (
                           </th>
                         ))}
                       </tr>
-                    );
+                    )
                   })}
                 </thead>
                 <tbody {...getTableBodyProps()}>
                   {rows.map((row, i) => {
-                    prepareRow(row);
+                    prepareRow(row)
                     return (
                       <tr
                         {...row.getRowProps()}
@@ -858,13 +850,12 @@ const TableComponent = (
                                     title={texts.copyToClipboard}
                                     className={Style.copyFeature}
                                     onClick={(e) => {
-                                      copyToClipboard(cell.value);
-                                      const target =
-                                        e.currentTarget.children[1];
-                                      target.style.opacity = "1";
+                                      copyToClipboard(cell.value)
+                                      const target = e.currentTarget.children[1]
+                                      target.style.opacity = "1"
                                       setTimeout(() => {
-                                        target.style.opacity = "0";
-                                      }, 1000);
+                                        target.style.opacity = "0"
+                                      }, 1000)
                                     }}
                                   >
                                     {copyToClipboardIcon}
@@ -875,10 +866,10 @@ const TableComponent = (
                                 )}
                               </div>
                             </td>
-                          );
+                          )
                         })}
                       </tr>
-                    );
+                    )
                   })}
                 </tbody>
               </table>
@@ -906,10 +897,10 @@ const TableComponent = (
         </div>
       </div>
     </ComputedStyles>
-  );
-};
+  )
+}
 
-const Table = forwardRef(TableComponent);
+const Table = forwardRef(TableComponent)
 
 const IconUpComponent = ({ condition, activeClassName, disabledClassName }) => {
   return (
@@ -935,8 +926,8 @@ const IconUpComponent = ({ condition, activeClassName, disabledClassName }) => {
         />
       </svg>
     </span>
-  );
-};
+  )
+}
 
 const IconDownComponent = ({
   condition,
@@ -966,16 +957,16 @@ const IconDownComponent = ({
         />
       </svg>
     </span>
-  );
-};
+  )
+}
 
 const EmptyDataMessageComponent = () => {
   return (
     <>
       <p>No data available</p>
     </>
-  );
-};
+  )
+}
 
 TableComponent.propTypes = {
   pageSizes: PropTypes.arrayOf(PropTypes.number),
@@ -1001,6 +992,6 @@ TableComponent.propTypes = {
   onPageSizeChange: PropTypes.func,
   onSelectionChange: PropTypes.func,
   onSortChange: PropTypes.func,
-};
+}
 
-export default Table;
+export default Table

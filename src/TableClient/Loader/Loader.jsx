@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react"
 
 // Styles
-import Style from "../TableClient.module.css";
+import Style from "../TableClient.module.css"
 
 const Loader = () => {
   return (
@@ -21,7 +21,7 @@ const Loader = () => {
         <div></div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Loader;
+export default Loader

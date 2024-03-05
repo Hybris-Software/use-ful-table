@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 function createUrl(tableSettings, extraFilters) {
   let parametersObject = {
@@ -7,56 +7,57 @@ function createUrl(tableSettings, extraFilters) {
       limit: tableSettings?.pagination.pageSize,
     },
     ...extraFilters,
-  };
-  if(tableSettings?.sortingSettings) {
+  }
+  if (tableSettings?.sortingSettings) {
     parametersObject = {
       ...parametersObject,
       ordering: tableSettings?.sortingSettings,
     }
   }
-  if(tableSettings?.search.field.searchField && tableSettings?.search.value) {
+  if (tableSettings?.search.field.searchField && tableSettings?.search.value) {
     parametersObject = {
       ...parametersObject,
-      [tableSettings?.search.field.searchField + "__icontains"]: tableSettings?.search.value
+      [tableSettings?.search.field.searchField + "__icontains"]:
+        tableSettings?.search.value,
     }
   }
 
   parametersObject = Object.fromEntries(
     Object.entries(parametersObject).filter(([_, v]) => v != null)
-  );
+  )
   const url =
-    tableSettings.endPoint + "?" + new URLSearchParams(parametersObject);
-  return url;
+    tableSettings.endPoint + "?" + new URLSearchParams(parametersObject)
+  return url
 }
 
 function updateObjectState(key, nestedKey, value, setObjectState) {
   setObjectState((prev) => {
-    const newObj = { ...prev };
+    const newObj = { ...prev }
     if (nestedKey) {
-      newObj[key][nestedKey] = value;
+      newObj[key][nestedKey] = value
     } else {
-      newObj[key] = value;
+      newObj[key] = value
     }
-    return newObj;
-  });
+    return newObj
+  })
 }
 
-function storeInLocalStorage(tableKey, tableSettingKey, tableSettingValue ){
+function storeInLocalStorage(tableKey, tableSettingKey, tableSettingValue) {
   if (tableKey) {
     let localStorageTableSettings = JSON.parse(
       localStorage.getItem("tableSettings")
-    );
+    )
     localStorageTableSettings = {
       ...localStorageTableSettings,
       [tableKey]: {
         ...localStorageTableSettings?.[tableKey],
         [tableSettingKey]: tableSettingValue,
       },
-    };
+    }
     localStorage.setItem(
       "tableSettings",
       JSON.stringify(localStorageTableSettings)
-    );
+    )
   }
 }
 
@@ -64,7 +65,7 @@ const CommonStyles = styled.div`
   padding: 1rem;
   box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
   border-radius: 5px;
-  
+
   table {
     width: 100%;
     border-spacing: 0;
@@ -74,7 +75,7 @@ const CommonStyles = styled.div`
         color: #757575;
         font-weight: 600;
         font-size: 14px;
-        
+
         th {
           min-width: 200px;
           max-width: 800px;
@@ -114,13 +115,13 @@ const CommonStyles = styled.div`
       }
     }
   }
-`;
+`
 
 const StripedTable = styled.div`
   padding: 1rem;
   box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
   border-radius: 5px;
-  
+
   table {
     width: 100%;
     border-spacing: 0;
@@ -130,7 +131,7 @@ const StripedTable = styled.div`
         color: #757575;
         font-weight: 600;
         font-size: 14px;
-        
+
         th {
           min-width: 200px;
           max-width: 800px;
@@ -173,10 +174,17 @@ const StripedTable = styled.div`
       }
     }
   }
-`;
+`
 const sortType = {
   UP: "asc",
   DOWN: "desc",
-};
+}
 
-export { createUrl, updateObjectState, storeInLocalStorage, CommonStyles, StripedTable, sortType };
+export {
+  createUrl,
+  updateObjectState,
+  storeInLocalStorage,
+  CommonStyles,
+  StripedTable,
+  sortType,
+}

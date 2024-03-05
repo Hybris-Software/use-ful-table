@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 
 //Components
-import ConditionalComponent from "../ConditionalComponent/ConditionalComponent";
+import ConditionalComponent from "../ConditionalComponent/ConditionalComponent"
 
 //Libraries
-import { InputField, Select, Button } from "@hybris-software/ui-kit";
+import { InputField, Select, Button } from "@hybris-software/ui-kit"
 
 // Styles
-import Style from "./PaginationBar.module.css";
+import Style from "./PaginationBar.module.css"
 
 function PaginationBar({
   tableRef,
@@ -20,22 +20,22 @@ function PaginationBar({
   toPageInputBaseClassName = Style.toPageInputBaseClass,
   toPageInputClassName = Style.toPageInputClass,
   paginationButtonClassName = Style.paginationButtonClass,
-  paginationRecordsClassName = Style.paginationRecordsClassName
+  paginationRecordsClassName = Style.paginationRecordsClassName,
 }) {
-  const [pageTo, setPageTo] = useState(tableSettings.pagination.page);
+  const [pageTo, setPageTo] = useState(tableSettings.pagination.page)
   const totalPages =
     Math.ceil(
       tableAPI?.response?.data.count / tableSettings.pagination.pageSize
-    ) || "";
+    ) || ""
   useEffect(() => {
     if (pageTo) {
-      tableRef.current.toPage(pageTo);
+      tableRef.current.toPage(pageTo)
     }
-  }, [pageTo]);
+  }, [pageTo])
 
   useEffect(() => {
-    setPageTo(tableSettings.pagination.page);
-  }, [tableSettings.pagination.page, tableSettings.pagination.pageSize]);
+    setPageTo(tableSettings.pagination.page)
+  }, [tableSettings.pagination.page, tableSettings.pagination.pageSize])
 
   return (
     <div className={paginationClassName}>
@@ -47,7 +47,7 @@ function PaginationBar({
             labelKey="Header"
             value={tableSettings?.pagination?.pageSize}
             setValue={(value) => {
-              tableRef.current.setPageSize(value);
+              tableRef.current.setPageSize(value)
             }}
           />
         </ConditionalComponent>
@@ -59,7 +59,7 @@ function PaginationBar({
             className={toPageInputClassName}
             value={pageTo}
             onChange={(e) => {
-              setPageTo(e.target.value);
+              setPageTo(e.target.value)
             }}
           />
           {totalPages && (
@@ -91,7 +91,7 @@ function PaginationBar({
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
-export default PaginationBar;
+export default PaginationBar

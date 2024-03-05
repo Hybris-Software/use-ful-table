@@ -8,41 +8,13 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "@hybris-software/ui-kit": "^2.2.24",
-    "@hybris-software/use-query": "^2.3.17",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "core-js": "^3.30.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "react-table": "^7.8.0",
-    "styled-components": "^5.3.6",
-    "web-vitals": "^2.1.4"
-  },
   "scripts": {
     "build": "rimraf dist && rollup -c",
     "format": "prettier --write ."
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "@hybris-software/ui-kit": "^2.2.24",
+    "@hybris-software/use-query": "^2.3.17"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
@@ -58,6 +30,10 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "packageManager": "yarn@4.1.0"
 }

@@ -7,4 +7,5 @@ export type UseTableProps = {
   queryParametersGenerator?: QueryParametersGenerator
   queryOptions?: Partial<QueryOptions>
   columns: Column[]
+  hiddenColumns?: string[]
 }

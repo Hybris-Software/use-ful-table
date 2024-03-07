@@ -11,7 +11,7 @@ export default function SimpleTable({
     <div style={{ border: "1px solid black", padding: "10px" }}>
       <table>
         <TableHead columns={columns} />
-        <TableBody rows={rows} columns={columns} />
+        <TableBody rows={rows} />
       </table>
     </div>
   )
@@ -33,24 +33,16 @@ function TableHead({ columns }: { columns: Column[] }) {
   )
 }
 
-function TableBody({ columns, rows }: { columns: Column[]; rows: any[] }) {
+function TableBody({ rows }: { rows: any[] }) {
   return (
     <tbody>
       {rows.map((row, index) => (
-        <TableRow key={index} columns={columns} row={row} />
+        <tr key={index}>
+          {row.map((cell: any, index: number) => (
+            <td key={index}>{cell}</td>
+          ))}
+        </tr>
       ))}
     </tbody>
-  )
-}
-
-function TableRow({ columns, row }: { columns: Column[]; row: any }) {
-  const cells = columns.map((column) => row[column.id])
-
-  return (
-    <tr>
-      {cells.map((cell: any, index: number) => (
-        <td key={index}>{cell}</td>
-      ))}
-    </tr>
   )
 }

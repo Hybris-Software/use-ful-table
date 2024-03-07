@@ -9,6 +9,7 @@ export function useTable({
   queryOptions = {},
   columns: _columns,
   hiddenColumns: _hiddenColumns = [],
+  data,
 }: UseTableProps) {
   const [pageSize, setPageSize] = useState(_pageSize)
   const [page, setPage] = useState(1)
@@ -21,7 +22,7 @@ export function useTable({
     [elementsCount, pageSize]
   )
 
-  const canNextPage = useMemo(() => page < pageCount - 1, [page])
+  const canNextPage = useMemo(() => page < pageCount, [page, pageCount])
   const canPreviousPage = useMemo(() => page - 1 > 0, [page])
 
   const nextPage = () => {
@@ -86,24 +87,34 @@ export function useTable({
     setHiddenColumns([])
   }
 
+  const rows = (data || []).map((row) =>
+    columns.map((column) => row[column.id])
+  )
+
   return {
+    // Pagination
     page,
     pageSize,
-    url,
     pageCount,
-    columns,
-    hiddenColumns,
+    canNextPage,
+    canPreviousPage,
     setPageSize,
     nextPage,
     previousPage,
     toPage,
+    // Filters
     setExtraFilters,
+    // Hidden columns
+    hiddenColumns,
     hideColumn,
     showColumn,
     setColumnHidden,
     showAllColumns,
     setHiddenColumns,
-    canNextPage,
-    canPreviousPage,
+    //Query
+    url,
+    // Table
+    columns,
+    rows,
   }
 }

@@ -8,4 +8,5 @@ export type UseTableProps = {
   queryOptions?: Partial<QueryOptions>
   columns: Column[]
   hiddenColumns?: string[]
+  data?: any[]
 }

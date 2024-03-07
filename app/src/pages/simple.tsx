@@ -1,24 +1,60 @@
+import { useEffect, useState } from "react"
+
 import SimpleTable from "../components/simple-table/simple-table"
 import SimpleColumnsCheckbox from "../components/simple-columns-checkbox/simple-columns-checkbox"
 import SimplePaginator from "../components/simple-paginator/simple-paginator"
 
-import { useTable } from "use-ful-table"
+import { useQuery, generateApiClient } from "../../vendors/use-ful-query"
+
+import { useTable, QueryParametersGenerator } from "use-ful-table"
 
 export default function Simple() {
+  const [url, setUrl] = useState<string | null>(null)
+
+  const apiClient = generateApiClient({
+    baseUrl: "https://dummyjson.com",
+  })
+  const { data } = useQuery({
+    apiClient: apiClient,
+    executeImmediately: true,
+    url: url,
+  })
+
   const columnDetails = [
     { id: "id", title: "ID" },
-    { id: "name", title: "Name" },
-  ]
-  const rows = [
-    { id: 1, name: "John" },
-    { id: 2, name: "Doe" },
+    { id: "title", title: "Title" },
+    { id: "description", title: "Description" },
+    { id: "price", title: "Price" },
   ]
 
+  const generateQueryParameters: QueryParametersGenerator = ({
+    page,
+    pageSize,
+  }) => {
+    const params = new URLSearchParams({
+      limit: pageSize.toString(),
+      skip: ((page - 1) * pageSize).toString(),
+    })
+
+    return params.toString()
+  }
+
   const table = useTable({
-    pageSize: 10,
-    elementsCount: 100,
+    pageSize: 4,
+    elementsCount: data?.total,
     columns: columnDetails,
+    data: data?.products,
+    queryParametersGenerator: generateQueryParameters,
   })
+
+  useEffect(() => {
+    setUrl(`/products?${table.url}`)
+  }, [table.url])
+
+  useEffect(() => {
+    console.log("table.page", table.page)
+    console.log("table.pageSize", table.pageSize)
+  }, [table.page, table.pageSize])
 
   return (
     <div>
@@ -27,7 +63,7 @@ export default function Simple() {
         hiddenColumns={table.hiddenColumns}
         setColumnHidden={table.setColumnHidden}
       />
-      <SimpleTable columns={table.columns} rows={rows} />
+      <SimpleTable columns={table.columns} rows={table.rows} />
       <SimplePaginator
         page={table.page}
         pageCount={table.pageCount}

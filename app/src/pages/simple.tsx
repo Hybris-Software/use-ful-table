@@ -9,7 +9,7 @@ import { useQuery, generateApiClient } from "../../vendors/use-ful-query"
 import { useTable, QueryParametersGenerator } from "use-ful-table"
 
 export default function Simple() {
-  const [url, setUrl] = useState<string | null>(null)
+  const [url, setUrl] = useState<string | undefined>(undefined)
 
   const apiClient = generateApiClient({
     baseUrl: "https://jsonplaceholder.typicode.com/",

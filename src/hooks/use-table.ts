@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react"
 import { generateQueryParameters } from "../utils/query"
-import type { UseTableProps } from "../types"
+import type { UseTableProps, SortingOptions, Column } from "../types"
 
 export function useTable({
   pageSize: _pageSize = 10,
@@ -10,12 +10,14 @@ export function useTable({
   columns: _columns,
   hiddenColumns: _hiddenColumns = [],
   data,
+  sort: _sort = { column: null, direction: "asc" },
 }: UseTableProps) {
   const [pageSize, setPageSize] = useState(_pageSize)
   const [page, setPage] = useState(1)
   const [filters, setFilters] = useState({}) // TODO
   const [extraFilters, setExtraFilters] = useState({})
   const [hiddenColumns, setHiddenColumns] = useState(_hiddenColumns)
+  const [sort, setSort] = useState<SortingOptions>(_sort)
 
   const pageCount = useMemo(
     () => Math.ceil(elementsCount / pageSize),
@@ -56,13 +58,21 @@ export function useTable({
           pageSizeParameterName:
             queryOptions.pageSizeParameterName || "pageSize",
         },
+        sort,
       }),
     [queryParametersGenerator, filters, extraFilters, page, pageSize]
   )
 
-  const columns = useMemo(
-    () => _columns.filter((column) => !hiddenColumns.includes(column.id)),
-    [_columns, hiddenColumns]
+  const columns: Column[] = useMemo(
+    () =>
+      _columns
+        .filter((column) => !hiddenColumns.includes(column.id))
+        .map((column) => ({
+          ...column,
+          hidden: hiddenColumns.includes(column.id),
+          sorting: column.id === sort.column ? sort.direction : null,
+        })),
+    [_columns, hiddenColumns, sort]
   )
 
   const hideColumn = (columnId: string) => {
@@ -91,6 +101,19 @@ export function useTable({
     columns.map((column) => row[column.id])
   )
 
+  const sortBy = (column: string, direction?: "asc" | "desc") => {
+    setSort((sort) => ({
+      column: column,
+      direction:
+        direction ||
+        (sort.column === column
+          ? sort.direction === "asc"
+            ? "desc"
+            : "asc"
+          : "asc"),
+    }))
+  }
+
   return {
     // Pagination
     page,
@@ -116,5 +139,8 @@ export function useTable({
     // Table
     columns,
     rows,
+    // Sorting
+    sort,
+    sortBy,
   }
 }

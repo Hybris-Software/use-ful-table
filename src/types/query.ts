@@ -1,3 +1,5 @@
+import { SortingOptions } from "./table"
+
 export type QueryOptions = {
   pageParameterName: string
   pageSizeParameterName: string
@@ -8,6 +10,7 @@ export type QueryParametersGeneratorProps = {
   options: QueryOptions
   page: number
   pageSize: number
+  sort: SortingOptions
 }
 
 export type QueryParametersGenerator = (

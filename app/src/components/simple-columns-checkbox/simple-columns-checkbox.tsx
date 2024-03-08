@@ -1,11 +1,11 @@
-import { Column } from "use-ful-table"
+import { ColumnDefinition } from "use-ful-table"
 
 export default function SimpleColumnsCheckbox({
   columns,
   hiddenColumns,
   setColumnHidden,
 }: {
-  columns: Column[]
+  columns: ColumnDefinition[]
   hiddenColumns: string[]
   setColumnHidden: (columnId: string, hidden: boolean) => void
 }) {

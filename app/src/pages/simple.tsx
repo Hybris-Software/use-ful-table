@@ -12,7 +12,7 @@ export default function Simple() {
   const [url, setUrl] = useState<string | null>(null)
 
   const apiClient = generateApiClient({
-    baseUrl: "https://dummyjson.com",
+    baseUrl: "https://jsonplaceholder.typicode.com/",
   })
   const { data } = useQuery({
     apiClient: apiClient,
@@ -21,34 +21,49 @@ export default function Simple() {
   })
 
   const columnDetails = [
-    { id: "id", title: "ID" },
+    { id: "id", title: "ID", sortable: true },
+    { id: "userId", title: "User ID", sortable: true },
     { id: "title", title: "Title" },
-    { id: "description", title: "Description" },
-    { id: "price", title: "Price" },
+    { id: "body", title: "Body" },
   ]
 
   const generateQueryParameters: QueryParametersGenerator = ({
     page,
     pageSize,
+    sort,
   }) => {
-    const params = new URLSearchParams({
-      limit: pageSize.toString(),
-      skip: ((page - 1) * pageSize).toString(),
-    })
+    const params = {
+      _sort: sort.column,
+      _order: sort.column ? sort.direction : undefined,
+      _limit: pageSize.toString(),
+      _page: page.toString(),
+    } as Record<string, string>
 
-    return params.toString()
+    const filteredParameters = Object.keys(params).reduce(
+      (acc, key) => {
+        if (params[key]) {
+          acc[key] = params[key]
+        }
+        return acc
+      },
+      {} as Record<string, string>
+    )
+
+    return new URLSearchParams(filteredParameters).toString()
   }
 
   const table = useTable({
+    // data: data?.products,
+    // elementsCount: data?.total,
+    data: data,
+    elementsCount: 100,
     pageSize: 4,
-    elementsCount: data?.total,
     columns: columnDetails,
-    data: data?.products,
     queryParametersGenerator: generateQueryParameters,
   })
 
   useEffect(() => {
-    setUrl(`/products?${table.url}`)
+    setUrl(`/posts?${table.url}`)
   }, [table.url])
 
   useEffect(() => {
@@ -63,7 +78,11 @@ export default function Simple() {
         hiddenColumns={table.hiddenColumns}
         setColumnHidden={table.setColumnHidden}
       />
-      <SimpleTable columns={table.columns} rows={table.rows} />
+      <SimpleTable
+        columns={table.columns}
+        rows={table.rows}
+        sortBy={table.sortBy}
+      />
       <SimplePaginator
         page={table.page}
         pageCount={table.pageCount}

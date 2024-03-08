@@ -1,12 +1,13 @@
 import { QueryParametersGenerator, QueryOptions } from "./query"
-import { Column } from "./table"
+import { ColumnDefinition, SortingOptions } from "./table"
 
 export type UseTableProps = {
   pageSize?: number
   elementsCount?: number
   queryParametersGenerator?: QueryParametersGenerator
   queryOptions?: Partial<QueryOptions>
-  columns: Column[]
+  columns: ColumnDefinition[]
   hiddenColumns?: string[]
   data?: any[]
+  sort?: SortingOptions
 }

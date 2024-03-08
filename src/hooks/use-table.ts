@@ -11,11 +11,11 @@ export function useTable({
   hiddenColumns: _hiddenColumns = [],
   data,
   sort: _sort = { column: null, direction: "asc" },
+  filters: _filters = {},
 }: UseTableProps) {
   const [pageSize, setPageSize] = useState(_pageSize)
   const [page, setPage] = useState(1)
-  const [filters, setFilters] = useState({}) // TODO
-  const [extraFilters, setExtraFilters] = useState({})
+  const [filters, setFilters] = useState<Record<string, string>>(_filters)
   const [hiddenColumns, setHiddenColumns] = useState(_hiddenColumns)
   const [sort, setSort] = useState<SortingOptions>(_sort)
 
@@ -47,10 +47,7 @@ export function useTable({
   const url = useMemo(
     () =>
       queryParametersGenerator({
-        filters: {
-          ...filters,
-          ...extraFilters,
-        },
+        filters,
         page,
         pageSize,
         options: {
@@ -60,7 +57,7 @@ export function useTable({
         },
         sort,
       }),
-    [queryParametersGenerator, filters, extraFilters, page, pageSize]
+    [queryParametersGenerator, filters, page, pageSize]
   )
 
   const columns: Column[] = useMemo(
@@ -114,6 +111,17 @@ export function useTable({
     }))
   }
 
+  const resetFilters = () => {
+    setFilters({})
+  }
+
+  const setFilter = (key: string, value: string) => {
+    setFilters((filters) => ({
+      ...filters,
+      [key]: value,
+    }))
+  }
+
   return {
     // Pagination
     page,
@@ -126,7 +134,10 @@ export function useTable({
     previousPage,
     toPage,
     // Filters
-    setExtraFilters,
+    filters,
+    setFilters,
+    resetFilters,
+    setFilter,
     // Hidden columns
     hiddenColumns,
     hideColumn,

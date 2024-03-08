@@ -10,4 +10,5 @@ export type UseTableProps = {
   hiddenColumns?: string[]
   data?: any[]
   sort?: SortingOptions
+  filters?: Record<string, string>
 }

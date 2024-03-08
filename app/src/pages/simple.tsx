@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import SimpleTable from "../components/simple-table/simple-table"
 import SimpleColumnsCheckbox from "../components/simple-columns-checkbox/simple-columns-checkbox"
 import SimplePaginator from "../components/simple-paginator/simple-paginator"
+import SimpleSelect from "../components/simple-select/simple-select"
 
 import { useQuery, generateApiClient } from "../../vendors/use-ful-query"
 
@@ -31,8 +32,10 @@ export default function Simple() {
     page,
     pageSize,
     sort,
+    filters,
   }) => {
     const params = {
+      ...filters,
       _sort: sort.column,
       _order: sort.column ? sort.direction : undefined,
       _limit: pageSize.toString(),
@@ -73,6 +76,14 @@ export default function Simple() {
 
   return (
     <div>
+      <div style={{ border: "1px solid black", padding: "10px" }}>
+        <SimpleSelect
+          items={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
+          value={table.filters.userId}
+          setValue={(value) => table.setFilter("userId", value)}
+        />
+      </div>
+
       <SimpleColumnsCheckbox
         columns={columnDetails}
         hiddenColumns={table.hiddenColumns}
@@ -96,7 +107,7 @@ export default function Simple() {
       />
 
       <div style={{ border: "1px solid black", padding: "10px" }}>
-        <div>Url: {table.url}</div>
+        <div>Url: {url}</div>
       </div>
     </div>
   )

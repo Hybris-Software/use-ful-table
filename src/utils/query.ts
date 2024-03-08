@@ -28,5 +28,5 @@ export const generateQueryParameters: QueryParametersGenerator = ({
     {} as Record<string, string>
   )
 
-  return new URLSearchParams(filteredParameters).toString()
+  return filteredParameters
 }

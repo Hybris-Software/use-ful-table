@@ -45,7 +45,7 @@ export function useTable({
     setPage(pageNumber)
   }
 
-  const url = useMemo(
+  const queryParameters = useMemo(
     () =>
       queryParametersGenerator({
         filters,
@@ -147,7 +147,7 @@ export function useTable({
     showAllColumns,
     setHiddenColumns,
     //Query
-    url,
+    queryParameters,
     // Table
     columns,
     rows,

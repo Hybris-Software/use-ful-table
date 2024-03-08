@@ -15,4 +15,4 @@ export type QueryParametersGeneratorProps = {
 
 export type QueryParametersGenerator = (
   props: QueryParametersGeneratorProps
-) => string
+) => Record<string, string>

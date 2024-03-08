@@ -52,7 +52,7 @@ export default function Simple() {
       {} as Record<string, string>
     )
 
-    return new URLSearchParams(filteredParameters).toString()
+    return filteredParameters
   }
 
   const table = useTable({
@@ -66,8 +66,8 @@ export default function Simple() {
   })
 
   useEffect(() => {
-    setUrl(`/posts?${table.url}`)
-  }, [table.url])
+    setUrl(`/posts?${new URLSearchParams(table.queryParameters).toString()}`)
+  }, [table.queryParameters])
 
   return (
     <div>

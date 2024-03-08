@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect, useCallback } from "react"
+import debounce from "lodash.debounce"
+
 import { generateQueryParameters } from "../utils/query"
 import type { UseTableProps, SortingOptions, Column } from "../types"
 
@@ -12,13 +14,15 @@ export function useTable({
   data,
   sort: _sort = { column: null, direction: "asc" },
   filters: _filters = {},
+  resetPageOnFiltersChange = true,
 }: UseTableProps) {
-  const [pageSize, setPageSize] = useState(_pageSize)
+  const [pageSize, _setPageSize] = useState(_pageSize)
   const [page, setPage] = useState(1)
   const [filters, setFilters] =
     useState<Record<string, string | null | undefined>>(_filters)
   const [hiddenColumns, setHiddenColumns] = useState(_hiddenColumns)
   const [sort, setSort] = useState<SortingOptions>(_sort)
+  const [queryParameters, setQueryParameters] = useState<any>(null)
 
   const pageCount = useMemo(
     () => Math.ceil(elementsCount / pageSize),
@@ -27,6 +31,11 @@ export function useTable({
 
   const canNextPage = useMemo(() => page < pageCount, [page, pageCount])
   const canPreviousPage = useMemo(() => page - 1 > 0, [page])
+
+  const setPageSize = (size: number) => {
+    setPage(1)
+    _setPageSize(size)
+  }
 
   const nextPage = () => {
     if (canNextPage) {
@@ -45,21 +54,62 @@ export function useTable({
     setPage(pageNumber)
   }
 
-  const queryParameters = useMemo(
-    () =>
-      queryParametersGenerator({
-        filters,
-        page,
-        pageSize,
-        options: {
-          pageParameterName: queryOptions.pageParameterName || "page",
-          pageSizeParameterName:
-            queryOptions.pageSizeParameterName || "pageSize",
-        },
-        sort,
-      }),
-    [queryParametersGenerator, filters, page, pageSize]
+  const _queryParametersSetter = ({
+    filters,
+    page,
+    pageSize,
+    sort,
+    options,
+  }: {
+    filters: Record<string, string | null | undefined>
+    page: number
+    pageSize: number
+    sort: SortingOptions
+    options: {
+      pageParameterName: string
+      pageSizeParameterName: string
+    }
+  }) => {
+    const newQueryParameters = queryParametersGenerator({
+      filters,
+      page,
+      pageSize,
+      options,
+      sort,
+    })
+
+    setQueryParameters(newQueryParameters)
+  }
+
+  const _debouncedQueryParametersSetter = useCallback(
+    debounce(_queryParametersSetter, 100),
+    []
   )
+  useEffect(() => {
+    _queryParametersSetter({
+      filters,
+      page,
+      pageSize,
+      options: {
+        pageParameterName: queryOptions.pageParameterName || "page",
+        pageSizeParameterName: queryOptions.pageSizeParameterName || "pageSize",
+      },
+      sort,
+    })
+  }, [])
+
+  useEffect(() => {
+    _debouncedQueryParametersSetter({
+      filters,
+      page,
+      pageSize,
+      options: {
+        pageParameterName: queryOptions.pageParameterName || "page",
+        pageSizeParameterName: queryOptions.pageSizeParameterName || "pageSize",
+      },
+      sort,
+    })
+  }, [queryParametersGenerator, filters, page, pageSize])
 
   const columns: Column[] = useMemo(
     () =>
@@ -100,6 +150,9 @@ export function useTable({
   )
 
   const sortBy = (column: string, direction?: "asc" | "desc") => {
+    if (resetPageOnFiltersChange) {
+      setPage(1)
+    }
     setSort((sort) => ({
       column: column,
       direction:
@@ -113,10 +166,16 @@ export function useTable({
   }
 
   const resetFilters = () => {
+    if (resetPageOnFiltersChange) {
+      setPage(1)
+    }
     setFilters({})
   }
 
   const setFilter = (key: string, value: string | null | undefined) => {
+    if (resetPageOnFiltersChange) {
+      setPage(1)
+    }
     setFilters((filters) => ({
       ...filters,
       [key]: value,
@@ -136,7 +195,6 @@ export function useTable({
     toPage,
     // Filters
     filters,
-    setFilters,
     resetFilters,
     setFilter,
     // Hidden columns
@@ -146,7 +204,7 @@ export function useTable({
     setColumnHidden,
     showAllColumns,
     setHiddenColumns,
-    //Query
+    // Query
     queryParameters,
     // Table
     columns,

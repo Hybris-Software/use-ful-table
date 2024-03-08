@@ -56,8 +56,6 @@ export default function Simple() {
   }
 
   const table = useTable({
-    // data: data?.products,
-    // elementsCount: data?.total,
     data: data,
     elementsCount: 100,
     pageSize: 4,
@@ -66,7 +64,9 @@ export default function Simple() {
   })
 
   useEffect(() => {
-    setUrl(`/posts?${new URLSearchParams(table.queryParameters).toString()}`)
+    if (table.queryParameters !== null) {
+      setUrl(`/posts?${new URLSearchParams(table.queryParameters).toString()}`)
+    }
   }, [table.queryParameters])
 
   return (

@@ -11,4 +11,5 @@ export type UseTableProps = {
   data?: any[]
   sort?: SortingOptions
   filters?: Record<string, string>
+  resetPageOnFiltersChange?: boolean
 }

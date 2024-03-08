@@ -14,13 +14,15 @@
   },
   "dependencies": {
     "@hybris-software/ui-kit": "^2.2.24",
-    "@hybris-software/use-query": "^2.3.17"
+    "@hybris-software/use-query": "^2.3.17",
+    "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.63",
     "@types/rollup-plugin-peer-deps-external": "^2.2.5",
     "postcss": "^8.4.35",

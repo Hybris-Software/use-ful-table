@@ -15,7 +15,8 @@ export function useTable({
 }: UseTableProps) {
   const [pageSize, setPageSize] = useState(_pageSize)
   const [page, setPage] = useState(1)
-  const [filters, setFilters] = useState<Record<string, string>>(_filters)
+  const [filters, setFilters] =
+    useState<Record<string, string | null | undefined>>(_filters)
   const [hiddenColumns, setHiddenColumns] = useState(_hiddenColumns)
   const [sort, setSort] = useState<SortingOptions>(_sort)
 
@@ -115,7 +116,7 @@ export function useTable({
     setFilters({})
   }
 
-  const setFilter = (key: string, value: string) => {
+  const setFilter = (key: string, value: string | null | undefined) => {
     setFilters((filters) => ({
       ...filters,
       [key]: value,

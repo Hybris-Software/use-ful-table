@@ -20,7 +20,7 @@ export const generateQueryParameters: QueryParametersGenerator = ({
 
   const filteredParameters = Object.keys(params).reduce(
     (acc, key) => {
-      if (params[key]) {
+      if (params[key] !== null && params[key] !== undefined) {
         acc[key] = params[key]
       }
       return acc

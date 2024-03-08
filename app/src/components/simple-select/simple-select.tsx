@@ -5,15 +5,19 @@ export default function SimpleSelect({
 }: {
   items: string[]
   value: string
-  setValue: (value: string) => void
+  setValue: (value: string | null) => void
 }) {
   return (
-    <select value={value} onChange={(e) => setValue(e.target.value)}>
-      {items.map((item) => (
-        <option key={item} value={item}>
-          {item}
-        </option>
-      ))}
-    </select>
+    <div>
+      User id:
+      <select value={value} onChange={(e) => setValue(e.target.value || null)}>
+        <option value={""}>---</option>
+        {items.map((item) => (
+          <option key={item} value={item}>
+            {item}
+          </option>
+        ))}
+      </select>
+    </div>
   )
 }

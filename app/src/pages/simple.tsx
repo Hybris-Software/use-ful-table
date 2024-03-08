@@ -69,17 +69,12 @@ export default function Simple() {
     setUrl(`/posts?${table.url}`)
   }, [table.url])
 
-  useEffect(() => {
-    console.log("table.page", table.page)
-    console.log("table.pageSize", table.pageSize)
-  }, [table.page, table.pageSize])
-
   return (
     <div>
       <div style={{ border: "1px solid black", padding: "10px" }}>
         <SimpleSelect
           items={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
-          value={table.filters.userId}
+          value={table.filters.userId || undefined}
           setValue={(value) => table.setFilter("userId", value)}
         />
       </div>

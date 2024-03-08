@@ -4,7 +4,7 @@ export default function SimpleSelect({
   setValue,
 }: {
   items: string[]
-  value: string
+  value: string | undefined
   setValue: (value: string | null) => void
 }) {
   return (

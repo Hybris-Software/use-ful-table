@@ -145,6 +145,10 @@ export function useTable({
     setHiddenColumns([])
   }
 
+  const hideAllColumns = () => {
+    setHiddenColumns(_columns.map((column) => column.id))
+  }
+
   const rows = (data || []).map((row) =>
     columns.map((column) => row[column.id])
   )
@@ -203,6 +207,7 @@ export function useTable({
     showColumn,
     setColumnHidden,
     showAllColumns,
+    hideAllColumns,
     setHiddenColumns,
     // Query
     queryParameters,

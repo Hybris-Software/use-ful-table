@@ -104,6 +104,16 @@ export default function Simple() {
       <div style={{ border: "1px solid black", padding: "10px" }}>
         <div>Url: {url}</div>
       </div>
+
+      <div style={{ border: "1px solid black", padding: "10px" }}>
+        <button
+          onClick={() => {
+            table.exportCsv("testfile.csv")
+          }}
+        >
+          Download
+        </button>
+      </div>
     </div>
   )
 }

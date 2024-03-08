@@ -1463,6 +1463,7 @@ __metadata:
     "@types/lodash.debounce": "npm:^4.0.9"
     "@types/react": "npm:^18.2.63"
     "@types/rollup-plugin-peer-deps-external": "npm:^2.2.5"
+    json-2-csv: "npm:^5.5.0"
     lodash.debounce: "npm:^4.0.8"
     postcss: "npm:^8.4.35"
     prettier: "npm:^3.2.5"
@@ -2444,6 +2445,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"deeks@npm:3.1.0":
+  version: 3.1.0
+  resolution: "deeks@npm:3.1.0"
+  checksum: 10c0/3173ca28466cf31d550248c034c5466d93c5aecb8ee8ca547a2c9f471e62af4ebed7456c3310503be901d982867071b4411030a6b724528739895aee1dc2b482
+  languageName: node
+  linkType: hard
+
 "deepmerge@npm:^4.2.2":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
@@ -2455,6 +2463,13 @@ __metadata:
   version: 1.0.0
   resolution: "delayed-stream@npm:1.0.0"
   checksum: 10c0/d758899da03392e6712f042bec80aa293bbe9e9ff1b2634baae6a360113e708b91326594c8a486d475c69d6259afb7efacdc3537bfcda1c6c648e390ce601b19
+  languageName: node
+  linkType: hard
+
+"doc-path@npm:4.1.0":
+  version: 4.1.0
+  resolution: "doc-path@npm:4.1.0"
+  checksum: 10c0/134a272a0c41c5f03083fbe7d12fba88615734f15d75e5c1e59e6d9d41e6ad2c5d2ec442282a55ceab45695c4b31aaf6194de1db57ea840e10e77a5c8dd65fa4
   languageName: node
   linkType: hard
 
@@ -3052,6 +3067,16 @@ __metadata:
   bin:
     jsesc: bin/jsesc
   checksum: 10c0/f93792440ae1d80f091b65f8ceddf8e55c4bb7f1a09dee5dcbdb0db5612c55c0f6045625aa6b7e8edb2e0a4feabd80ee48616dbe2d37055573a84db3d24f96d9
+  languageName: node
+  linkType: hard
+
+"json-2-csv@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "json-2-csv@npm:5.5.0"
+  dependencies:
+    deeks: "npm:3.1.0"
+    doc-path: "npm:4.1.0"
+  checksum: 10c0/0fba7fb72e9d52e06d943fbc07c90bd8d5ea5f929260bfe449b76afd894168694c30bb935bb60fcc48a9342cc30254cc40bc2ead294786ca2f40634467490edd
   languageName: node
   linkType: hard
 

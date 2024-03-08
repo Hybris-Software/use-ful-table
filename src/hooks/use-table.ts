@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react"
 import debounce from "lodash.debounce"
+import { json2csv } from "json-2-csv"
 
 import { generateQueryParameters } from "../utils/query"
 import type { UseTableProps, SortingOptions, Column } from "../types"
@@ -186,6 +187,34 @@ export function useTable({
     }))
   }
 
+  const exportCsv = async (fileName: string) => {
+    const csvData = (data || []).map((row) =>
+      columns.reduce(
+        (acc, column) => ({
+          ...acc,
+          [column.id]: row[column.id],
+        }),
+        {}
+      )
+    )
+    const csv = await json2csv(csvData)
+
+    const CSV_FILE_TYPE = "text/csv;charset=utf-8;"
+    const BYTE_ORDER_MARL = "\ufeff"
+
+    const blob = new Blob([BYTE_ORDER_MARL, csv], {
+      type: CSV_FILE_TYPE,
+    })
+
+    const link = document.createElement("a")
+    link.href = URL.createObjectURL(blob)
+    link.download = fileName
+    link.style.display = "none"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return {
     // Pagination
     page,
@@ -217,5 +246,7 @@ export function useTable({
     // Sorting
     sort,
     sortBy,
+    // Export
+    exportCsv,
   }
 }

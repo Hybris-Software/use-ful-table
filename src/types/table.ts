@@ -2,6 +2,8 @@ export type ColumnDefinition = {
   id: string
   title: string
   sortable?: boolean
+  dataKey?: string
+  accessor?: (cellData: any) => JSX.Element | string
 }
 
 export type Column = ColumnDefinition & {

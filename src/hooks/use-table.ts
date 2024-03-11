@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react"
 import debounce from "lodash.debounce"
-import { json2csv } from "json-2-csv"
+import { stringify } from "csv-stringify/browser/esm/sync"
 
 import { generateQueryParameters } from "../utils/query"
 import type { UseTableProps, SortingOptions, Column } from "../types"
@@ -150,9 +150,18 @@ export function useTable({
     setHiddenColumns(_columns.map((column) => column.id))
   }
 
-  const rows = (data || []).map((row) =>
-    columns.map((column) => row[column.id])
+  const rowsData = (data || []).map((dataRow) =>
+    columns.map((column) => dataRow[column.dataKey || column.id])
   )
+
+  const rows = rowsData.map((rowData, index) => {
+    return columns.map((column, columnIndex) => {
+      const cellData = rowData[columnIndex]
+      const cellContent = column.accessor ? column.accessor(cellData) : cellData
+
+      return cellContent
+    })
+  })
 
   const sortBy = (column: string, direction?: "asc" | "desc") => {
     if (resetPageOnFiltersChange) {
@@ -188,16 +197,9 @@ export function useTable({
   }
 
   const exportCsv = async (fileName: string) => {
-    const csvData = (data || []).map((row) =>
-      columns.reduce(
-        (acc, column) => ({
-          ...acc,
-          [column.id]: row[column.id],
-        }),
-        {}
-      )
-    )
-    const csv = await json2csv(csvData)
+    const csvHeader = columns.map((column) => column.title)
+    const csvData = [csvHeader, ...rowsData]
+    const csv = stringify(csvData)
 
     const CSV_FILE_TYPE = "text/csv;charset=utf-8;"
     const BYTE_ORDER_MARL = "\ufeff"
@@ -243,6 +245,7 @@ export function useTable({
     // Table
     columns,
     rows,
+    rowsData,
     // Sorting
     sort,
     sortBy,

@@ -15,7 +15,7 @@
   "dependencies": {
     "@hybris-software/ui-kit": "^2.2.24",
     "@hybris-software/use-query": "^2.3.17",
-    "json-2-csv": "^5.5.0",
+    "csv": "^6.3.8",
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {

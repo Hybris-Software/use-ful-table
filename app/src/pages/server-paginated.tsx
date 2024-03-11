@@ -7,7 +7,11 @@ import SimpleSelect from "../components/simple-select/simple-select"
 
 import { useQuery, generateApiClient } from "../../vendors/use-ful-query"
 
-import { useTable, QueryParametersGenerator } from "use-ful-table"
+import {
+  useTable,
+  QueryParametersGenerator,
+  ColumnDefinition,
+} from "use-ful-table"
 
 export default function Simple() {
   const [url, setUrl] = useState<string | undefined>(undefined)
@@ -21,10 +25,10 @@ export default function Simple() {
     url: url,
   })
 
-  const columnDetails = [
+  const columnDetails: ColumnDefinition[] = [
     { id: "id", title: "ID", sortable: true },
     { id: "userId", title: "User ID", sortable: true },
-    { id: "title", title: "Title" },
+    { id: "title", title: "Title", accessor: (cellData) => <b>{cellData}</b> },
     { id: "body", title: "Body" },
   ]
 

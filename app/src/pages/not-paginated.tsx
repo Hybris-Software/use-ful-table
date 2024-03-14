@@ -141,7 +141,7 @@ const data = [
   },
 ]
 
-export default function NotPaginated() {
+export default function NotPaginatedExample() {
   const columnDetails: ColumnDefinition[] = [
     { id: "id", title: "ID", sortable: true },
     {
@@ -157,7 +157,6 @@ export default function NotPaginated() {
 
   const table = useTable({
     data: data,
-    elementsCount: data.length,
     columns: columnDetails,
     clientSideOrdering: true,
     clientSideFiltering: true,

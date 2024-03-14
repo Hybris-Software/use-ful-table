@@ -14,4 +14,5 @@ export type UseTableProps = {
   resetPageOnFiltersChange?: boolean
   clientSideOrdering?: boolean
   clientSideFiltering?: boolean
+  clientSidePagination?: boolean
 }

@@ -7,7 +7,7 @@ import type { UseTableProps, SortingOptions, Column } from "../types"
 
 export function useTable({
   pageSize: _pageSize = 10,
-  elementsCount = 0,
+  elementsCount: _elementsCount = 0,
   queryParametersGenerator = generateQueryParameters,
   queryOptions = {},
   columns: _columns,
@@ -18,6 +18,7 @@ export function useTable({
   resetPageOnFiltersChange = true,
   clientSideOrdering = false,
   clientSideFiltering = false,
+  clientSidePagination = false,
 }: UseTableProps) {
   const [pageSize, _setPageSize] = useState(_pageSize)
   const [page, setPage] = useState(1)
@@ -26,36 +27,6 @@ export function useTable({
   const [hiddenColumns, setHiddenColumns] = useState(_hiddenColumns)
   const [sort, setSort] = useState<SortingOptions>(_sort)
   const [queryParameters, setQueryParameters] = useState<any>(null)
-
-  const pageCount = useMemo(
-    () => Math.ceil(elementsCount / pageSize),
-    [elementsCount, pageSize]
-  )
-
-  const canNextPage = useMemo(() => page < pageCount, [page, pageCount])
-  const canPreviousPage = useMemo(() => page - 1 > 0, [page])
-
-  const setPageSize = (size: number) => {
-    setPage(1)
-    _setPageSize(size)
-  }
-
-  const nextPage = () => {
-    if (canNextPage) {
-      setPage(page + 1)
-    }
-  }
-
-  const previousPage = () => {
-    if (canPreviousPage) {
-      setPage(page - 1)
-    }
-  }
-
-  const toPage = (page: number) => {
-    const pageNumber = Math.max(0, Math.min(page, pageCount - 1))
-    setPage(pageNumber)
-  }
 
   const _queryParametersSetter = ({
     filters,
@@ -162,7 +133,7 @@ export function useTable({
       if (filters[key] === null || filters[key] === undefined) {
         return true
       }
-      return row[key] === filters[key] // TODO: check
+      return row[key] == filters[key]
     })
   })
 
@@ -181,7 +152,11 @@ export function useTable({
     return 0
   })
 
-  const rowsData = orderedData.map((dataRow) =>
+  const paginatedData = clientSidePagination
+    ? orderedData.slice((page - 1) * pageSize, page * pageSize)
+    : orderedData
+
+  const rowsData = paginatedData.map((dataRow) =>
     columns.map((column) => dataRow[column.dataKey || column.id])
   )
 
@@ -246,6 +221,40 @@ export function useTable({
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+  }
+
+  const elementsCount = clientSidePagination
+    ? filteredData.length
+    : _elementsCount
+
+  const pageCount = useMemo(
+    () => Math.max(1, Math.ceil(elementsCount / pageSize)),
+    [elementsCount, pageSize]
+  )
+
+  const canNextPage = useMemo(() => page < pageCount, [page, pageCount])
+  const canPreviousPage = useMemo(() => page - 1 > 0, [page])
+
+  const setPageSize = (size: number) => {
+    setPage(1)
+    _setPageSize(size)
+  }
+
+  const nextPage = () => {
+    if (canNextPage) {
+      setPage(page + 1)
+    }
+  }
+
+  const previousPage = () => {
+    if (canPreviousPage) {
+      setPage(page - 1)
+    }
+  }
+
+  const toPage = (page: number) => {
+    const pageNumber = Math.max(0, Math.min(page, pageCount - 1))
+    setPage(pageNumber)
   }
 
   return {

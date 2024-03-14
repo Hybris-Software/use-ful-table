@@ -4664,7 +4664,7 @@ __metadata:
 
 "use-ful-table@file:..::locator=app%40workspace%3A.":
   version: 1.0.0
-  resolution: "use-ful-table@file:..#..::hash=3944d5&locator=app%40workspace%3A."
+  resolution: "use-ful-table@file:..#..::hash=d07245&locator=app%40workspace%3A."
   dependencies:
     "@hybris-software/ui-kit": "npm:^2.2.24"
     "@hybris-software/use-query": "npm:^2.3.17"
@@ -4673,7 +4673,7 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: 10c0/7c072eff5fea6c22d053733623e4068ba50eeada2ecd770f2f028154efe59189efcc1a8b691f430f12a72aee588dbd5fb427b2792bedb61428c420d1a76a75d4
+  checksum: 10c0/42db5a2a7c9b3d7763f0b3af152ef10397b672a4177edaca43f210e830815f613b3d281adcbb3ce9342612d48f812d599c3ef853d9f6ca15048308f2817fc829
   languageName: node
   linkType: hard
 

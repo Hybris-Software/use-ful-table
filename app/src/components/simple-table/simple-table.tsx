@@ -53,10 +53,10 @@ function SortingButton({
   if (!column.sortable) return null
 
   if (column.sorting === "asc")
-    return <button onClick={() => sortBy(column.id)}>ASC</button>
+    return <button onClick={() => sortBy(column.sortKey)}>ASC</button>
   if (column.sorting === "desc")
-    return <button onClick={() => sortBy(column.id)}>DESC</button>
-  else return <button onClick={() => sortBy(column.id)}>X</button>
+    return <button onClick={() => sortBy(column.sortKey)}>DESC</button>
+  else return <button onClick={() => sortBy(column.sortKey)}>X</button>
 }
 
 function TableBody({ rows }: { rows: any[] }) {

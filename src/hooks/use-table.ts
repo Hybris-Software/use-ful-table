@@ -16,6 +16,8 @@ export function useTable({
   sort: _sort = { column: null, direction: "asc" },
   filters: _filters = {},
   resetPageOnFiltersChange = true,
+  clientSideOrdering = false,
+  clientSideFiltering = false,
 }: UseTableProps) {
   const [pageSize, _setPageSize] = useState(_pageSize)
   const [page, setPage] = useState(1)
@@ -113,7 +115,12 @@ export function useTable({
       _columns
         .filter((column) => !hiddenColumns.includes(column.id))
         .map((column) => ({
-          ...column,
+          id: column.id,
+          title: column.title,
+          sortable: column.sortable || false,
+          dataKey: column.dataKey || column.id,
+          sortKey: column.sortKey || column.id,
+          accessor: column.accessor || ((cellData) => cellData),
           hidden: hiddenColumns.includes(column.id),
           sorting: column.id === sort.column ? sort.direction : null,
         })),
@@ -146,14 +153,42 @@ export function useTable({
     setHiddenColumns(_columns.map((column) => column.id))
   }
 
-  const rowsData = (data || []).map((dataRow) =>
+  const filteredData = (data || []).filter((row) => {
+    if (!clientSideFiltering) {
+      return true
+    }
+
+    return Object.keys(filters).every((key) => {
+      if (filters[key] === null || filters[key] === undefined) {
+        return true
+      }
+      return row[key] === filters[key] // TODO: check
+    })
+  })
+
+  const orderedData = filteredData.sort((a, b) => {
+    if (!clientSideOrdering) {
+      return 0
+    }
+
+    if (sort.column) {
+      if (sort.direction === "asc") {
+        return a[sort.column] > b[sort.column] ? 1 : -1
+      } else {
+        return a[sort.column] < b[sort.column] ? 1 : -1
+      }
+    }
+    return 0
+  })
+
+  const rowsData = orderedData.map((dataRow) =>
     columns.map((column) => dataRow[column.dataKey || column.id])
   )
 
   const rows = rowsData.map((rowData, index) => {
     return columns.map((column, columnIndex) => {
       const cellData = rowData[columnIndex]
-      const cellContent = column.accessor ? column.accessor(cellData) : cellData
+      const cellContent = column.accessor(cellData)
 
       return cellContent
     })

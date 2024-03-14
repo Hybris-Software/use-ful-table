@@ -12,4 +12,6 @@ export type UseTableProps = {
   sort?: SortingOptions
   filters?: Record<string, string>
   resetPageOnFiltersChange?: boolean
+  clientSideOrdering?: boolean
+  clientSideFiltering?: boolean
 }

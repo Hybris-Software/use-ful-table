@@ -3,10 +3,18 @@ export type ColumnDefinition = {
   title: string
   sortable?: boolean
   dataKey?: string
+  sortKey?: string
   accessor?: (cellData: any) => JSX.Element | string
 }
 
-export type Column = ColumnDefinition & {
+export type Column = {
+  id: string
+  title: string
+  sortable: boolean
+  dataKey: string
+  sortKey: string
+  accessor: (cellData: any) => JSX.Element | string
+
   hidden: boolean
   sorting: "asc" | "desc" | null
 }

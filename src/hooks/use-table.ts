@@ -86,21 +86,17 @@ export function useTable({
     debounce(_queryParametersSetter, 100),
     []
   )
-  useEffect(() => {
-    _queryParametersSetter({
-      filters,
-      page,
-      pageSize,
-      options: {
-        pageParameterName: queryOptions.pageParameterName || "page",
-        pageSizeParameterName: queryOptions.pageSizeParameterName || "pageSize",
-      },
-      sort,
-    })
-  }, [])
 
   useEffect(() => {
-    _debouncedQueryParametersSetter({
+    let queryParametersGeneratorFunction
+
+    if (queryParameters !== null) {
+      queryParametersGeneratorFunction = _debouncedQueryParametersSetter
+    } else {
+      queryParametersGeneratorFunction = _queryParametersSetter
+    }
+
+    queryParametersGeneratorFunction({
       filters,
       page,
       pageSize,

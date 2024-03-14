@@ -1,6 +1,8 @@
-import { Column } from "use-ful-table"
+import React from "react"
 
-export default function SimpleTable({
+import { Column } from "../../types"
+
+export function Table({
   columns,
   rows,
   sortBy,

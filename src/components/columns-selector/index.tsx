@@ -1,6 +1,8 @@
-import { ColumnDefinition } from "use-ful-table"
+import React from "react"
 
-export default function SimpleColumnsCheckbox({
+import { ColumnDefinition } from "../../types"
+
+export function ColumnsSelector({
   columns,
   hiddenColumns,
   setColumnHidden,

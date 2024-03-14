@@ -1,6 +1,6 @@
-import { useState } from "react"
+import React, { useState } from "react"
 
-export default function SimplePaginator({
+export function Paginator({
   page,
   pageCount,
   pageSize,

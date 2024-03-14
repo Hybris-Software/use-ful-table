@@ -1,8 +1,11 @@
-import SimpleTable from "../components/simple-table/simple-table"
-import SimpleColumnsCheckbox from "../components/simple-columns-checkbox/simple-columns-checkbox"
-import SimpleSelect from "../components/simple-select/simple-select"
+import {
+  useTable,
+  ColumnDefinition,
+  Table,
+  ColumnsSelector,
+} from "use-ful-table"
 
-import { useTable, ColumnDefinition } from "use-ful-table"
+import SimpleSelect from "../components/simple-select/simple-select"
 
 const data = [
   {
@@ -172,16 +175,12 @@ export default function NotPaginatedExample() {
         />
       </div>
 
-      <SimpleColumnsCheckbox
+      <ColumnsSelector
         columns={columnDetails}
         hiddenColumns={table.hiddenColumns}
         setColumnHidden={table.setColumnHidden}
       />
-      <SimpleTable
-        columns={table.columns}
-        rows={table.rows}
-        sortBy={table.sortBy}
-      />
+      <Table columns={table.columns} rows={table.rows} sortBy={table.sortBy} />
 
       <div style={{ border: "1px solid black", padding: "10px" }}>
         <button

@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react"
-
-import SimpleTable from "../components/simple-table/simple-table"
-import SimpleColumnsCheckbox from "../components/simple-columns-checkbox/simple-columns-checkbox"
-import SimplePaginator from "../components/simple-paginator/simple-paginator"
-import SimpleSelect from "../components/simple-select/simple-select"
-
-import { useQuery, generateApiClient } from "../../vendors/use-ful-query"
-
 import {
   useTable,
   QueryParametersGenerator,
   ColumnDefinition,
+  Table,
+  ColumnsSelector,
+  Paginator,
 } from "use-ful-table"
+
+import SimpleSelect from "../components/simple-select/simple-select"
+import { useQuery, generateApiClient } from "../../vendors/use-ful-query"
 
 export default function Simple() {
   const [url, setUrl] = useState<string | undefined>(undefined)
@@ -83,17 +81,13 @@ export default function Simple() {
         />
       </div>
 
-      <SimpleColumnsCheckbox
+      <ColumnsSelector
         columns={columnDetails}
         hiddenColumns={table.hiddenColumns}
         setColumnHidden={table.setColumnHidden}
       />
-      <SimpleTable
-        columns={table.columns}
-        rows={table.rows}
-        sortBy={table.sortBy}
-      />
-      <SimplePaginator
+      <Table columns={table.columns} rows={table.rows} sortBy={table.sortBy} />
+      <Paginator
         page={table.page}
         pageCount={table.pageCount}
         pageSize={table.pageSize}

@@ -1,9 +1,12 @@
-import SimpleTable from "../components/simple-table/simple-table"
-import SimpleColumnsCheckbox from "../components/simple-columns-checkbox/simple-columns-checkbox"
-import SimplePaginator from "../components/simple-paginator/simple-paginator"
-import SimpleSelect from "../components/simple-select/simple-select"
+import {
+  useTable,
+  ColumnDefinition,
+  Table,
+  Paginator,
+  ColumnsSelector,
+} from "use-ful-table"
 
-import { useTable, ColumnDefinition } from "use-ful-table"
+import SimpleSelect from "../components/simple-select/simple-select"
 
 const data = [
   {
@@ -169,17 +172,13 @@ export default function ClientPaginatedExample() {
         />
       </div>
 
-      <SimpleColumnsCheckbox
+      <ColumnsSelector
         columns={columnDetails}
         hiddenColumns={table.hiddenColumns}
         setColumnHidden={table.setColumnHidden}
       />
-      <SimpleTable
-        columns={table.columns}
-        rows={table.rows}
-        sortBy={table.sortBy}
-      />
-      <SimplePaginator
+      <Table columns={table.columns} rows={table.rows} sortBy={table.sortBy} />
+      <Paginator
         page={table.page}
         pageCount={table.pageCount}
         pageSize={table.pageSize}

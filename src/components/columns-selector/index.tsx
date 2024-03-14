@@ -1,16 +1,12 @@
 import React from "react"
 
-import { ColumnDefinition } from "../../types"
+import { ColumnsSelectorProps } from "../../types"
 
 export function ColumnsSelector({
   columns,
   hiddenColumns,
   setColumnHidden,
-}: {
-  columns: ColumnDefinition[]
-  hiddenColumns: string[]
-  setColumnHidden: (columnId: string, hidden: boolean) => void
-}) {
+}: ColumnsSelectorProps) {
   return (
     <div style={{ border: "1px solid black", padding: "10px" }}>
       {columns.map((column) => (

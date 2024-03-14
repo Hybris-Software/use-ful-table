@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { PaginatorProps } from "../../types"
 
 export function Paginator({
   page,
@@ -10,17 +11,7 @@ export function Paginator({
   toPage,
   nextPage,
   previousPage,
-}: {
-  page: number
-  pageCount: number
-  pageSize: number
-  setPageSize: (pageSize: number) => void
-  canNextPage: boolean
-  canPreviousPage: boolean
-  toPage: (page: number) => void
-  nextPage: () => void
-  previousPage: () => void
-}) {
+}: PaginatorProps) {
   const [newPageSize, setNewPageSize] = useState(pageSize)
 
   return (

@@ -1,16 +1,8 @@
 import React from "react"
 
-import { Column } from "../../types"
+import { TableProps, Column } from "../../types"
 
-export function Table({
-  columns,
-  rows,
-  sortBy,
-}: {
-  columns: Column[]
-  rows: any[]
-  sortBy: (column: string, direction?: "asc" | "desc") => void
-}) {
+export function Table({ columns, rows, sortBy }: TableProps) {
   return (
     <div style={{ border: "1px solid black", padding: "10px" }}>
       <table>
@@ -21,13 +13,17 @@ export function Table({
   )
 }
 
-function TableHead({
-  columns,
-  sortBy,
-}: {
+type TableHeadProps = {
   columns: Column[]
   sortBy: (column: string, direction?: "asc" | "desc") => void
-}) {
+}
+
+type SortingButtonProps = {
+  column: Column
+  sortBy: (column: string, direction?: "asc" | "desc") => void
+}
+
+function TableHead({ columns, sortBy }: TableHeadProps) {
   return (
     <thead>
       <tr>
@@ -45,13 +41,7 @@ function TableHead({
   )
 }
 
-function SortingButton({
-  column,
-  sortBy,
-}: {
-  column: Column
-  sortBy: (column: string, direction?: "asc" | "desc") => void
-}) {
+function SortingButton({ column, sortBy }: SortingButtonProps) {
   if (!column.sortable) return null
 
   if (column.sorting === "asc")

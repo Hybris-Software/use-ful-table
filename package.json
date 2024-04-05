@@ -2,6 +2,18 @@
   "name": "@hybrissoftware/use-ful-table",
   "description": "A simple table component for React",
   "version": "0.1.0",
+  "repository": "hybris-software/use-ful-table",
+  "keywords": [
+    "react",
+    "javascript",
+    "axios",
+    "table",
+    "npm",
+    "api",
+    "react-package",
+    "typescript",
+    "csv"
+  ],
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.mjs",
   "source": "src/index.ts",

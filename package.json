@@ -1,6 +1,7 @@
 {
-  "name": "@hybris-software/use-ful-table",
-  "version": "1.0.0",
+  "name": "@hybrissoftware/use-ful-table",
+  "description": "A simple table component for React",
+  "version": "0.1.0",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.mjs",
   "source": "src/index.ts",
@@ -13,8 +14,6 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@hybris-software/ui-kit": "^2.2.24",
-    "@hybris-software/use-query": "^2.3.17",
     "csv": "^6.3.8",
     "lodash.debounce": "^4.0.8"
   },
